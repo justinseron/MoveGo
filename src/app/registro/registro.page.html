@@ -1,0 +1,36 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>registro</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content id="layoutregistro">
+
+  <div id="logo">
+    <img src="assets/images/logo.png">
+  </div>
+
+  <div id="registrouser">
+    <ion-card class="center">
+      <ion-card-header class="ion-text-center">Registro de Usuario</ion-card-header>
+      <ion-card-content>
+        <ion-input type="text" labelPlacement="stacked" label="Nombre" fill="outline"></ion-input>
+        <br>
+        <ion-input type="email" labelPlacement="stacked" label="Email" placeholder="ejemplo@email.com" fill="outline"></ion-input>
+        <br>
+        <ion-input type="password" labelPlacement="stacked" label="Contraseña" fill="outline"></ion-input>
+        <br>
+        <ion-select label="Género" labelPlacement="stacked" placeHolder="Género" fill="outline">
+          <ion-select-option>Masculino</ion-select-option>
+          <ion-select-option>Femenino</ion-select-option>
+          <ion-select-option>Otro</ion-select-option>
+          <ion-select-option>Prefiero no decirlo</ion-select-option>
+        </ion-select>
+        <br>
+        <ion-button size="block" color="secondary" shape="round" routerLink="/login">REGISTRARSE</ion-button>
+        <br>
+        <p class="ion-text-center">¿Ya tienes una cuenta? Ingresa <a routerLink="/login">aquí</a></p>
+      </ion-card-content>
+    </ion-card>
+  </div>
+</ion-content>

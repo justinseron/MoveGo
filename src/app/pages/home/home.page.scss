@@ -1,0 +1,38 @@
+.displayed{
+  display: block;
+  margin-left: auto;
+  margin-right: 100%;
+}
+
+#logomenu{
+  margin-left: 3%;
+  margin-top: auto;
+}
+
+#letrasmenu{
+  margin-left: 22%;
+  margin-top: 2%;
+}
+
+#perfildefault{
+  position: relative;
+  top: 45%;
+  left: 50%;
+  transform: translate(-50%, -50%); 
+  max-width: 200px;
+  margin-bottom: 30px;
+}
+
+#labelbienvenida{
+  position: relative;
+  top: 38%; /* Ajusta esta propiedad para controlar la distancia con #perfildefault */
+  left: 23%;
+  transform: translateX(-50%); /* Centra horizontalmente #labelbienvenida */
+  text-align: center; /* Alinea el texto al centro */
+  overflow: visible;
+}
+
+#itemmenu{
+  width: 100%;
+  max-width: 100%;
+}

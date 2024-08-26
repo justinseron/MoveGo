@@ -1,0 +1,33 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Login</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content id="mainlayout">
+  
+  <div id="logo">
+    <img src="assets/images/logo.png">
+  </div>
+
+  <div id="loginuser">
+  <ion-card class="center">
+    <ion-card-header class="ion-text-center">Ingreso de Usuario</ion-card-header>
+    <ion-card-content>
+      <ion-input type="email" label="Correo" labelPlacement="stacked" fill="outline" placeholder="ejemplo@email.com"></ion-input>
+      <br>
+      <ion-input type="password" label="Contraseña" labelPlacement="stacked" fill="outline"></ion-input>
+      <ion-text class="ion-text-right">
+        <p><a href="">¿Olvidaste la contraseña?</a></p>
+      </ion-text>
+      <br>
+      <ion-button size="block" color="secondary" shape="round" id="signinbutton" routerLink="/home">INGRESAR</ion-button>
+      <br>
+      <ion-text class="ion-text-center">
+        <h2>¿No tienes cuenta? Regístrate <a routerLink="/registro">aquí</a></h2>
+      </ion-text>
+    </ion-card-content>
+  </ion-card>
+  </div>
+
+</ion-content>
