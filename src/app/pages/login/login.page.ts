@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-login',
@@ -9,10 +10,19 @@ export class LoginPage implements OnInit {
 
   //NgModel
   email: string = "";
+  password: string = "";
 
-  constructor() { }
+  constructor(private router: Router) { }
 
   ngOnInit() {
+  }
+
+  login(){
+    if(this.email=="" && this.password==""){
+      this.router.navigate(['/home'])
+    }else{
+      alert("¡Correo o Contraseña incorrectos!")
+    }
   }
 
 }
