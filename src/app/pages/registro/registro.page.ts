@@ -45,7 +45,7 @@ export class RegistroPage implements OnInit {
   //MÉTODOS:
   registrar():void{
     console.log(this.persona.value);
-    this.router.navigate(['/login']);
+    this.router.navigate(['/home']);
   }
 
   setResult(ev:any) {

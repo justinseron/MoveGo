@@ -22,6 +22,7 @@ export class LoginPage implements OnInit {
       this.router.navigate(['/home'])
     }else{
       alert("¡Correo o Contraseña incorrectos!")
+      this.router.navigate(['/login'])
     }
   }
 
