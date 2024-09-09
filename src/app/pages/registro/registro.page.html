@@ -1,6 +1,6 @@
 <ion-header>
   <ion-toolbar>
-    <ion-title>Registro</ion-title>
+    <ion-title>registro</ion-title>
   </ion-toolbar>
 </ion-header>
 
@@ -29,6 +29,14 @@
             <ion-select-option>Otro</ion-select-option>
             <ion-select-option>Prefiero no decirlo</ion-select-option>
           </ion-select>
+          <br>
+          <ion-label>¿Tiene Auto?</ion-label>
+            <ion-radio-group formControlName="tiene_auto">
+              <ion-radio value="si" >Sí</ion-radio>
+              <ion-radio value="no" >No</ion-radio>
+            </ion-radio-group>
+            <br>
+            <ion-input *ngIf="persona.controls.tiene_auto.value=='si'" formControlName="patente_auto" type="text" label="Patente auto" labelPlacement="stacked"></ion-input>
           <br>
           <ion-button size="block" [disabled]="persona.invalid" type="submit" color="secondary" shape="round">REGISTRARSE</ion-button>
           <ion-alert trigger="present-alert" header="¡Alerta!" [buttons]="alertButtons" (didDismiss)="setResult($event)"></ion-alert>
