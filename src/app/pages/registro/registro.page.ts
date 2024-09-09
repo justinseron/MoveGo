@@ -16,8 +16,8 @@ export class RegistroPage implements OnInit {
     fecha_nacimiento: new FormControl('',[Validators.required]),
     password: new FormControl('',[Validators.required]),
     genero: new FormControl('',[Validators.required]),
-    patente_auto: new FormControl('',[Validators.required]),
-    tiene_auto:new FormControl('',[Validators.required]),
+    tiene_auto : new FormControl('no',[Validators.required]),
+    patente_auto : new FormControl('',[])
   });
 
   public alertButtons = [
