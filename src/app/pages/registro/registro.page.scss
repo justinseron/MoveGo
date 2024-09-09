@@ -1,23 +1,23 @@
 ion-content {
-  --background: linear-gradient(#25698e, #f7f0fd);
+    --background: linear-gradient(#25698e, #f7f0fd);
+    
+  }
+    
+  #registrouser{
+    height: 75%; 
+    display: flex; 
+    align-items: center; 
+    justify-content: center;
+  }
   
-}
+  #formRegistro{
+    top: 5%;
+  }
   
-#registrouser{
-  height: 75%; 
-  display: flex; 
-  align-items: center; 
-  justify-content: center;
-}
-
-#formRegistro{
-  top: 5%;
-}
-
-#logo{
-  position: relative;
-  top: 15%;
-  left: 50%;
-  transform: translate(-50%, -50%); 
-  max-width: 200px;
-}
+  #logo{
+    position: relative;
+    top: 15%;
+    left: 50%;
+    transform: translate(-50%, -50%); 
+    max-width: 200px;
+  }
