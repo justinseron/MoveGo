@@ -1,29 +1,3 @@
 <ion-content>
-  <ion-card>
-    <form [formGroup]="persona" (ngSubmit)="registrar()">
-      <ion-input formControlName="rut" type="text" labelPlacement="stacked" label="RUT" ></ion-input>
-      <ion-input formControlName="nombre" type="text" labelPlacement="stacked" label="Nombre"></ion-input>
-      <ion-input formControlName="fecha_nacimiento" type="date" labelPlacement="stacked" label="Fecha nacimiento"></ion-input>
-      <ion-select formControlName="genero" label="Género" labelPlacement="stacked" placeholder="Género">
-        <ion-select-option>Masculino</ion-select-option>
-        <ion-select-option>Femenino</ion-select-option>
-        <ion-select-option>Otro</ion-select-option>
-      </ion-select>
-      <br>
-      <ion-label>¿Tiene Auto?</ion-label>
-      <ion-radio-group formControlName="tiene_auto">
-        <ion-radio value="si" >Sí</ion-radio>
-        <ion-radio value="no" >No</ion-radio>
-      </ion-radio-group>
-      <br>
-      <ion-input *ngIf="persona.controls.tiene_auto.value=='si'" formControlName="patente_auto" type="text" label="Patente auto" labelPlacement="stacked"></ion-input>
-
-
-      <ion-button [disabled]="persona.invalid" type="submit" size="block" color="warning">Registrar</ion-button>
-    </form>
-  </ion-card>
-
-  <ion-list *ngFor="let usuario of usuarios">
-    <ion-item>{{usuario.rut}} - {{usuario.nombre}}</ion-item>
-  </ion-list>
+<h1> Administrar</h1>
 </ion-content>

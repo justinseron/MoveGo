@@ -1,6 +1,9 @@
 <ion-header>
   <ion-toolbar>
     <ion-title>Registro</ion-title>
+    <ion-buttons  slot="start">
+      <ion-back-button></ion-back-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
@@ -44,6 +47,7 @@
           <p class="ion-text-center">¿Ya tienes una cuenta? Ingresa <a routerLink="/login">aquí</a></p>
         </ion-card-content>
       </form>
+      <p>{{persona.value.nombre}}</p>
     </ion-card>
   </div>
 </ion-content>

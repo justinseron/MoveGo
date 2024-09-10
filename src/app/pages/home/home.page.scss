@@ -1,3 +1,31 @@
+/* Estilo para el footer de derechos de autor */
+.footer {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background: #002f6c; /* Color de fondo del footer */
+  color: #ffffff; /* Color del texto del footer */
+  text-align: center;
+  padding: 10px 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px; /* Espacio entre el logo y el texto */
+}
+
+/* Estilo para el logotipo del footer */
+.footer-logo {
+  height: 20px; /* Ajusta el tamaño del logo del footer */
+  width: auto;
+}
+
+/* Estilo para el texto del footer */
+.footer-text {
+  font-size: 0.9rem; /* Tamaño de fuente del texto del footer */
+}
+
+
 .displayed{
   display: block;
   margin-left: auto;

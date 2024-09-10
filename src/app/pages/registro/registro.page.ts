@@ -16,8 +16,8 @@ export class RegistroPage implements OnInit {
     fecha_nacimiento: new FormControl('',[Validators.required]),
     password: new FormControl('',[Validators.required]),
     genero: new FormControl('',[Validators.required]),
-    tiene_auto : new FormControl('no',[Validators.required]),
-    patente_auto : new FormControl('',[])
+    tiene_auto : new FormControl('no',[]),
+    patente_auto : new FormControl('',[]),
   });
 
   public alertButtons = [
@@ -45,7 +45,7 @@ export class RegistroPage implements OnInit {
   //MÉTODOS:
   registrar():void{
     console.log(this.persona.value);
-    this.router.navigate(['/home']);
+    this.router.navigate(['/login']);
   }
 
   setResult(ev:any) {
