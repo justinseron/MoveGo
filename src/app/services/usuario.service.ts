@@ -6,7 +6,17 @@ import { Injectable } from '@angular/core';
 export class UsuarioService {
 
   //Aquí podemos crear variables:
-  usuarios: any[] = [];
+  usuarios: any[] = [
+    {
+      "rut": 12123123,
+      "nombre": "pepita",
+      "fecha_nacimiento": "2002/03/10",
+      "genero": "Femenino",
+      "tiene_auto": "",
+      "patente_auto": "KTHS12",
+      "tipo_usuario": "administrador"
+    }
+  ];
 
   constructor() { }
 
@@ -29,18 +39,17 @@ public getUsuarios():any[]{
 }
 
 public updateUsuario(rut:string, nuevoUsuario:any){
-  for(let usu of this.usuarios){
-    if(usu.rut==rut){
-      usu=nuevoUsuario;
-      return true;
-    }
+  const indice = this.usuarios.findIndex(elemento => elemento.rut===rut);
+  if(indice==-1){
+    return false;
   }
-  return false
+  this.usuarios[indice]=nuevoUsuario;
+  return true;
 }
 
 public deleteUsuario(rut:string):boolean{
   const indice = this.usuarios.findIndex(elemento => elemento.rut===rut);
-  if(indice==1){
+  if(indice==-1){
     return false;
   }
   this.usuarios.splice(indice,1);

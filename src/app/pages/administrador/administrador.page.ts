@@ -19,6 +19,7 @@ export class AdministradorPage implements OnInit {
   });
 
   usuarios:any[] = [];
+  botonModificar: boolean = true;
 
    //El servicio nos permite trabajar la información:
    constructor(private usuarioService:UsuarioService ) { }
@@ -33,6 +34,31 @@ export class AdministradorPage implements OnInit {
       this.persona.reset();
     }else{
       alert("ERROR! NO SE PUDO CREAR EL USUARIO");
+    }
+  }
+
+  buscar(rut_buscar:string){
+    this.persona.setValue(this.usuarioService.getUsuario(rut_buscar));
+    this.botonModificar = false;
+  }
+
+  modificar(){
+    var rut_buscar : string = this.persona.controls.rut.value || "";
+    if(this.usuarioService.updateUsuario(rut_buscar , this.persona.value)){
+      alert("USUARIO MODIFICADO CON ÉXITO!")
+      this.botonModificar = true;
+      this.persona.reset();
+    }else{
+      alert("ERROR! USUARIO NO MODIFICADO")
+    }
+  }
+
+  eliminar(rut_eliminar:string){
+    //console.log(rut_eliminar)
+    if(this.usuarioService.deleteUsuario(rut_eliminar)){
+      alert("USUARIO ELIMINADO CON ÉXITO!")
+    }else{
+      alert("ERROR! USUARIO NO ENCONTRADO")
     }
   }
 

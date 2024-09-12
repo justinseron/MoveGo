@@ -20,10 +20,26 @@
 
 
       <ion-button [disabled]="persona.invalid" type="submit" size="block" color="warning">Registrar</ion-button>
+      <ion-button [disabled]="botonModificar || persona.invalid" (click)="modificar()" size="block" color="dark">Modificar</ion-button>
+      <ion-button type="reset" size="block" color="secondary">Limpiar</ion-button>
+
     </form>
   </ion-card>
 
-  <ion-list *ngFor="let usuario of usuarios">
-    <ion-item>{{usuario.rut}} - {{usuario.nombre}}</ion-item>
-  </ion-list>
+  <div *ngIf="usuarios.length > 0; else noHayUsuarios">
+    <ion-list *ngFor="let usuario of usuarios">  
+      <ion-item-sliding>
+        <ion-item-options side="start">
+          <ion-item-option (click)="buscar(usuario.rut)" color="warning">Buscar</ion-item-option>
+        </ion-item-options>
+        <ion-item>{{usuario.rut}} - {{usuario.nombre}}</ion-item>
+        <ion-item-options side="end">
+          <ion-item-option (click)="eliminar(usuario.rut)" color="danger">Eliminar</ion-item-option>
+        </ion-item-options>
+      </ion-item-sliding>
+    </ion-list>
+  </div>
+  <ng-template #noHayUsuarios>
+    <img src="blob:https://copilot.microsoft.com/9c722c66-31bb-41fe-94a7-c013d97c6db4" alt="noDataFound">
+  </ng-template>
 </ion-content>
