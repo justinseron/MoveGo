@@ -22,7 +22,15 @@ const routes: Routes = [
   {
     path: 'portada',
     loadChildren: () => import('./pages/portada/portada.module').then( m => m.PortadaPageModule)
+  },  {
+    path: 'recuperar',
+    loadChildren: () => import('./pages/recuperar/recuperar.module').then( m => m.RecuperarPageModule)
   },
+  {
+    path: 'verificar-codigo',
+    loadChildren: () => import('./pages/verificar-codigo/verificar-codigo.module').then( m => m.VerificarCodigoPageModule)
+  },
+
 
   
 
