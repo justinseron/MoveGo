@@ -23,7 +23,12 @@ export class VerificarCodigoPage implements OnInit {
   }
 
   verificarCodigo(){
-    console.log('Código ingresado: ', this.codigo);
-    this.cerrarModal();
+    if(this.codigo=="1"){
+      console.log('Código ingresado: ', this.codigo);
+      this.cerrarModal();
+    }else{
+      alert("¡Código no válido!")
+      this.router.navigate(['/verificar-codigo'])
+    }
   }
 }

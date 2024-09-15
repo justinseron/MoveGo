@@ -1,0 +1,19 @@
+ion-list{
+    --my-segment-color: #25698e;
+
+    border-radius: 0px;
+    ion-segment{
+        --background: var(--ion-color-primary-contrast);
+        border-radius: 20px;
+        border: 1px solid var(--ion-color-medium);
+        --margin-top: 5px;
+        --margin-bottom: 5px;
+        ion-segment-button{
+            //--background-checked: var(--ion-color-primary);
+            --indicator-color: var(--ion-color-primary);
+            --border-radius: 20px;
+            --color: var(--ion-color-primary);
+            --color-checked: var(--ion-color-primary-contrast);
+        }
+    }
+}
