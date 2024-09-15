@@ -22,7 +22,7 @@ export class AdministradorPage implements OnInit {
   botonModificar: boolean = true;
 
    //El servicio nos permite trabajar la información:
-   constructor(private usuarioService:UsuarioService ) { }
+   constructor(private usuarioService: UsuarioService ) { }
 
   ngOnInit() {
     this.usuarios = this.usuarioService.getUsuarios();
