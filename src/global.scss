@@ -38,14 +38,14 @@ ion-tab-bar {
 
 /* Estilo para los ion-tab-button */
 ion-tab-button {
-  color: #ffffff !important; /* Color blanco para los íconos y texto por defecto */
+  color: #2b2a32 !important; /* Color blanco para los íconos y texto por defecto */
   font-size: 0.9rem !important; /* Tamaño de fuente ajustado */
   transition: color 0.3s, transform 0.3s !important; /* Animación para el cambio de color y tamaño */
 }
 
 /* Estilo para el ion-tab-button cuando está seleccionado */
 ion-tab-button.tab-selected {
-  color: #21abe6 !important; /* Azul claro para el icono y texto seleccionado */
+  color: #0640ff !important; /* Azul claro para el icono y texto seleccionado */
   transform: scale(1.1) !important; /* Aumentar ligeramente el tamaño del icono cuando está seleccionado */
   border-bottom: 3px solid #0072e5 !important; /* Línea de fondo azul claro para indicar selección */
 }
@@ -53,7 +53,7 @@ ion-tab-button.tab-selected {
 /* Estilo para las etiquetas de los tab-button */
 .tab-label {
   font-size: 0.8rem !important; /* Tamaño de fuente ajustado para las etiquetas */
-  color: #ffffff !important; /* Blanco para las etiquetas */
+  color: #000000 !important; /* Blanco para las etiquetas */
 }
 
 /* Estilo para los iconos dentro del tab-button */
