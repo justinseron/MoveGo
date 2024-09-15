@@ -1,0 +1,91 @@
+/* Asegúrate de que el fondo del ion-content sea el gradiente azul */
+.portada-content {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    background: linear-gradient(to bottom, #003366, #3399ff); /* Gradiente azul oscuro a claro */
+    height: 100%;
+    padding: 0; /* Elimina el padding predeterminado */
+    position: relative; /* Permite la colocación relativa para el footer */
+  }
+  
+  /* Contenedor de la portada para alinear y espaciar elementos */
+  .portada-container {
+    text-align: center;
+    padding: 20px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  
+  /* Estilo para la imagen de portada */
+  .portada-image {
+    max-width: 80%; /* Ajusta el tamaño máximo de la imagen */
+    height: auto;
+    margin-bottom: 20px;
+  }
+  
+  /* Estilo para el título de la portada */
+  .portada-title {
+    color: #ffffff;
+    font-size: 2.5rem; /* Tamaño del texto ajustado */
+    font-weight: bold;
+    margin-bottom: 20px;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5); /* Agrega una sombra ligera al texto */
+  }
+  
+  /* Estilo para el botón "Comenzar" */
+  .comenzar-button {
+    --background: #0072e5;
+    --color: #ffffff;
+    font-size: 1.2rem;
+    border-radius: 50px; /* Bordes redondeados para un diseño más fluido */
+    padding: 12px 24px; /* Padding interno del botón para darle forma */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Sombra sutil para el botón */
+    transition: background-color 0.3s, transform 0.3s; /* Transición suave para el color de fondo y el tamaño */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  /* Estilo del botón al pasar el mouse (hover) */
+  .comenzar-button:hover {
+    --background: #005bb5; /* Color más oscuro al pasar el mouse */
+    transform: scale(1.05); /* Agranda ligeramente el botón */
+  }
+  
+  /* Estilo del icono dentro del botón */
+  .comenzar-button ion-icon {
+    margin-left: 10px; /* Espaciado entre el texto y el ícono */
+    font-size: 1.4rem; /* Tamaño del ícono ajustado */
+  }
+  
+  /* Estilo para el footer de derechos de autor */
+  .footer {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background: #002f6c; /* Color de fondo del footer */
+    color: #ffffff; /* Color del texto del footer */
+    text-align: center;
+    padding: 10px 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px; /* Espacio entre el logo y el texto */
+  }
+  
+  /* Estilo para el logotipo del footer */
+  .footer-logo {
+    height: 20px; /* Ajusta el tamaño del logo del footer */
+    width: auto;
+  }
+  
+  /* Estilo para el texto del footer */
+  .footer-text {
+    font-size: 0.9rem; /* Tamaño de fuente del texto del footer */
+  }
+  
