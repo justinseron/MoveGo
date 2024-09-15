@@ -1,3 +1,68 @@
+/* Estilo para el ion-header */
+ion-header {
+    --background: transparent; /* Fondo transparente para permitir el gradiente del body */
+  }
+  
+  /* Estilo para el ion-toolbar */
+  ion-toolbar.custom-toolbar {
+    background: linear-gradient(135deg, #002f6c, #0072e5) !important; /* Gradiente azul de oscuro a claro */
+    --background: linear-gradient(135deg, #002f6c, #0072e5) !important; /* Asegura que el fondo del toolbar sea el gradiente */
+    border-bottom: 2px solid #002f6c !important; /* Línea inferior para un acabado elegante */
+  }
+  
+  /* Estilo para el título del toolbar */
+  ion-title.toolbar-title {
+    color: #ffffff !important; /* Blanco para el título */
+    font-size: 1.5rem !important; /* Tamaño de fuente ajustado */
+    font-weight: bold !important; /* Negrita para el título */
+  }
+  
+  /* Estilo para el logo */
+  #logomenu {
+    height: 60px !important;
+    width: auto !important;
+    object-fit: contain !important;
+  }
+  
+  /* Estilo para el ion-content */
+  ion-content {
+    --background: linear-gradient(to bottom, #9eb6d8, #0072e5) !important; /* Gradiente de azul oscuro a azul más claro */
+    padding: 0 !important; /* Elimina el padding predeterminado */
+  }
+  
+  /* Estilo para el ion-tab-bar */
+  ion-tab-bar {
+    background: #000000 !important; /* Fondo negro para el tab bar */
+    border-top: 2px solid #f0dd0e !important; /* Línea superior en azul más claro para destacar el tab bar */
+  }
+  
+  /* Estilo para los ion-tab-button */
+  ion-tab-button {
+    color: #ffffff !important; /* Color blanco para los íconos y texto por defecto */
+    font-size: 0.9rem !important; /* Tamaño de fuente ajustado */
+    transition: color 0.3s, transform 0.3s !important; /* Animación para el cambio de color y tamaño */
+  }
+  
+  /* Estilo para el ion-tab-button cuando está seleccionado */
+  ion-tab-button.tab-selected {
+    color: #21abe6 !important; /* Azul claro para el icono y texto seleccionado */
+    transform: scale(1.1) !important; /* Aumentar ligeramente el tamaño del icono cuando está seleccionado */
+    border-bottom: 3px solid #0072e5 !important; /* Línea de fondo azul claro para indicar selección */
+  }
+  
+  /* Estilo para las etiquetas de los tab-button */
+  .tab-label {
+    font-size: 0.8rem !important; /* Tamaño de fuente ajustado para las etiquetas */
+    color: #ffffff !important; /* Blanco para las etiquetas */
+  }
+  
+  /* Estilo para los iconos dentro del tab-button */
+  ion-icon {
+    font-size: 1.2rem !important; /* Tamaño de icono ajustado */
+  }
+    
+
+
 /*
  * App Global CSS
  * ----------------------------------------------------------------------------
