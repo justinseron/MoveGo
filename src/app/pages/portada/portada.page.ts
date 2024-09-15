@@ -1,15 +1,16 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
+import { NavController } from '@ionic/angular';
 
 @Component({
   selector: 'app-portada',
   templateUrl: './portada.page.html',
   styleUrls: ['./portada.page.scss'],
 })
-export class PortadaPage implements OnInit {
+export class PortadaPage {
 
-  constructor() { }
+  constructor(private navCtrl: NavController) { }
 
-  ngOnInit() {
+  start() {
+    this.navCtrl.navigateForward('/login'); // Cambia '/login' a la ruta de tu página de login
   }
-
 }

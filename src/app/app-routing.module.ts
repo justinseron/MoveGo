@@ -8,7 +8,7 @@ const routes: Routes = [
   },
   {
     path: '',
-    redirectTo: 'login',
+    redirectTo: 'portada',
     pathMatch: 'full'
   },
   {
@@ -36,11 +36,12 @@ const routes: Routes = [
     loadChildren: () => import('./pages/recuperar/recuperar.module').then( m => m.RecuperarPageModule)
   },
   {
-    path: '**',
-    loadChildren: () => import('./pages/error404/error404.module').then( m => m.Error404PageModule)
-  },  {
     path: 'portada',
     loadChildren: () => import('./pages/portada/portada.module').then( m => m.PortadaPageModule)
+  },
+  {
+    path: '**',
+    loadChildren: () => import('./pages/error404/error404.module').then( m => m.Error404PageModule)
   },
 
 
