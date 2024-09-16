@@ -1,0 +1,24 @@
+#foto-perfil{
+    position: relative;
+    top: 18%;
+    left: 50%;
+    transform: translate(-50%, -50%); 
+    max-width: 200px;
+}
+
+#labelNombre{
+    position: relative;
+    top: 25%;
+    left: 50%;
+    transform: translate(-50%, -50%); 
+    max-width: 200px;
+}
+
+#card-detalles-perfil{
+    border-radius: 20px;
+}
+
+.labelDetalles{
+    position: relative;
+    left: 13px;
+}
