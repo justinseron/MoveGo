@@ -1,84 +1,52 @@
 <ion-content>
-  <!-- Formulario de Registro -->
-  <ion-card class="form-card">
+  <ion-card>
     <ion-card-header>
-      <ion-card-title>Registro de Usuario</ion-card-title>
+      <ion-card-title class="card-title">Registro de Usuario</ion-card-title>
     </ion-card-header>
-
-    <ion-card-content>
-      <form [formGroup]="persona" (ngSubmit)="registrar()">
-        <!-- RUT -->
-        <ion-item class="form-item">
-          <ion-label position="floating">RUT</ion-label>
-          <ion-input formControlName="rut" type="text"></ion-input>
-        </ion-item>
-
-        <!-- Nombre -->
-        <ion-item class="form-item">
-          <ion-label position="floating">Nombre</ion-label>
-          <ion-input formControlName="nombre" type="text"></ion-input>
-        </ion-item>
-
-        <!-- Fecha de Nacimiento -->
-        <ion-item class="form-item">
-          <ion-label position="floating">Fecha de Nacimiento</ion-label>
-          <ion-input formControlName="fecha_nacimiento" type="date"></ion-input>
-        </ion-item>
-
-        <!-- Género -->
-        <ion-item class="form-item">
-          <ion-label>Género</ion-label>
-          <ion-select formControlName="genero" placeholder="Selecciona tu género">
-            <ion-select-option value="masculino">Masculino</ion-select-option>
-            <ion-select-option value="femenino">Femenino</ion-select-option>
-            <ion-select-option value="otro">Otro</ion-select-option>
-          </ion-select>
-        </ion-item>
-
-        <!-- ¿Tiene Auto? -->
-        <ion-item class="form-item">
-          <ion-label>¿Tiene Auto?</ion-label>
-          <div class="radio-group">
-            <ion-button 
-              class="custom-radio-button yes-button"
-              [class.selected]="persona.controls.tiene_auto.value === 'si'"
-              (click)="persona.controls.tiene_auto.setValue('si')">
-              Sí
-            </ion-button>
-            <ion-button 
-              class="custom-radio-button no-button"
-              [class.selected]="persona.controls.tiene_auto.value === 'no'"
-              (click)="persona.controls.tiene_auto.setValue('no')">
-              No
-            </ion-button>
-          </div>
-        </ion-item>
-
-        <!-- Patente del Auto (solo si tiene auto) -->
-        <ion-item *ngIf="persona.controls.tiene_auto.value === 'si'" class="form-item">
-          <ion-label position="floating">Patente del Auto</ion-label>
-          <ion-input formControlName="patente_auto" type="text"></ion-input>
-        </ion-item>
-
-        <!-- Botones de Acción -->
-        <ion-row class="ion-margin-top">
-          <ion-col size="12">
-            <ion-button expand="full" [disabled]="persona.invalid" color="primary" shape="round" size="large">Registrar</ion-button>
-          </ion-col>
-        </ion-row>
-        <ion-row class="ion-margin-top">
-          <ion-col size="6">
-            <ion-button expand="full" [disabled]="botonModificar || persona.invalid" (click)="modificar()" color="success" shape="round" size="large">Modificar</ion-button>
-          </ion-col>
-          <ion-col size="6">
-            <ion-button expand="full" type="reset" color="medium" shape="round" size="large">Limpiar</ion-button>
-          </ion-col>
-        </ion-row>
-      </form>
-    </ion-card-content>
+    <form [formGroup]="persona" (ngSubmit)="registrar()">
+      <ion-item class="form-item">
+        <ion-label position="stacked">RUT</ion-label>
+        <ion-input formControlName="rut" type="text"></ion-input>
+      </ion-item>
+      <ion-item class="form-item">
+        <ion-label position="stacked">Nombre</ion-label>
+        <ion-input formControlName="nombre" type="text"></ion-input>
+      </ion-item>
+      <ion-item class="form-item">
+        <ion-label position="stacked">Fecha nacimiento</ion-label>
+        <ion-input formControlName="fecha_nacimiento" type="date"></ion-input>
+      </ion-item>
+      <ion-item class="form-item">
+        <ion-label position="stacked">Género</ion-label>
+        <ion-select formControlName="genero" placeholder="Género">
+          <ion-select-option value="masculino">Masculino</ion-select-option>
+          <ion-select-option value="femenino">Femenino</ion-select-option>
+          <ion-select-option value="otro">Otro</ion-select-option>
+        </ion-select>
+      </ion-item>
+      <ion-item class="form-item tiene-auto-group">
+        <ion-label class="tiene-auto-label">¿Tiene Auto?</ion-label>
+        <ion-radio-group formControlName="tiene_auto">
+          <ion-item>
+            <ion-label>Sí</ion-label>
+            <ion-radio slot="start" value="si"></ion-radio>
+          </ion-item>
+          <ion-item>
+            <ion-label>No</ion-label>
+            <ion-radio slot="start" value="no"></ion-radio>
+          </ion-item>
+        </ion-radio-group>
+      </ion-item>
+      <ion-item class="form-item" *ngIf="persona.controls.tiene_auto.value === 'si'">
+        <ion-label position="stacked">Patente auto</ion-label>
+        <ion-input formControlName="patente_auto" type="text"></ion-input>
+      </ion-item>
+      <ion-button [disabled]="persona.invalid" type="submit" size="block" color="warning">Registrar</ion-button>
+      <ion-button [disabled]="botonModificar || persona.invalid" (click)="modificar()" size="block" color="dark">Modificar</ion-button>
+      <ion-button type="reset" size="block" color="secondary">Limpiar</ion-button>
+    </form>
   </ion-card>
 
-  <!-- Lista de Usuarios -->
   <div *ngIf="usuarios.length > 0; else noHayUsuarios" class="user-list-container">
     <ion-list>
       <ion-item-sliding *ngFor="let usuario of usuarios">
@@ -100,8 +68,7 @@
       </ion-item-sliding>
     </ion-list>
   </div>
-
   <ng-template #noHayUsuarios>
-    <ion-img src="../../../assets/images/NO-HAY-DATOS.png" alt="No hay registros existentes"></ion-img>
+    <img src="../../../assets/images/NO-HAY-DATOS.png" alt="No hay registros existentes">
   </ng-template>
 </ion-content>
