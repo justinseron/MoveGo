@@ -37,10 +37,7 @@ const routes: Routes = [
     path: 'detalles-viaje',
     loadChildren: () => import('./pages/detalles-viaje/detalles-viaje.module').then( m => m.DetallesViajePageModule)
   },
-
-
   
-
 ];
 
 @NgModule({
