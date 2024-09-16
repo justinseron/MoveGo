@@ -12,12 +12,12 @@ export class RegistroPage implements OnInit {
   //VARIABLES:
   persona = new FormGroup({
     rut: new FormControl('',[Validators.minLength(9),Validators.maxLength(10),Validators.required,Validators.pattern("[0-9]{7,8}-[0-9kK]{1}")]),
-    nombre: new FormControl('',[Validators.required,Validators.pattern("[a-z]{3,15}")]),
+    nombre: new FormControl('',[Validators.required,Validators.maxLength(20),Validators.pattern("^[a-zA-ZáéíóúÁÉÍÓÚüÜñÑ\\s]+$") ]),
     fecha_nacimiento: new FormControl('',[Validators.required, this.validadorDeEdad]),
     password: new FormControl('',[Validators.required]),
     genero: new FormControl('',[Validators.required]),
     tiene_auto : new FormControl('no',[]),
-    patente_auto : new FormControl('',[]),
+    patente_auto : new FormControl('',[ Validators.pattern("^[a-zA-Z0-9.-]*$"),Validators.maxLength(8)]),
   });
 
   public alertButtons = [
