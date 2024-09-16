@@ -18,11 +18,7 @@ export class LoginPage implements OnInit {
   }
 
   login(){
-    if(this.email=="movego@ionic.cl" && this.password=="move"){
-      this.router.navigate(['/home'])
-    }else{
-      alert("¡Correo o Contraseña incorrectos!")
-    }
+    alert("Cuenta Administrador")
   }
 
 }
