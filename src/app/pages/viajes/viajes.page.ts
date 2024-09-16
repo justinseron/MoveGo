@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, AfterViewInit } from '@angular/core';
 import { Router } from '@angular/router';
 import * as L from 'leaflet';
 
@@ -7,56 +7,37 @@ import * as L from 'leaflet';
   templateUrl: './viajes.page.html',
   styleUrls: ['./viajes.page.scss'],
 })
-export class ViajesPage implements OnInit {
+export class ViajesPage implements AfterViewInit {
 
   constructor(private router: Router) { }
 
-  map: L.Map | undefined; //la variable 'map' queda indefinida hasta que se le asigne un valor
+  map: L.Map | undefined;
 
-  isBasicoSelected: boolean = true; //Estado inicial seleccionado (VIAJE BÁSICO)
+  isBasicoSelected: boolean = true;
 
-  destinos: string[] = ['Duoc UC, Sede Puente Alto', 'Casa #123', 'Casa amigo #321', 'Destino X #111']; //Lista de destinos
-  filteredDestinos: string[] = []; //Destinos filtrados
-  selectedDestino: string | null = null; //Destino seleccionado
+  destinos: string[] = ['Duoc UC, Sede Puente Alto', 'Casa #123', 'Casa amigo #321', 'Destino X #111'];
+  filteredDestinos: string[] = [];
+  selectedDestino: string | null = null;
 
-  ngOnInit() {
-    this.initializeMap();
-    this.filteredDestinos = this.destinos; //Inicialmente muestra todos los destinos
+  ngAfterViewInit() {
+    this.filteredDestinos = this.destinos;
   }
 
-  selectBasico(){
-    this.isBasicoSelected = true;
-  }
 
-  selectPrioritario(){
-    this.isBasicoSelected = false;
-  }
 
-  initializeMap(){
-    this.map = L.map('map').setView([-33.59840697254339, -70.5790016514548], 15); //Coordenadas iniciales y zoom del mapa
-
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '© OpenStreetMap contributors'
-    }).addTo(this.map);
-  }
-
-  //TODO LO ANTERIOR ES PARA USAR LEAFLET, QUE ES UN MÉTODO GRATUITO PARA APLICAR UN MAPA. DECIDÍ (JUSTIN) USAR POR AHORA UN iframe YA QUE LEAFLET TARDABA
-  //MUCHO EN CARGAR Y NO NECESITAMOS TANTA FUNCIONALIDAD XD, PERO EN CASO DE CUALQUIER COSA SE PUEDE IMPLEMENTAR CON EL SIGUIENTE DIV EN EL HTML REEMPLAZANDO EL iframe:
-  //<div id="map" style="height: 100%;"></div> (dentro del ion-content)
-
-  onSegmentChange(event: any){
+  onSegmentChange(event: any) {
     const selectedValue = event.detail.value;
     this.isBasicoSelected = (selectedValue === 'basico');
   }
 
-  onSearch(event: any){
-    const searchTerm = event.target.value.toLowerCase(); //Se obtiene el término de busqueda
+  onSearch(event: any) {
+    const searchTerm = event.target.value.toLowerCase();
     this.filteredDestinos = this.destinos.filter(destino =>
-      destino.toLowerCase().includes(searchTerm) //Filtra los destinos
+      destino.toLowerCase().includes(searchTerm)
     );
   }
   
-  onDestinoSelect(destino: string){
+  onDestinoSelect(destino: string) {
     const tipoViaje = this.isBasicoSelected ? 'BÁSICO' : 'PRIORITY';
     this.router.navigate(['/detalles-viaje'], {
       state: {
@@ -65,5 +46,4 @@ export class ViajesPage implements OnInit {
       }
     });
   }
-
 }

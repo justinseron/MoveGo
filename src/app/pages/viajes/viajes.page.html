@@ -1,3 +1,62 @@
 <ion-content>
-<h1>Viajes</h1>
-</ion-content>
+    <!-- Contenedor del iframe -->
+    <iframe
+      id="iframe"
+      src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3323.2729961666896!2d-70.57856239032441!3d-33.59821699031533!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x9662d7037854df81%3A0x893f58a1479b8f82!2sDuoc%20UC%3A%20Sede%20Puente%20Alto!5e0!3m2!1ses-419!2scl!4v1726338372236!5m2!1ses-419!2scl"
+      width="100%"
+      height="50%"
+      style="border:0; border-radius: 12px; box-shadow: 0 4px 8px rgba(0,0,0,0.2);"
+      allowfullscreen=""
+      loading="lazy"
+      referrerpolicy="no-referrer-when-downgrade">
+    </iframe>
+  
+    <!-- Contenedor principal -->
+    <ion-list class="ion-margin">
+      <div class="ion-margin">
+  
+        <!-- Segmento para selección de tipo de viaje -->
+        <ion-segment mode="ios" value="basico" (ionChange)="onSegmentChange($event)" color="primary">
+          <ion-segment-button value="basico">
+            <ion-label>VIAJE BÁSICO</ion-label>
+          </ion-segment-button>
+          <ion-segment-button value="priority">
+            <ion-label>VIAJE PRIORITY</ion-label>
+          </ion-segment-button>
+        </ion-segment>
+  
+        <!-- Texto descriptivo para viaje básico -->
+        <ion-text *ngIf="isBasicoSelected" class="ion-text-center ion-margin-top">
+          <p style="font-size: 16px; color: #004d99;">Viaje básico pero no menos cómodo de MoveGo. La opción económica y eficiente.</p>
+        </ion-text>
+  
+        <!-- Texto descriptivo para viaje priority -->
+        <ion-text *ngIf="!isBasicoSelected" class="ion-text-center ion-margin-top">
+          <p style="font-size: 16px; color: #004d99;">La opción más lujosa y rápida de MoveGo. Además, ¡mucho menos es la espera!</p>
+        </ion-text>
+  
+        <!-- Barra de búsqueda -->
+        <ion-searchbar
+          (ionInput)="onSearch($event)"
+          placeholder="Buscar Destino..."
+          id="busquedaDestinos"
+          style="--background: #e6f0ff; --placeholder-color: #007bff; --input-padding-start: 12px; --padding-start: 12px;">
+        </ion-searchbar>
+  
+        <!-- Lista de destinos -->
+        <ion-list>
+          <ion-item
+            *ngFor="let destino of filteredDestinos"
+            (click)="onDestinoSelect(destino)"
+            id="destinos"
+            lines="full"
+            detail="false"
+            style="border-radius: 8px; margin-bottom: 8px; background-color: #ffffff; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+            <ion-label style="color: #003d99;">{{ destino }}</ion-label>
+          </ion-item>
+        </ion-list>
+  
+      </div>
+    </ion-list>
+  </ion-content>
+  

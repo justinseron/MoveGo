@@ -13,8 +13,8 @@ export class UsuarioService {
       "fecha_nacimiento": "2002/03/10",
       "genero": "Femenino",
       "tiene_auto": "",
-      "patente_auto": "KTHS12",
-      "tipo_usuario": "administrador"
+      "patente_auto": "KTHS12"
+      //"tipo_usuario": "administrador"
     }
   ];
 
