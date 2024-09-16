@@ -1,0 +1,46 @@
+<ion-content>
+  <img src="assets/images/logo.png" alt="logo" id="logo">
+  <ion-card class="detalles-viaje">
+    <br>
+    <ion-card-title class="ion-text-center">DETALLES DEL VIAJE</ion-card-title>
+      <ion-card-content>
+        <ion-list>
+          <ion-item>
+            <ion-label>
+              <b>Destino:</b>
+            </ion-label>
+            <ion-label slot="end">{{ destino }}</ion-label>
+          </ion-item>
+          <ion-item>
+            <ion-label>
+              <b>Inicio de Viaje:</b>
+            </ion-label>
+            <ion-label slot="end">(inicio)</ion-label>
+          </ion-item>
+          <ion-item>
+            <ion-label>
+              <b>Tipo de Viaje:</b>
+            </ion-label>
+            <ion-label slot="end">{{ tipoViaje }}</ion-label>
+          </ion-item>
+          <ion-item>
+            <ion-label>
+              <b>Tarifa por KMs:</b>
+            </ion-label>
+            <ion-label slot="end">(tarifa)</ion-label>
+          </ion-item>
+          <ion-item>
+            <ion-label>
+              <b>TOTAL DEL VIAJE:</b>
+            </ion-label>
+            <ion-label slot="end">(total)</ion-label>
+          </ion-item>
+        </ion-list>
+        <ion-button size="block" shape="round" color="secondary" (click)="confirmarAlerta()">CONFIRMAR VIAJE</ion-button>
+        <br>
+        <div class="ion-text-center">
+          <ion-button shape="round" color="dark" (click)="cancelarAlerta()" id="btnVolver">VOLVER</ion-button>
+        </div>
+      </ion-card-content>
+  </ion-card>
+</ion-content>
