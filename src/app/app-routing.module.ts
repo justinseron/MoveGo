@@ -1,5 +1,7 @@
 import { NgModule } from '@angular/core';
 import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
+import { ViajesPage } from './pages/viajes/viajes.page';
+import { DetallesViajePage } from './pages/detalles-viaje/detalles-viaje.page';
 
 const routes: Routes = [
   {
@@ -22,13 +24,18 @@ const routes: Routes = [
   {
     path: 'portada',
     loadChildren: () => import('./pages/portada/portada.module').then( m => m.PortadaPageModule)
-  },  {
+  },
+  {
     path: 'recuperar',
     loadChildren: () => import('./pages/recuperar/recuperar.module').then( m => m.RecuperarPageModule)
   },
   {
     path: 'verificar-codigo',
     loadChildren: () => import('./pages/verificar-codigo/verificar-codigo.module').then( m => m.VerificarCodigoPageModule)
+  },
+  {
+    path: 'detalles-viaje',
+    loadChildren: () => import('./pages/detalles-viaje/detalles-viaje.module').then( m => m.DetallesViajePageModule)
   },
 
 

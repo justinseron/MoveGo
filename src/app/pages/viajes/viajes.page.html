@@ -4,15 +4,29 @@
   <ion-list class="ion-margin">
 
     <div class="ion-margin">
-      <ion-segment mode="ios" value="1">
-        <ion-segment-button value="1">
+      <ion-segment mode="ios" value="basico" (ionChange)="onSegmentChange($event)">
+        <ion-segment-button value="basico">
           <ion-label>VIAJE BÁSICO</ion-label>
         </ion-segment-button>
-        <ion-segment-button value="2">
-          <ion-label>VIAJE PRIORITARIO</ion-label>
+        <ion-segment-button value="priority">
+          <ion-label>VIAJE PRIORITY</ion-label>
         </ion-segment-button>
       </ion-segment>
+
+      <ion-text *ngIf="isBasicoSelected" class="ion-text-center">
+        <p>El viaje básico pero no menos cómodo de MoveGo. La opción económica y eficiente.</p>
+      </ion-text>
+    
+      <ion-text *ngIf="!isBasicoSelected" class="ion-text-center">
+        <p>La opción más lujosa y rápida de MoveGo. Además, ¡mucho menos es la espera!</p>
+      </ion-text>
+
+      <ion-searchbar (ionInput)="onSearch($event)" placeholder="Buscar Destino..." id="busquedaDestinos"></ion-searchbar>
+      <ion-list>
+        <ion-item *ngFor="let destino of filteredDestinos" (click)="onDestinoSelect(destino)" id="destinos">
+            {{ destino }}
+        </ion-item>
+      </ion-list>
     </div>
   </ion-list>
-
 </ion-content>

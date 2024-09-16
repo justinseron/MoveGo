@@ -17,3 +17,34 @@ ion-list{
         }
     }
 }
+
+#busquedaDestinos{
+    margin: 10px;
+}
+
+#destinos{
+    margin: 5px 0;
+}
+
+.ion-margin{
+    border-radius: 20px;
+}
+
+#iframe{
+    transition: height 0.5s ease;
+}
+
+.map-collapsed{
+    height: 50%;
+}
+
+.animated-list{
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+.show-list{
+    opacity: 1;
+    transform: translateY(0);
+}
