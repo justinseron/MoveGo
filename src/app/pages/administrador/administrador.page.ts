@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
 import { AbstractControl, FormControl, FormGroup, Validators } from '@angular/forms';
 import { UsuarioService } from '../../services/usuario.service';
 import { AlertController } from '@ionic/angular';
@@ -22,7 +22,7 @@ export class AdministradorPage implements OnInit {
   usuarios: any[] = [];
   botonModificar: boolean = true;
 
-  constructor(private usuarioService: UsuarioService, private alertController: AlertController) { }
+  constructor(@Inject(UsuarioService)private usuarioService: UsuarioService, private alertController: AlertController) { }
 
   ngOnInit() {
     this.usuarios = this.usuarioService.getUsuarios();
