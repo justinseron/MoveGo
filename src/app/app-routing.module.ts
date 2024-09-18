@@ -46,7 +46,11 @@ const routes: Routes = [
   {
     path: '**',
     loadChildren: () => import('./pages/error404/error404.module').then( m => m.Error404PageModule)
+  },  {
+    path: 'verificar-codigo',
+    loadChildren: () => import('./pages/verificar-codigo/verificar-codigo.module').then( m => m.VerificarCodigoPageModule)
   },
+
 ];
 
 @NgModule({
