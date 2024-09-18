@@ -1,3 +1,11 @@
+.title-link {
+  text-decoration: none; /* Elimina el subrayado del enlace */
+  color: inherit; /* Hereda el color del texto del título */
+}
+
+.title-link:hover {
+  color: #007bff; /* Cambia el color al pasar el ratón sobre el enlace (opcional) */
+}
 /* Estilos para el contenido del ion-card */
 ion-card-content {
   font-size: 1.2rem; /* Tamaño de fuente general */
