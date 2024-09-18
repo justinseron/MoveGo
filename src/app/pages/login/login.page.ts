@@ -21,6 +21,7 @@ export class LoginPage implements OnInit {
   async login() {
     if (this.email === "movego@ionic.cl" && this.password === "move") {
       // Redirige al usuario a la página de inicio
+      
       this.router.navigate(['/home']);
     } else {
       // Crea y muestra una alerta en caso de error
