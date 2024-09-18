@@ -88,6 +88,7 @@ export class AdministradorPage implements OnInit {
       () => {
         if (this.usuarioService.deleteUsuario(rut_eliminar)) {
           this.presentAlert("Éxito", "USUARIO ELIMINADO CON ÉXITO!");
+          this.persona.reset();
         } else {
           this.presentAlert("Error", "ERROR! USUARIO NO ENCONTRADO");
         }

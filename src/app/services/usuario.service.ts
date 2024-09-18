@@ -8,12 +8,12 @@ export class UsuarioService {
   //Aquí podemos crear variables:
   usuarios: any[] = [
     {
-      "rut": 12123123,
+      "rut": "12121123-5",
       "nombre": "pepita",
       "fecha_nacimiento": "2002/03/10",
       "genero": "Femenino",
       "tiene_auto": "",
-      "patente_auto": "KTHS12"
+      "patente_auto": "KTHS12",
       //"tipo_usuario": "administrador"
     }
   ];
