@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+import { ModalController } from '@ionic/angular';
 
 @Component({
   selector: 'app-verificar-codigo',
@@ -7,9 +9,26 @@ import { Component, OnInit } from '@angular/core';
 })
 export class VerificarCodigoPage implements OnInit {
 
-  constructor() { }
+  codigo: string = "";
+
+  constructor(private modalController: ModalController, private router: Router) { }
 
   ngOnInit() {
   }
 
+  cerrarModal(){
+    this.modalController.dismiss().then(() => {
+      this.router.navigate(['/login']);
+    });
+  }
+
+  verificarCodigo(){
+    if(this.codigo=="1"){
+      console.log('Código ingresado: ', this.codigo);
+      this.cerrarModal();
+    }else{
+      alert("¡Código no válido!")
+      this.router.navigate(['/verificar-codigo'])
+    }
+  }
 }
