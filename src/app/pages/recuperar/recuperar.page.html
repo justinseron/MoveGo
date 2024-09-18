@@ -1,13 +1,17 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>recuperar</ion-title>
-  </ion-toolbar>
-</ion-header>
+<ion-content>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">recuperar</ion-title>
-    </ion-toolbar>
-  </ion-header>
+  <div id="logo">
+    <img src="assets/images/logo.png">
+  </div>
+
+  <div id="recuperarUser">
+    <ion-card class="center">
+      <ion-card-header class="ion-text-center">Recuperar Contraseña</ion-card-header>
+      <ion-card-content>
+        <ion-input [(ngModel)]="email" label="Ingrese su Email" labelPlacement="stacked" fill="outline" placeholder="ejemplo@correo.com"></ion-input>
+        <br>
+        <ion-button (click)="recuperarContrasena()" size="block" color="secondary" shape="round">RECUPERAR</ion-button>
+      </ion-card-content>
+    </ion-card>
+  </div>
 </ion-content>
