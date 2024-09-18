@@ -1,0 +1,52 @@
+<ion-header>
+  <ion-toolbar class="custom-toolbar">
+    <ion-buttons slot="start">
+      <a [routerLink]="['']">
+        <img id="logomenu" src="assets/images/logo.png" alt="Logo">
+      </a>
+    </ion-buttons>
+    <ion-title class="toolbar-title">
+      <a [routerLink]="['']" class="title-link">MoveGo</a>
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div class="home-content">  <ion-card id="bienvenida">
+    <img alt="Gato conductor" src="../../../assets/images/gato_conductor.jpeg" />
+    <ion-card-header>
+      <ion-card-title>Bienvenido/Bienvenida!</ion-card-title>
+      <ion-card-subtitle>Es un placer tenerte por aquí</ion-card-subtitle>
+    </ion-card-header>
+  
+    <ion-card-content>
+        <ul>
+          <li><strong>Optimiza el tiempo</strong> de búsqueda de transporte.</li>
+          <li><strong>Fomenta la colaboración</strong> entre compañeros.</li>
+          <li><strong>Incentiva la asistencia</strong> a clases.</li>
+          <li><strong>Reduce la huella de carbono.</strong></li>
+        </ul>
+    </ion-card-content>
+
+  </ion-card>
+</div>
+  <ion-tabs>
+    <ion-tab-bar slot="bottom" class="tab-bar">
+      <ion-tab-button tab="viajes">
+        <ion-icon name="car-sport-outline"></ion-icon>
+        <span class="tab-label">Viajes</span>
+      </ion-tab-button>
+  
+      <ion-tab-button tab="administrar">
+        <ion-icon name="business-outline"></ion-icon>
+        <span class="tab-label">Administrar Viajes</span>
+      </ion-tab-button>
+  
+      <ion-tab-button tab="perfil">
+        <ion-icon name="person-outline"></ion-icon>
+        <span class="tab-label">Perfil</span>
+      </ion-tab-button>
+    </ion-tab-bar>
+  </ion-tabs>
+</ion-content>
+
