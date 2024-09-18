@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { AlertController } from '@ionic/angular';
 
 @Component({
   selector: 'app-login',
@@ -12,18 +13,24 @@ export class LoginPage implements OnInit {
   email: string = "";
   password: string = "";
 
-  constructor(private router: Router) { }
+  constructor(private router: Router,private alertController: AlertController) { }
 
   ngOnInit() {
   }
 
-  login(){
-    if(this.email=="movego@ionic.cl" && this.password=="move"){
-      this.router.navigate(['/home'])
-    }else{
-      alert("¡Correo o Contraseña incorrectos!")
-      this.router.navigate(['/login'])
+  async login() {
+    if (this.email === "movego@ionic.cl" && this.password === "move") {
+      // Redirige al usuario a la página de inicio
+      this.router.navigate(['/home']);
+    } else {
+      // Crea y muestra una alerta en caso de error
+      const alert = await this.alertController.create({
+        header: 'Error',
+        message: '¡Correo o Contraseña incorrectos!',
+        buttons: ['OK']
+      });
+
+      await alert.present();
     }
   }
-
 }
