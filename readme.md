@@ -26,17 +26,11 @@ MoveGo aborda estos problemas conectando a los estudiantes con vehículos dispon
 </p>
 
 # Nuestro Equipo de Trabajo
-<p align="center" style="display: flex; justify-content: center; gap: 10px;">
-  <figure style="margin: 0;">
-    <img src="src/assets/images/Daphne.webp" alt="Daphne" width="100%">
-    <figcaption style="text-align:center;">Daphne</figcaption>
-  </figure>
-  <figure style="margin: 0;">
-    <img src="src/assets/images/Justin.webp" alt="Justin" width="100%">
-    <figcaption style="text-align:center;">Justin</figcaption>
-  </figure>
-  <figure style="margin: 0;">
-    <img src="src/assets/images/Geraldine.jpg" alt="Geraldine" width="100%">
-    <figcaption style="text-align:center;">Geraldine</figcaption>
-  </figure>
+<p align="center">
+  <img src="src/assets/images/Daphne.webp" alt="Daphne" width="30%">
+  <figcaption style="text-align:center;">Daphne</figcaption>
+  <img src="src/assets/images/Justin.webp" alt="Justin" width="30%">
+  <figcaption style="text-align:center;">Justin</figcaption>
+  <img src="src/assets/images/Geraldine.jpg" alt="Geraldine" width="30%">
+  <figcaption style="text-align:center;">Geraldine</figcaption>
 </p>
