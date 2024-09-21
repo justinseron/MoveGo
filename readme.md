@@ -28,9 +28,6 @@ MoveGo aborda estos problemas conectando a los estudiantes con vehículos dispon
 # Nuestro Equipo de Trabajo
 <p align="center">
   <img src="src/assets/images/Daphne.webp" alt="Daphne" width="30%">
-  <figcaption style="text-align:center;">Daphne</figcaption>
   <img src="src/assets/images/Justin.webp" alt="Justin" width="30%">
-  <figcaption style="text-align:center;">Justin</figcaption>
   <img src="src/assets/images/Geraldine.jpg" alt="Geraldine" width="30%">
-  <figcaption style="text-align:center;">Geraldine</figcaption>
 </p>
