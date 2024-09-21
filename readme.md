@@ -25,9 +25,18 @@ MoveGo aborda estos problemas conectando a los estudiantes con vehículos dispon
   <img src="src/assets/images/gato_constructor.jpeg" alt="Gato Constructor" width="45%">
 </p>
 
-# Nuestro equipo de trabajo
+# Nuestro Equipo de Trabajo
 <p align="center">
-  <img src="src/assets/images/Daphne.webp" alt="Daphne" width="30%">
-  <img src="src/assets/images/Justin.webp" alt="Justin" width="30%">
-  <img src="src/assets/images/Geraldine.jpg" alt="Geraldine" width="30%">
+  <figure style="display:inline-block; margin: 10px;">
+    <img src="src/assets/images/Daphne.webp" alt="Daphne" width="30%">
+    <figcaption style="text-align:center;">Daphne Cuadra</figcaption>
+  </figure>
+  <figure style="display:inline-block; margin: 10px;">
+    <img src="src/assets/images/Justin.webp" alt="Justin" width="30%">
+    <figcaption style="text-align:center;">Justin Serón</figcaption>
+  </figure>
+  <figure style="display:inline-block; margin: 10px;">
+    <img src="src/assets/images/Geraldine.jpg" alt="Geraldine" width="30%">
+    <figcaption style="text-align:center;">Geraldine Inostroza</figcaption>
+  </figure>
 </p>
