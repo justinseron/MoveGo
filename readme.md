@@ -20,4 +20,7 @@ MoveGo aborda estos problemas conectando a los estudiantes con vehículos dispon
 - **Incentivo a la Asistencia**: Estimula la asistencia presencial a clases.
 - **Reducción de la Huella de Carbono**: Contribuye a una movilidad más sostenible.
 
-![Imagen de Pantalla Completa](src/assets/images/gato_conductor.jpeg)(src/assets/images/gato_constructor.jpeg) 
+<p align="center">
+  <img src="src/assets/images/gato_conductor.jpeg" alt="Gato Conductor" width="45%">
+  <img src="src/assets/images/gato_constructor.jpeg" alt="Gato Constructor" width="45%">
+</p>
