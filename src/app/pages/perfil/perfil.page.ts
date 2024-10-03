@@ -16,7 +16,7 @@ export class PerfilPage implements OnInit {
 
   async confirmarCerrar(){
     const alert = await this.alertController.create({
-      header: 'Confirmar Cierre de Sesión',
+      header: 'Confirmar cierre de Sesión',
       message: '¿Está seguro de que desea cerrar la sesión?',
       buttons: [
         {
