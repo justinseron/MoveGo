@@ -35,7 +35,7 @@ export class PerfilPage implements OnInit {
       ]
     });
 
-    await alert.present(); //Mostramos la alerta
+    await alert.present(); //Mostramos la alerta.
   }
 
   //Cerrar sesión provisorio
