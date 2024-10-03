@@ -23,6 +23,8 @@ export class ViajesPage implements AfterViewInit {
     this.filteredDestinos = this.destinos;
   }
 
+
+
   onSegmentChange(event: any) {
     const selectedValue = event.detail.value;
     this.isBasicoSelected = (selectedValue === 'basico');

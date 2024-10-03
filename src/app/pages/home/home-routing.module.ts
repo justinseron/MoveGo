@@ -6,7 +6,7 @@ const routes: Routes = [
   {
     path: '',
     component: HomePage,
-    children: [
+    children:[
       {
         path: 'viajes',
         loadChildren: () => import('../viajes/viajes.module').then( m => m.ViajesPageModule)
@@ -20,7 +20,6 @@ const routes: Routes = [
         loadChildren: () => import('../perfil/perfil.module').then( m => m.PerfilPageModule)
       },
     ]
-
   }
 ];
 
