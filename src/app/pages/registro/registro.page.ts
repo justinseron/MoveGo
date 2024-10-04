@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { AbstractControl, FormControl, FormGroup, Validators } from '@angular/forms';
+import { AbstractControl, FormControl, FormGroup, Validators, ValidatorFn } from '@angular/forms';
 import { Router } from '@angular/router';
+import { AlertController } from '@ionic/angular';
 
 @Component({
   selector: 'app-registro',
@@ -13,31 +14,31 @@ export class RegistroPage implements OnInit {
   persona = new FormGroup({
     rut: new FormControl('',[Validators.minLength(9),Validators.maxLength(10),Validators.required,Validators.pattern("[0-9]{7,8}-[0-9kK]{1}")]),
     nombre: new FormControl('',[Validators.required,Validators.maxLength(20),Validators.pattern("^[a-zA-ZáéíóúÁÉÍÓÚüÜñÑ\\s]+$") ]),
+    correo: new FormControl('',[Validators.required, Validators.pattern("[a-zA-Z0-9.]+(@duocuc.cl)")]),
     fecha_nacimiento: new FormControl('',[Validators.required, this.validadorDeEdad]),
-    password: new FormControl('',[Validators.required]),
+    password: new FormControl('',[Validators.required, Validators.pattern("^(?=.*[-!#$%&/()?¡_.])(?=.*[A-Za-z])(?=.*[a-z]).{8,}$")]),
+    confirm_password: new FormControl('',[Validators.required, Validators.pattern("^(?=.*[-!#$%&/()?¡_.])(?=.*[A-Za-z])(?=.*[a-z]).{8,}$")]),
     genero: new FormControl('',[Validators.required]),
-    tiene_auto : new FormControl('no',[Validators.required]),
+    tiene_auto : new FormControl('no',[]),
     patente_auto : new FormControl('',[ Validators.pattern("^[A-Z0-9.-]*$"),Validators.maxLength(8)]),
+    marca_auto: new FormControl('',[]),
+    modelo_auto: new FormControl('',[]),
+    asientos_disponibles: new FormControl('',[]), //9 asientos, ya que la licencia Clase B permite hasta una capacidad de 9 asientos en vehículos particulares
   });
 
-  public alertButtons = [
-    {
-      text: 'Cancel',
-      role: 'cancel',
-      handler: () => {
-        console.log('Alert canceled');
-      },
-    },
-    {
-      text: 'OK',
-      role: 'confirm',
-      handler: () => {
-        console.log('Alert confirmed');
-      },
-    },
-  ];
+  async mostrarAlerta() {
+    const alert = await this.alertController.create({
+      header: 'Registro exitoso',
+      message: 'Te has registrado exitosamente.',
+      buttons: ['OK']
+    });
+  
+    await alert.present();
+  }
 
-  constructor(private router: Router) { }
+  constructor(private router: Router, private alertController: AlertController) { 
+    this.persona.get("rut")?.setValidators([Validators.required,Validators.pattern("[0-9]{7,8}-[0-9kK]{1}"),this.validarRut()]);
+  }
 
   ngOnInit() {
   }
@@ -83,9 +84,38 @@ export class RegistroPage implements OnInit {
                     |    */              
 
   //MÉTODOS:
+  validarRut():ValidatorFn{
+    return () => {
+      const rut = this.persona.controls.rut.value;
+      const dv_validar = rut?.replace("-","").split("").splice(-1).reverse()[0];
+      let rut_limpio = [];
+      if(rut?.length==10){
+        rut_limpio = rut?.replace("-","").split("").splice(0,8).reverse();
+      }else{
+        rut_limpio = rut?.replace("-","").split("").splice(0,7).reverse() || [];
+      }
+      let factor = 2;
+      let total = 0;
+      for(let num of rut_limpio){
+        total = total + ((+num)*factor);
+        factor = factor + 1;
+        if(factor==8){
+          factor = 2;
+        }
+      }
+      var dv = (11-(total%11)).toString();
+      if(+dv>=10){
+        dv = "k";
+      }
+      if(dv_validar!=dv.toString()) return {isValid: false};
+      return null;
+    };
+  }
+
   registrar():void{
     console.log(this.persona.value);
     this.router.navigate(['/login']);
+    this.mostrarAlerta();
   }
 
   setResult(ev:any) {

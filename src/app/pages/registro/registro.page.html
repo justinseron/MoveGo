@@ -16,16 +16,20 @@
   <div id="registrouser">
     <ion-card class="center" id="formRegistro">
       <form [formGroup]="persona" (ngSubmit)="registrar()">
-        <ion-card-header class="ion-text-center">Registro de Usuario.</ion-card-header>
+        <ion-card-header class="ion-text-center">Registro de Usuario</ion-card-header>
         <ion-card-content>
           <ion-input formControlName="rut" type="text" labelPlacement="stacked" label="RUT" fill="outline"></ion-input>
-          <br>
+
           <ion-input formControlName="nombre" type="text" labelPlacement="stacked" label="Nombre" fill="outline"></ion-input>
-          <br>
+
+          <ion-input formControlName="correo" type="email" labelPlacement="stacked" label="Correo (Sólo de DuocUC)" fill="outline" placeHolder="correo@duocuc.cl"></ion-input>
+
           <ion-input formControlName="fecha_nacimiento" type="date" labelPlacement="stacked" label="Fecha de Nacimiento" fill="outline"></ion-input>
-          <br>
+
           <ion-input formControlName="password" type="password" labelPlacement="stacked" label="Contraseña" fill="outline"></ion-input>
-          <br>
+
+          <ion-input formControlName="confirm_password" type="password" labelPlacement="stacked" label="Confirmar contraseña" fill="outline"></ion-input>
+
           <ion-select formControlName="genero" label="Género" labelPlacement="stacked" placeHolder="Género" fill="outline">
             <ion-select-option>Masculino</ion-select-option>
             <ion-select-option>Femenino</ion-select-option>
@@ -34,15 +38,16 @@
           </ion-select>
           <br>
           <ion-label>¿Tiene Auto?</ion-label>
-            <ion-radio-group formControlName="tiene_auto">
-              <ion-radio value="si" >Sí</ion-radio>
-              <ion-radio value="no" >No</ion-radio>
+            <ion-radio-group formControlName="tiene_auto" class="no-margin"  id="labelAuto">
+              <ion-radio value="si">Sí</ion-radio>
+              <ion-radio value="no">No</ion-radio>
             </ion-radio-group>
-            <br>
-            <ion-input *ngIf="persona.controls.tiene_auto.value=='si'" formControlName="patente_auto" type="text" label="Patente auto" labelPlacement="stacked"></ion-input>
-          <br>
+
+            <ion-input *ngIf="persona.controls.tiene_auto.value==='si'" formControlName="patente_auto" type="text" label="Patente auto" labelPlacement="stacked" fill="outline"></ion-input>
+            <ion-input *ngIf="persona.controls.tiene_auto.value==='si'" formControlName="marca_auto" type="text" label="Marca auto" labelPlacement="stacked" fill="outline"></ion-input>
+            <ion-input *ngIf="persona.controls.tiene_auto.value==='si'" formControlName="modelo_auto" type="text" label="Modelo auto" labelPlacement="stacked" fill="outline"></ion-input>
+            <ion-input *ngIf="persona.controls.tiene_auto.value==='si'" formControlName="asientos_disponibles" type="number" label="Asientos disponibles" labelPlacement="stacked" fill="outline"></ion-input>
           <ion-button size="block" [disabled]="persona.invalid" type="submit" color="secondary" shape="round">REGISTRARSE</ion-button>
-          <ion-alert trigger="present-alert" header="¡Alerta!" [buttons]="alertButtons" (didDismiss)="setResult($event)"></ion-alert>
           <br>
           <p class="ion-text-center">¿Ya tienes una cuenta? Ingresa <a routerLink="/login">aquí</a></p>
         </ion-card-content>

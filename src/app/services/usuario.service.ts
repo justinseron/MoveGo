@@ -9,10 +9,16 @@ export class UsuarioService {
     {
       "rut": "12121123-5",
       "nombre": "pepita",
-      "fecha_nacimiento": "2002/03/10",
-      "genero": "Femenino",
-      "tiene_auto": "",
+      "correo": "pepita@duocuc.cl",
+      "fecha_nacimiento": "2002-03-10",
+      "password": "Pepita123.",
+      "confirm_password": "Pepita123.",
+      "genero": "femenino",
+      "tiene_auto": "si",
       "patente_auto": "KTHS12",
+      "marca_auto": "Audi",
+      "modelo_auto": "A3",
+      "asientos_disponibles": "4",
       //"tipo_usuario": "administrador"
     }
   ];

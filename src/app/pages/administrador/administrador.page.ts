@@ -11,12 +11,18 @@ import { UsuarioService } from 'src/app/services/usuario.service';
 export class AdministradorPage implements OnInit {
 
   persona = new FormGroup({
-    rut : new FormControl('',[Validators.minLength(9),Validators.maxLength(10),Validators.required,Validators.pattern("[0-9]{7,8}-[0-9kK]{1}")]),
-    nombre : new FormControl('',[Validators.required,Validators.maxLength(20),Validators.pattern("^[a-zA-ZáéíóúÁÉÍÓÚüÜñÑ\\s]+$") ]),
-    fecha_nacimiento : new FormControl('',[Validators.required,this.validadorDeEdad]),
-    genero : new FormControl('',[Validators.required]),
-    tiene_auto : new FormControl('no',[Validators.required]),
+    rut: new FormControl('',[Validators.minLength(9),Validators.maxLength(10),Validators.required,Validators.pattern("[0-9]{7,8}-[0-9kK]{1}")]),
+    nombre: new FormControl('',[Validators.required,Validators.maxLength(20),Validators.pattern("^[a-zA-ZáéíóúÁÉÍÓÚüÜñÑ\\s]+$") ]),
+    correo: new FormControl('',[Validators.required, Validators.pattern("[a-zA-Z0-9.]+(@duocuc.cl)")]),
+    fecha_nacimiento: new FormControl('',[Validators.required, this.validadorDeEdad]),
+    password: new FormControl('',[Validators.required, Validators.pattern("^(?=.*[-!#$%&/()?¡_.])(?=.*[A-Za-z])(?=.*[a-z]).{8,}$")]),
+    confirm_password: new FormControl('',[Validators.required, Validators.pattern("^(?=.*[-!#$%&/()?¡_.])(?=.*[A-Za-z])(?=.*[a-z]).{8,}$")]),
+    genero: new FormControl('',[Validators.required]),
+    tiene_auto : new FormControl('no',[]),
     patente_auto : new FormControl('',[ Validators.pattern("^[A-Z0-9.-]*$"),Validators.maxLength(8)]),
+    marca_auto: new FormControl('',[]),
+    modelo_auto: new FormControl('',[]),
+    asientos_disponibles: new FormControl('',[]), //9 asientos, ya que la licencia Clase B permite hasta una capacidad de 9 asientos en vehículos particulares
   });
 
   usuarios: any[] = [];

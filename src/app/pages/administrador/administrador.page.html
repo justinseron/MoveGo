@@ -13,6 +13,10 @@
         <ion-input formControlName="nombre" type="text"></ion-input>
       </ion-item>
       <ion-item class="form-item">
+        <ion-label position="stacked">Correo</ion-label>
+        <ion-input formControlName="correo" type="email"></ion-input>
+      </ion-item>
+      <ion-item class="form-item">
         <ion-label position="stacked">Fecha nacimiento</ion-label>
         <ion-input formControlName="fecha_nacimiento" type="date"></ion-input>
       </ion-item>
@@ -40,6 +44,18 @@
       <ion-item class="form-item" *ngIf="persona.controls.tiene_auto.value === 'si'">
         <ion-label position="stacked">Patente auto</ion-label>
         <ion-input formControlName="patente_auto" type="text"></ion-input>
+      </ion-item>
+      <ion-item class="form-item" *ngIf="persona.controls.tiene_auto.value === 'si'">
+        <ion-label position="stacked">Marca auto</ion-label>
+        <ion-input formControlName="marca_auto" type="text"></ion-input>
+      </ion-item>
+      <ion-item class="form-item" *ngIf="persona.controls.tiene_auto.value === 'si'">
+        <ion-label position="stacked">Modelo auto</ion-label>
+        <ion-input formControlName="modelo_auto" type="text"></ion-input>
+      </ion-item>
+      <ion-item class="form-item" *ngIf="persona.controls.tiene_auto.value === 'si'">
+        <ion-label position="stacked">Asientos disponibles</ion-label>
+        <ion-input formControlName="asientos_disponibles" type="text"></ion-input>
       </ion-item>
       <ion-button [disabled]="persona.invalid" type="submit" size="block" color="warning">Registrar</ion-button>
       <ion-button [disabled]="botonModificar || persona.invalid" (click)="modificar()" size="block" color="dark">Modificar</ion-button>
