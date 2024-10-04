@@ -12,24 +12,18 @@
 </ion-header>
 
 <ion-content>
-  <div class="home-content">  <ion-card id="bienvenida">
-    <img alt="Gato conductor" src="../../../assets/images/gato_conductor.jpeg" />
-    <ion-card-header>
-      <ion-card-title>Bienvenido/Bienvenida!</ion-card-title>
-      <ion-card-subtitle>Es un placer tenerte por aquí</ion-card-subtitle>
-    </ion-card-header>
-  
-    <ion-card-content>
-        <ul>
-          <li><strong>Optimiza el tiempo</strong> de búsqueda de transporte.</li>
-          <li><strong>Fomenta la colaboración</strong> entre compañeros.</li>
-          <li><strong>Incentiva la asistencia</strong> a clases.</li>
-          <li><strong>Reduce la huella de carbono.</strong></li>
-        </ul>
-    </ion-card-content>
+  <div class="welcome-message">
+    <ion-card class="welcome-card">
+      <img src="../../../assets/images/logo.png" alt="Imagen de Bienvenida" class="welcome-image">
+      <ion-card-header>
+        <ion-card-title class="welcome-title">✨ ¡Bienvenido a MoveGo! 🚗💨</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <p class="welcome-text">Nos alegra tenerte aquí. 🌟 Explora y optimiza tus viajes con nosotros.</p>
+      </ion-card-content>
+    </ion-card>
+  </div>
 
-  </ion-card>
-</div>
   <ion-tabs>
     <ion-tab-bar slot="bottom" class="tab-bar">
       <ion-tab-button tab="viajes">
@@ -47,4 +41,3 @@
     </ion-tab-bar>
   </ion-tabs>
 </ion-content>
-

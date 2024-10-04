@@ -15,7 +15,9 @@ export class RegistroPage implements OnInit {
     nombre: new FormControl('',[Validators.required,Validators.maxLength(20),Validators.pattern("^[a-zA-ZáéíóúÁÉÍÓÚüÜñÑ\\s]+$") ]),
     fecha_nacimiento: new FormControl('',[Validators.required, this.validadorDeEdad]),
     password: new FormControl('',[Validators.required]),
-    genero: new FormControl('',[Validators.required])
+    genero: new FormControl('',[Validators.required]),
+    tiene_auto : new FormControl('no',[Validators.required]),
+    patente_auto : new FormControl('',[ Validators.pattern("^[A-Z0-9.-]*$"),Validators.maxLength(8)]),
   });
 
   public alertButtons = [

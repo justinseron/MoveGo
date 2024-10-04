@@ -1,3 +1,73 @@
+/* Fija los tabs en la parte inferior de la pantalla */
+.welcome-message {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  height: 100%; /* Ocupa toda la altura disponible */
+}
+
+.welcome-card {
+  width: 90%; /* Ancho del card */
+  max-width: 400px; /* Máximo ancho del card */
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2); /* Sombra del card */
+  border-radius: 15px; /* Bordes redondeados */
+  overflow: hidden; /* Asegura que el contenido no sobresalga */
+  background-color: #f9f9f9; /* Fondo suave para el card */
+}
+
+.welcome-image {
+  width: 100%; /* Asegura que la imagen ocupe todo el ancho */
+  height: 150px; /* Altura fija para la imagen */
+  object-fit: cover; /* Mantiene la proporción de la imagen */
+}
+
+.welcome-title {
+  text-align: center; /* Centra el título */
+  font-size: 1.8rem; /* Tamaño del título */
+  color: #333; /* Color del texto */
+  margin: 10px 0; /* Espacio superior e inferior */
+}
+
+.welcome-text {
+  text-align: center; /* Centra el texto */
+  font-size: 1.2rem; /* Tamaño del texto */
+  color: #555; /* Color del texto */
+  margin: 10px 0; /* Espacio superior e inferior */
+}
+
+
+.fixed-tabs {
+  position:relative;
+  bottom: 0;
+  width: 100%;
+  z-index: 1000; /* Para que los tabs siempre estén por encima del contenido */
+}
+
+/* Asegura que el contenido no se superponga con los tabs */
+ion-content {
+  padding-bottom: 60px; /* Deja espacio para los tabs en la parte inferior */
+}
+
+/* Personaliza el estilo de la barra de tabs */
+.tab-bar {
+  background-color: #f8f9fa; /* Color de fondo para la barra de tabs */
+  border-top: 1px solid #e0e0e0; /* Borde superior para separar los tabs del contenido */
+}
+
+.tab-label {
+  font-size: 1rem; /* Tamaño del texto en los tabs */
+  color: #333; /* Color del texto */
+}
+
+ion-tab-button {
+  color: #007bff; /* Color del icono y texto en el tab activo */
+}
+
+ion-tab-button[aria-selected="true"] .tab-label {
+  color: #007bff; /* Color del tab activo */
+}
+
 .title-link {
   text-decoration: none; /* Elimina el subrayado del enlace */
   color: inherit; /* Hereda el color del texto del título */
@@ -41,7 +111,7 @@ ion-card-content li {
 /* Estilos para la imagen dentro de la tarjeta */
 #bienvenida img {
   width: 100%; /* Asegura que la imagen ocupe todo el ancho de la tarjeta */
-  height: auto; /* Mantiene la proporción de la imagen */
+  height: 40%; /* Mantiene la proporción de la imagen */
 }
 
 /* Estilos para el encabezado de la tarjeta */
@@ -146,4 +216,5 @@ ion-card-content {
 .toolbar-title{
   align-items: center;
 }
+/* Estilos generales para el ion-card */
 

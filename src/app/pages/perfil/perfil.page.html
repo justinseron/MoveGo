@@ -1,13 +1,15 @@
 <ion-content>
+  <!-- Sección de la foto de perfil y el nombre de usuario -->
   <div class="ion-text-center" id="foto-perfil">
-    <img src="assets/images/perfildefault.png" alt="foto de perfil">
-    <h1 id="labelNombre">Administrador</h1>
+    <img src="assets/images/perfildefault.png" alt="Foto de perfil" id="imagen-perfil">
+    <h1 id="labelNombre">Nombre Usuario</h1>
   </div>
-  <br>
+
   <div id="detalles-perfil">
     <ion-card id="card-detalles-perfil">
       <ion-card-content>
         <ion-list>
+          <!-- Sección: Perfil -->
           <h2 class="labelDetalles">Perfil</h2>
           <ion-item>
             <ion-icon name="person" slot="start"></ion-icon>
@@ -17,7 +19,11 @@
             <ion-icon name="shield" slot="start"></ion-icon>
             <ion-label>Contraseña y Seguridad</ion-label>
           </ion-item>
-          <br>
+
+          <!-- Espacio entre secciones -->
+          <div class="spacer"></div>
+
+          <!-- Sección: Información Personal -->
           <h2 class="labelDetalles">Información Personal</h2>
           <ion-item>
             <ion-icon name="albums" slot="start"></ion-icon>
@@ -31,7 +37,11 @@
             <ion-icon name="card" slot="start"></ion-icon>
             <ion-label>Métodos de Pago</ion-label>
           </ion-item>
-          <br>
+
+          <!-- Espacio entre secciones -->
+          <div class="spacer"></div>
+
+          <!-- Sección: MoveGo -->
           <h2 class="labelDetalles">MoveGo</h2>
           <ion-item>
             <ion-icon name="information-circle" slot="start"></ion-icon>
