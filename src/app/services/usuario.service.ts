@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { Storage } from '@ionic/storage-angular';
 @Injectable({
   providedIn: 'root'
 })
@@ -23,41 +24,54 @@ export class UsuarioService {
     }
   ];
 
-  constructor() { }
+  constructor(private storage: Storage) {
+    this.init();
+   }
+   async init(){
+    await this.storage.create();
+   }
 
   //aquí vamos a crear toda nuestra lógica de programación
   //DAO:
-  public createUsuario(usuario:any):boolean{
-    if(this.getUsuario(usuario.rut)==undefined){
-      this.usuarios.push(usuario);
-      return true;
-    }
-    return false;
-  }
-
-  public getUsuario(rut:string){
-    return this.usuarios.find(elemento => elemento.rut == rut);
-  }
-
-  public getUsuarios():any[]{
-    return this.usuarios;
-  }
-
-  public updateUsuario(rut:string, nuevoUsuario:any){
-    const indice = this.usuarios.findIndex(elemento => elemento.rut===rut);
-    if(indice==-1){
+  public async createUsuario(usuario:any): Promise<boolean>{
+    let usuarios: any[] = await this.storage.get("usuarios") || [];
+    if(usuarios.find(usu=>usu.rut==usuario.rut)!=undefined){
       return false;
     }
-    this.usuarios[indice]=nuevoUsuario;
+    usuarios.push(usuario);
+    await this.storage.set("usuarios",usuarios);
     return true;
   }
 
-  public deleteUsuario(rut:string):boolean{
-    const indice = this.usuarios.findIndex(elemento => elemento.rut===rut);
+  public async getUsuario(rut:string): Promise<any>{
+    let usuarios: any[] = await this.storage.get("usuarios") || [];
+    return usuarios.find(usu=>usu.rut==rut);
+  }
+
+  public async getUsuarios(): Promise<any[]>{
+    let usuarios: any[] = await this.storage.get("usuarios") || [];
+    return usuarios;
+  }
+
+  public async updateUsuario(rut:string, nuevoUsuario:any): Promise<boolean>{
+    let usuarios: any[] = await this.storage.get("usuarios") || [];
+    let indice: number = usuarios.findIndex(usu=>usu.rut==rut);
     if(indice==-1){
       return false;
     }
-    this.usuarios.splice(indice,1);
+    usuarios[indice] = nuevoUsuario;
+    await this.storage.set("usuarios",usuarios);
+    return true;
+  }
+
+  public async deleteUsuario(rut:string): Promise<boolean>{
+    let usuarios: any[] = await this.storage.get("usuarios") || [];
+    let indice: number = usuarios.findIndex(usu=>usu.rut==rut);
+    if(indice==-1){
+      return false;
+    }
+    usuarios.splice(indice,1);
+    await this.storage.set("usuarios",usuarios);
     return true;
   }
 }
