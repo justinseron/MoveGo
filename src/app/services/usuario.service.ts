@@ -74,4 +74,14 @@ export class UsuarioService {
     await this.storage.set("usuarios",usuarios);
     return true;
   }
+
+  public async login(correo: string, contrasena: string): Promise<any>{
+    let usuarios: any[] = await this.storage.get("usuarios") || [];
+    return usuarios.find(elemento=> elemento.correo==correo && elemento.contrasena==contrasena);
+  }
+
+  public async recuperarUsuario(correo:string): Promise<any>{
+    let usuarios: any[] = await this.storage.get("usuarios") || [];
+    return usuarios.find(elemento=> elemento.correo == correo);
+  }
 }

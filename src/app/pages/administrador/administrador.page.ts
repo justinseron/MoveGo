@@ -30,8 +30,8 @@ export class AdministradorPage implements OnInit {
 
   constructor(@Inject(UsuarioService)private usuarioService: UsuarioService, private alertController: AlertController) { }
 
-  ngOnInit() {
-    this.usuarios = this.usuarioService.getUsuarios();
+  async ngOnInit() {
+    this.usuarios = await this.usuarioService.getUsuarios();
   }
 
   validadorDeEdad(control: AbstractControl): {[key: string]: boolean} | null {
@@ -63,23 +63,25 @@ export class AdministradorPage implements OnInit {
   }
 
   async registrar() {
-    if (this.usuarioService.createUsuario(this.persona.value)) {
-      await this.presentAlert("Éxito", "USUARIO CREADO CON ÉXITO!!");
+    if (await this.usuarioService.createUsuario(this.persona.value)) {
+      this.usuarios = await this.usuarioService.getUsuarios();
+      this.presentAlert("Éxito", "USUARIO CREADO CON ÉXITO!!");
       this.persona.reset();
     } else {
-      await this.presentAlert("Error", "ERROR! NO SE PUDO CREAR EL USUARIO");
+      this.presentAlert("Error", "ERROR! NO SE PUDO CREAR EL USUARIO");
     }
   }
 
   async buscar(rut_buscar: string) {
-    this.persona.setValue(this.usuarioService.getUsuario(rut_buscar));
+    this.persona.setValue(await this.usuarioService.getUsuario(rut_buscar));
     this.botonModificar = false;
   }
 
   async modificar() {
-    const rut_buscar: string = this.persona.controls.rut.value || "";
-    if (this.usuarioService.updateUsuario(rut_buscar, this.persona.value)) {
-      await this.presentAlert("Éxito", "USUARIO MODIFICADO CON ÉXITO!");
+    var rut_buscar : string = this.persona.controls.rut.value || "";
+    if (await this.usuarioService.updateUsuario(rut_buscar, this.persona.value)) {
+      this.usuarios = await this.usuarioService.getUsuarios();
+      this.presentAlert("Éxito", "USUARIO MODIFICADO CON ÉXITO!");
       this.botonModificar = true;
       this.persona.reset();
     } else {
@@ -88,11 +90,12 @@ export class AdministradorPage implements OnInit {
   }
 
   async eliminar(rut_eliminar: string) {
-    await this.presentConfirmAlert(
+    this.presentConfirmAlert(
       'Confirmar Eliminación',
       '¿Estás seguro de que quieres eliminar este usuario?',
-      () => {
-        if (this.usuarioService.deleteUsuario(rut_eliminar)) {
+      async () => { //??????
+        if (await this.usuarioService.deleteUsuario(rut_eliminar)) {
+          this.usuarios = await this.usuarioService.getUsuarios();
           this.presentAlert("Éxito", "USUARIO ELIMINADO CON ÉXITO!");
           this.persona.reset();
         } else {

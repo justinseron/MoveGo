@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import {Router} from '@angular/router';
+import { UsuarioService } from 'src/app/services/usuario.service';
 import { ModalController } from '@ionic/angular';
 import { VerificarCodigoPage } from '../verificar-codigo/verificar-codigo.page';
 
@@ -12,7 +14,7 @@ export class RecuperarPage implements OnInit {
   //ngModel
   email: string = "";
 
-  constructor(private modalController: ModalController) { }
+  constructor(private modalController: ModalController,private usuarioService: UsuarioService, private router: Router) { }
 
   ngOnInit() {
   }
@@ -24,8 +26,14 @@ export class RecuperarPage implements OnInit {
     return await modal.present();
   }
 
-  recuperarContrasena(){
-    this.mostrarModalVerificacion();
+  async recuperarContrasena(){
+    if(await this.usuarioService.recuperarUsuario(this.email)){
+      this.mostrarModalVerificacion()
+      this.router.navigate(['/login']);
+    }else{
+      alert("El Usuario No Existe")
+    }
+  
   }
 
 }

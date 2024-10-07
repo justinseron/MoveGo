@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { UsuarioService } from 'src/app/services/usuario.service';
 import { AlertController } from '@ionic/angular';
 
 @Component({
@@ -13,13 +14,13 @@ export class LoginPage implements OnInit {
   email: string = "";
   password: string = "";
 
-  constructor(private router: Router,private alertController: AlertController) { }
+  constructor(private router: Router,private alertController: AlertController, private usuarioService: UsuarioService) { }
 
   ngOnInit() {
   }
 
   async login() {
-    if (this.email === "movego@ionic.cl" && this.password === "move") {
+    if (await this.usuarioService.login(this.email,this.password)) {
       // Redirige al usuario a la página de inicio
       
       this.router.navigate(['/home']);
