@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { AbstractControl, FormControl, FormGroup, Validators, ValidatorFn } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AlertController } from '@ionic/angular';
+import { UsuarioService } from 'src/app/services/usuario.service';
 
 @Component({
   selector: 'app-registro',
@@ -15,7 +16,7 @@ export class RegistroPage implements OnInit {
     rut: new FormControl('',[Validators.minLength(9),Validators.maxLength(10),Validators.required,Validators.pattern("[0-9]{7,8}-[0-9kK]{1}")]),
     nombre: new FormControl('',[Validators.required,Validators.maxLength(20),Validators.pattern("^[a-zA-ZáéíóúÁÉÍÓÚüÜñÑ\\s]+$") ]),
     correo: new FormControl('',[Validators.required, Validators.pattern("[a-zA-Z0-9.]+(@duocuc.cl)")]),
-    fecha_nacimiento: new FormControl('',[Validators.required, this.validadorDeEdad]),
+    fecha_nacimiento: new FormControl('',[Validators.required]),
     password: new FormControl('',[Validators.required, Validators.pattern("^(?=.*[-!#$%&/()?¡_.])(?=.*[A-Za-z])(?=.*[a-z]).{8,}$")]),
     confirm_password: new FormControl('',[Validators.required, Validators.pattern("^(?=.*[-!#$%&/()?¡_.])(?=.*[A-Za-z])(?=.*[a-z]).{8,}$")]),
     genero: new FormControl('',[Validators.required]),
@@ -24,60 +25,60 @@ export class RegistroPage implements OnInit {
     marca_auto: new FormControl('',[]),
     modelo_auto: new FormControl('',[]),
     asientos_disponibles: new FormControl('',[]), //9 asientos, ya que la licencia Clase B permite hasta una capacidad de 9 asientos en vehículos particulares
+    tipo_usuario: new FormControl('Pasajero'),
   });
 
-  async mostrarAlerta() {
-    const alert = await this.alertController.create({
-      header: 'Registro exitoso',
-      message: 'Te has registrado exitosamente.',
-      buttons: ['OK']
-    });
-  
-    await alert.present();
-  }
 
-  constructor(private router: Router, private alertController: AlertController) { 
+  constructor(private router: Router, private alertController: AlertController,private usuarioService: UsuarioService) { 
     this.persona.get("rut")?.setValidators([Validators.required,Validators.pattern("[0-9]{7,8}-[0-9kK]{1}"),this.validarRut()]);
   }
 
   ngOnInit() {
   }
+  private async mostrarAlerta(titulo: string, mensaje: string) {
+    const alert = await this.alertController.create({
+      header: titulo,
+      message: mensaje,
+      buttons: ['Aceptar'],
+    });
+  
+    await alert.present();
+  }
+  
+  
+  public async registrar() {
+    if (!this.validarEdad18(this.persona.controls.fecha_nacimiento.value || "")) {
+      await this.mostrarAlerta("Error", "¡Debe tener al menos 18 años para registrarse!");
+      return;
+    }
+  
+    if (this.persona.controls.password.value !== this.persona.controls.confirm_password.value) {
+      await this.mostrarAlerta("Error", "¡Las contraseñas no coinciden!");
+      return;
+    }
+  
+    if (await this.usuarioService.createUsuario(this.persona.value)) {
+      this.router.navigate(['/login']);
+      this.persona.reset();
+      await this.mostrarAlerta("Éxito", "¡Usuario creado con éxito!");
+    }
+  }
+  
 
   //Validador con variables necesarias. validadorDeEdad control por defecto de Angular contra errores, para validaciones se usa AbstractControl
   //el key string boolean null es para los mensajes de alerta mas que nada, el key string es para identificar cada error por la alerta por ej :dateTooOld o AgeTooYoung etc
-  validadorDeEdad(control: AbstractControl): {[key: string]: boolean} | null{
-    const fechaNacimiento = new Date(control.value);
-    const today = new Date(); //fecha de hoy
-    const edadMinima = 18; //edad minima
-    const minYear = 1920; //edad máxima (104 años, teniendo en cuenta que es 2024)
-
-    //se verifica que la fecha no sea númerica, devuelve nulo o error. isNaN (isNotaNumber) válida que no sea número
-    if (isNaN(fechaNacimiento.getTime())){
-      return {'invalidDate': true};
+  validarEdad18(fecha_nacimiento: string){
+    var edad = 0;
+    if(fecha_nacimiento){
+      const fecha_date = new Date(fecha_nacimiento);
+      const timeDiff = Math.abs(Date.now() - fecha_date.getTime());
+      edad = Math.floor((timeDiff / (1000 * 3600 * 24))/365);
     }
-
-    //aqui utilizo la variable creada minyear que es el año minimo y validamos que la fecha del formulario que selecciona el usuario, le extraemos el año y luego comparamos con la variable minyear (el año minimo)
-    //si el año de cumpleaños del usuario es menor a minyear(1970) la aplicacion devolvera un datetooOld que significa que el año es muy antiguo por lo tanto no deja rellenar el campo fecha de nacimiento
-    if(fechaNacimiento.getFullYear() < minYear){
-      return {'dateTooOld': true};
+    if(edad>=18){
+      return true;
+    }else{
+      return false;
     }
-
-    // esto es el calculo basico de la edad el cual es obtener todos los años desde el dia de ejecucion y restarle los años de la fecha del usuario
-    //en la variable M hacemos lo mismo pero para los meses
-    const edad = today.getFullYear() - fechaNacimiento.getFullYear();
-    const meses = today.getMonth() - fechaNacimiento.getMonth();
-
-    //aqui se valida que los meses no sean menor al mes en el cual estamos porque eso significaria que la persona todavia no cumple la edad respectiva de este año
-    if(meses < 0 || (meses === 0 && today.getDate() < fechaNacimiento.getDate())){
-      edad - 1;
-    }
-
-    //con el nombre de las variables te das cuenta que esto es literal si la edad es menor que la minima entonces retorna un muy joven
-    if(edad < edadMinima){
-      return {'ageTooYoung': true};
-    }
-
-    return null;
   }
 
   /*  BENDITO SEA   ^
@@ -112,14 +113,5 @@ export class RegistroPage implements OnInit {
     };
   }
 
-  registrar():void{
-    console.log(this.persona.value);
-    this.router.navigate(['/login']);
-    this.mostrarAlerta();
-  }
-
-  setResult(ev:any) {
-    console.log(`Dismissed with role: ${ev.detail.role}`);
-  }
 
 }

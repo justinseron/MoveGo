@@ -16,6 +16,14 @@
         <ion-label position="stacked">Correo</ion-label>
         <ion-input formControlName="correo" type="email"></ion-input>
       </ion-item>
+      <ion-item>
+        <ion-label position="stacked">Contraseña</ion-label>
+        <ion-input formControlName="password" type="password" labelPlacement="stacked" fill="outline"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label position="stacked">Confirmar Contraseña</ion-label>
+        <ion-input formControlName="confirm_password" type="password" labelPlacement="stacked"  fill="outline"></ion-input>
+      </ion-item>
       <ion-item class="form-item">
         <ion-label position="stacked">Fecha nacimiento</ion-label>
         <ion-input formControlName="fecha_nacimiento" type="date"></ion-input>
@@ -53,6 +61,11 @@
         <ion-label position="stacked">Modelo auto</ion-label>
         <ion-input formControlName="modelo_auto" type="text"></ion-input>
       </ion-item>
+      <ion-select formControlName="tipo_usuario" label="Tipo usuario" labelPlacement="stacked">
+        <ion-select-option>Administrador</ion-select-option>
+        <ion-select-option>Conductor</ion-select-option>
+        <ion-select-option>Pasajero</ion-select-option>
+      </ion-select>
       <ion-item class="form-item" *ngIf="persona.controls.tiene_auto.value === 'si'">
         <ion-label position="stacked">Asientos disponibles</ion-label>
         <ion-input formControlName="asientos_disponibles" type="text"></ion-input>

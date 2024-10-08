@@ -18,21 +18,11 @@ export class LoginPage implements OnInit {
 
   ngOnInit() {
   }
-
-  async login() {
-    if (await this.usuarioService.login(this.email,this.password)) {
-      // Redirige al usuario a la página de inicio
-      
+  async login(){
+    if(await this.usuarioService.login(this.email,this.password)){
       this.router.navigate(['/home']);
-    } else {
-      // Crea y muestra una alerta en caso de error
-      const alert = await this.alertController.create({
-        header: 'Error',
-        message: '¡Correo o Contraseña incorrectos!',
-        buttons: ['OK']
-      });
-
-      await alert.present();
+    }else{
+      alert("CORREO O CONTRASEÑA INCORRECTOS!");
     }
   }
 }

@@ -1,5 +1,6 @@
 import { Component, Inject, OnInit } from '@angular/core';
-import { AbstractControl, FormControl, FormGroup, Validators } from '@angular/forms';
+import { AbstractControl, FormControl, FormGroup, ValidatorFn, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 import { AlertController } from '@ionic/angular';
 import { UsuarioService } from 'src/app/services/usuario.service';
 
@@ -14,7 +15,7 @@ export class AdministradorPage implements OnInit {
     rut: new FormControl('',[Validators.minLength(9),Validators.maxLength(10),Validators.required,Validators.pattern("[0-9]{7,8}-[0-9kK]{1}")]),
     nombre: new FormControl('',[Validators.required,Validators.maxLength(20),Validators.pattern("^[a-zA-ZáéíóúÁÉÍÓÚüÜñÑ\\s]+$") ]),
     correo: new FormControl('',[Validators.required, Validators.pattern("[a-zA-Z0-9.]+(@duocuc.cl)")]),
-    fecha_nacimiento: new FormControl('',[Validators.required, this.validadorDeEdad]),
+    fecha_nacimiento: new FormControl('',[Validators.required]),
     password: new FormControl('',[Validators.required, Validators.pattern("^(?=.*[-!#$%&/()?¡_.])(?=.*[A-Za-z])(?=.*[a-z]).{8,}$")]),
     confirm_password: new FormControl('',[Validators.required, Validators.pattern("^(?=.*[-!#$%&/()?¡_.])(?=.*[A-Za-z])(?=.*[a-z]).{8,}$")]),
     genero: new FormControl('',[Validators.required]),
@@ -23,87 +24,117 @@ export class AdministradorPage implements OnInit {
     marca_auto: new FormControl('',[]),
     modelo_auto: new FormControl('',[]),
     asientos_disponibles: new FormControl('',[]), //9 asientos, ya que la licencia Clase B permite hasta una capacidad de 9 asientos en vehículos particulares
+    tipo_usuario: new FormControl('', [Validators.required]),
   });
 
   usuarios: any[] = [];
   botonModificar: boolean = true;
 
-  constructor(@Inject(UsuarioService)private usuarioService: UsuarioService, private alertController: AlertController) { }
+  constructor(@Inject(UsuarioService)private usuarioService: UsuarioService, private alertController: AlertController,private router: Router) { }
 
   async ngOnInit() {
     this.usuarios = await this.usuarioService.getUsuarios();
   }
+  private async mostrarAlerta(titulo: string, mensaje: string) {
+    const alert = await this.alertController.create({
+      header: titulo,
+      message: mensaje,
+      buttons: ['Aceptar'],
+    });
+  
+    await alert.present();
+  }
+  
 
-  validadorDeEdad(control: AbstractControl): {[key: string]: boolean} | null {
-    const fechaNacimiento = new Date(control.value);
-    const today = new Date(); //fecha de hoy
-    const edadMinima = 18; //edad mínima
-    const minYear = 1920; //edad máxima (104 años, teniendo en cuenta que es 2024)
-
-    if (isNaN(fechaNacimiento.getTime())) {
-      return {'invalidDate': true};
+  validarEdad18(fecha_nacimiento: string){
+    var edad = 0;
+    if(fecha_nacimiento){
+      const fecha_date = new Date(fecha_nacimiento);
+      const timeDiff = Math.abs(Date.now() - fecha_date.getTime());
+      edad = Math.floor((timeDiff / (1000 * 3600 * 24))/365);
     }
-
-    if (fechaNacimiento.getFullYear() < minYear) {
-      return {'dateTooOld': true};
+    if(edad>=18){
+      return true;
+    }else{
+      return false;
     }
-
-    const edad = today.getFullYear() - fechaNacimiento.getFullYear();
-    const meses = today.getMonth() - fechaNacimiento.getMonth();
-
-    if (meses < 0 || (meses === 0 && today.getDate() < fechaNacimiento.getDate())) {
-      edad - 1;
-    }
-
-    if (edad < edadMinima) {
-      return {'ageTooYoung': true};
-    }
-
-    return null;
+  }
+  validarRut():ValidatorFn{
+    return () => {
+      const rut = this.persona.controls.rut.value;
+      const dv_validar = rut?.replace("-","").split("").splice(-1).reverse()[0];
+      let rut_limpio = [];
+      if(rut?.length==10){
+        rut_limpio = rut?.replace("-","").split("").splice(0,8).reverse();
+      }else{
+        rut_limpio = rut?.replace("-","").split("").splice(0,7).reverse() || [];
+      }
+      let factor = 2;
+      let total = 0;
+      for(let num of rut_limpio){
+        total = total + ((+num)*factor);
+        factor = factor + 1;
+        if(factor==8){
+          factor = 2;
+        }
+      }
+      var dv = (11-(total%11)).toString();
+      if(+dv>=10){
+        dv = "k";
+      }
+      if(dv_validar!=dv.toString()) return {isValid: false};
+      return null;
+    };
   }
 
-  async registrar() {
+  public async registrar() {
+    if (!this.validarEdad18(this.persona.controls.fecha_nacimiento.value || "")) {
+      await this.mostrarAlerta("Error", "¡Debe tener al menos 18 años para registrarse!");
+      return;
+    }
+  
+    if (this.persona.controls.password.value !== this.persona.controls.confirm_password.value) {
+      await this.mostrarAlerta("Error", "¡Las contraseñas no coinciden!");
+      return;
+    }
+  
     if (await this.usuarioService.createUsuario(this.persona.value)) {
       this.usuarios = await this.usuarioService.getUsuarios();
-      this.presentAlert("Éxito", "USUARIO CREADO CON ÉXITO!!");
       this.persona.reset();
-    } else {
-      this.presentAlert("Error", "ERROR! NO SE PUDO CREAR EL USUARIO");
+      await this.mostrarAlerta("Éxito", "¡Usuario creado con éxito!");
     }
   }
-
+  
   async buscar(rut_buscar: string) {
     this.persona.setValue(await this.usuarioService.getUsuario(rut_buscar));
     this.botonModificar = false;
   }
 
   async modificar() {
-    var rut_buscar : string = this.persona.controls.rut.value || "";
+    var rut_buscar: string = this.persona.controls.rut.value || "";
     if (await this.usuarioService.updateUsuario(rut_buscar, this.persona.value)) {
       this.usuarios = await this.usuarioService.getUsuarios();
-      this.presentAlert("Éxito", "USUARIO MODIFICADO CON ÉXITO!");
+      await this.mostrarAlerta("Éxito", "¡Usuario modificado con éxito!");
       this.botonModificar = true;
       this.persona.reset();
     } else {
-      await this.presentAlert("Error", "ERROR! USUARIO NO MODIFICADO");
+      await this.mostrarAlerta("Error", "¡Error! Usuario no modificado.");
     }
   }
+  
 
   async eliminar(rut_eliminar: string) {
-    this.presentConfirmAlert(
-      'Confirmar Eliminación',
-      '¿Estás seguro de que quieres eliminar este usuario?',
-      async () => { //??????
-        if (await this.usuarioService.deleteUsuario(rut_eliminar)) {
-          this.usuarios = await this.usuarioService.getUsuarios();
-          this.presentAlert("Éxito", "USUARIO ELIMINADO CON ÉXITO!");
-          this.persona.reset();
-        } else {
-          this.presentAlert("Error", "ERROR! USUARIO NO ENCONTRADO");
-        }
+    const confirmacion = await this.presentConfirmAlert("Confirmar Eliminación", "¿Estás seguro de que deseas eliminar este usuario?", async () => {
+      if (await this.usuarioService.deleteUsuario(rut_eliminar)) {
+        this.usuarios = await this.usuarioService.getUsuarios();
+        await this.mostrarAlerta("Éxito", "¡Usuario eliminado con éxito!");
+      } else {
+        await this.mostrarAlerta("Error", "¡Error! Usuario no eliminado.");
       }
-    );
+    });
   }
+  
+  
 
   async presentAlert(header: string, message: string) {
     const alert = await this.alertController.create({
@@ -130,11 +161,12 @@ export class AdministradorPage implements OnInit {
         },
         {
           text: 'Eliminar',
-          handler: onConfirm
+          handler: onConfirm // Se ejecuta si el usuario confirma la eliminación
         }
       ]
     });
-
+  
     await alert.present();
   }
+  
 }

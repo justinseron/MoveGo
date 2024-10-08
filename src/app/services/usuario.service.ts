@@ -7,28 +7,30 @@ export class UsuarioService {
 
   //Aquí podemos crear variables:
   usuarios: any[] = [
-    {
-      "rut": "12121123-5",
-      "nombre": "pepita",
-      "correo": "pepita@duocuc.cl",
-      "fecha_nacimiento": "2002-03-10",
-      "password": "Pepita123.",
-      "confirm_password": "Pepita123.",
-      "genero": "femenino",
-      "tiene_auto": "si",
-      "patente_auto": "KTHS12",
-      "marca_auto": "Audi",
-      "modelo_auto": "A3",
-      "asientos_disponibles": "4",
-      //"tipo_usuario": "administrador"
-    }
   ];
 
   constructor(private storage: Storage) {
     this.init();
    }
-   async init(){
+
+  async init(){
     await this.storage.create();
+    let admin =   {
+      "rut": "12121123-5",
+      "nombre": "Administrador",
+      "correo": "admin@duocuc.cl",
+      "fecha_nacimiento": "2002-03-10",
+      "password": "Admin123.",
+      "confirm_password": "Admin123.",
+      "genero": "otro",
+      "tiene_auto": "si",
+      "patente_auto": "KTHS12",
+      "marca_auto": "Audi",
+      "modelo_auto": "A3",
+      "asientos_disponibles": "4",
+      "tipo_usuario": "Administrador"
+    };
+    await this.createUsuario(admin);
    }
 
   //aquí vamos a crear toda nuestra lógica de programación
@@ -77,7 +79,7 @@ export class UsuarioService {
 
   public async login(correo: string, contrasena: string): Promise<any>{
     let usuarios: any[] = await this.storage.get("usuarios") || [];
-    return usuarios.find(elemento=> elemento.correo==correo && elemento.contrasena==contrasena);
+    return usuarios.find(elemento=> elemento.correo==correo && elemento.password==contrasena);
   }
 
   public async recuperarUsuario(correo:string): Promise<any>{
