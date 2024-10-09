@@ -1,4 +1,4 @@
-import { Component, AfterViewInit, OnInit } from '@angular/core';
+import { Component, AfterViewInit, OnInit, ViewEncapsulation } from '@angular/core';
 import { NavigationStart, Router } from '@angular/router';
 import * as L from 'leaflet';
 import * as G from 'leaflet-control-geocoder';
@@ -13,6 +13,7 @@ export class ViajesPage implements OnInit, AfterViewInit {
   private map: L.Map | undefined;
   private geocoder: G.Geocoder | undefined;
   private routingControl: L.Routing.Control | undefined;  // Referencia del control de rutas
+  private currentMarker: L.Marker | undefined;
   latitud: number = 0;
   longitud: number = 0;
   direccion: string = '';
@@ -55,8 +56,11 @@ export class ViajesPage implements OnInit, AfterViewInit {
       this.longitud = lng;
 
       if (this.map) {
-        // Añadir marcador en la ubicación actual
-        L.marker([lat, lng]).addTo(this.map).bindPopup('¡Estás aquí!').openPopup();
+        //Eliminar el marcador anterior si existe
+        if(this.currentMarker){
+          this.map.removeLayer(this.currentMarker);
+        }
+        this.currentMarker = L.marker([lat, lng]).addTo(this.map).bindPopup('¡Estás aquí!').openPopup();
       }
     });
 

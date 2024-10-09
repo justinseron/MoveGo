@@ -11,7 +11,9 @@
     <ion-card-content>
       <ion-input [(ngModel)]="email" type="email" label="Correo" labelPlacement="stacked" fill="outline" placeholder="ejemplo@duocuc.cl"></ion-input>
       <br>
-      <ion-input [(ngModel)]="password" type="password" label="Contraseña" labelPlacement="stacked" fill="outline"></ion-input>
+      <ion-input [(ngModel)]="password" type="password" label="Contraseña" labelPlacement="stacked" fill="outline">
+        <ion-input-password-toggle slot="end"></ion-input-password-toggle>
+      </ion-input>
       <ion-text class="ion-text-right">
         <p><a href="/recuperar">¿Olvidaste la contraseña?</a></p>
       </ion-text>

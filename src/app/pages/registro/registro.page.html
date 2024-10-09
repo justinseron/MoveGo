@@ -26,9 +26,13 @@
 
           <ion-input formControlName="fecha_nacimiento" type="date" labelPlacement="stacked" label="Fecha de Nacimiento" fill="outline"></ion-input>
 
-          <ion-input formControlName="password" type="password" labelPlacement="stacked" label="Contraseña" fill="outline"></ion-input>
+          <ion-input formControlName="password" type="password" labelPlacement="stacked" label="Contraseña" fill="outline">
+            <ion-input-password-toggle slot="end"></ion-input-password-toggle>
+          </ion-input>
 
-          <ion-input formControlName="confirm_password" type="password" labelPlacement="stacked" label="Confirmar contraseña" fill="outline"></ion-input>
+          <ion-input formControlName="confirm_password" type="password" labelPlacement="stacked" label="Confirmar contraseña" fill="outline">
+            <ion-input-password-toggle slot="end"></ion-input-password-toggle>
+          </ion-input>
 
           <ion-select formControlName="genero" label="Género" labelPlacement="stacked" placeHolder="Género" fill="outline">
             <ion-select-option>Masculino</ion-select-option>
@@ -38,7 +42,7 @@
           </ion-select>
           <br>
           <ion-label>¿Tiene Auto?</ion-label>
-            <ion-radio-group formControlName="tiene_auto" class="no-margin"  id="labelAuto">
+            <ion-radio-group formControlName="tiene_auto" class="no-margin" id="labelAuto">
               <ion-radio value="si">Sí</ion-radio>
               <ion-radio value="no">No</ion-radio>
             </ion-radio-group>

@@ -18,6 +18,13 @@ export class LoginPage implements OnInit {
 
   ngOnInit() {
   }
+
+  ionViewWillEnter(){
+    //Limpiar los campos cuando la vista esté a punto de cargarse
+    this.email = "";
+    this.password = "";
+  }
+
   async login(){
     if(await this.usuarioService.login(this.email,this.password)){
       this.router.navigate(['/home']);
