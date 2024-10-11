@@ -2,11 +2,12 @@ import { NgModule } from '@angular/core';
 import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
 import { ViajesPage } from './pages/viajes/viajes.page';
 import { DetallesViajePage } from './pages/detalles-viaje/detalles-viaje.page';
+import { authGuard } from './services/auth.guard';
 
 const routes: Routes = [
   {
     path: '',
-    redirectTo: 'portada',
+    redirectTo: 'home',
     pathMatch: 'full'
   },
   {
@@ -15,6 +16,7 @@ const routes: Routes = [
   },
   {
     path: 'home',
+    canActivate: [authGuard],
     loadChildren: () => import('./pages/home/home.module').then( m => m.HomePageModule)
   },
   {

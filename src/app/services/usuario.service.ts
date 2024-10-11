@@ -79,7 +79,12 @@ export class UsuarioService {
 
   public async login(correo: string, contrasena: string): Promise<any>{
     let usuarios: any[] = await this.storage.get("usuarios") || [];
-    return usuarios.find(elemento=> elemento.correo==correo && elemento.password==contrasena);
+    const usu = usuarios.find(elemento=> elemento.correo==correo && elemento.password==contrasena);
+    if(usu){
+      localStorage.setItem("usuario",JSON.stringify(usu));
+      return true;
+    }
+    return false;
   }
 
   public async recuperarUsuario(correo:string): Promise<any>{

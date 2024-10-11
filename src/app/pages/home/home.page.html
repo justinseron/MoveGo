@@ -1,13 +1,18 @@
 <ion-header>
   <ion-toolbar class="custom-toolbar">
+    <p slot="end">Bienvenido: {{usuario.nombre | titlecase}}</p>
     <ion-buttons slot="start">
       <a [routerLink]="['']">
         <img id="logomenu" src="assets/images/logo.png" alt="Logo">
       </a>
+      <ion-button slot="end" (click)="logout()" >
+        <ion-icon name="log-out"></ion-icon>
+      </ion-button>
     </ion-buttons>
     <ion-title class="toolbar-title">
       <a [routerLink]="['']" class="title-link">MoveGo</a>
     </ion-title>
+    
   </ion-toolbar>
 </ion-header>
 
@@ -30,7 +35,7 @@
         <ion-icon name="car-sport-outline"></ion-icon>
         <span class="tab-label">Viajes</span>
       </ion-tab-button>
-      <ion-tab-button tab="administrar">
+      <ion-tab-button tab="administrar" *ngIf="usuario.tipo_usuario=='Administrador'">
         <ion-icon name="business-outline"></ion-icon>
         <span class="tab-label">Administrar</span>
       </ion-tab-button>
