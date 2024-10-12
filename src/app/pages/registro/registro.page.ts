@@ -23,7 +23,7 @@ export class RegistroPage implements OnInit {
     tiene_auto : new FormControl('no',[]),
     patente_auto : new FormControl('',[ Validators.pattern("^[A-Z0-9.-]*$"),Validators.maxLength(8)]),
     marca_auto: new FormControl('',[]),
-    modelo_auto: new FormControl('',[]),
+    color_auto: new FormControl('',[]),
     asientos_disponibles: new FormControl('',[]), //9 asientos, ya que la licencia Clase B permite hasta una capacidad de 9 asientos en vehículos particulares
     tipo_usuario: new FormControl('Pasajero'),
   });
@@ -56,6 +56,7 @@ export class RegistroPage implements OnInit {
       await this.mostrarAlerta("Error", "¡Las contraseñas no coinciden!");
       return;
     }
+    this.persona.controls.tipo_usuario.setValue(this.persona.controls.tiene_auto.value === "si" ? "Conductor" : "Pasajero");
   
     if (await this.usuarioService.createUsuario(this.persona.value)) {
       this.router.navigate(['/login']);

@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { AlertController } from '@ionic/angular';
+import { AlertController, NavController } from '@ionic/angular';
 
 @Component({
   selector: 'app-perfil',
@@ -9,9 +9,10 @@ import { AlertController } from '@ionic/angular';
 })
 export class PerfilPage implements OnInit {
 
-  constructor(private router: Router, private alertController: AlertController) { }
-
+  constructor(private router: Router, private alertController: AlertController,private navController: NavController) { }
+  usuario: any;
   ngOnInit() {
+    this.usuario = JSON.parse(localStorage.getItem("usuario") || '');
   }
 
   async confirmarCerrar(){
@@ -40,7 +41,8 @@ export class PerfilPage implements OnInit {
 
   //Cerrar sesión provisorio
   cerrarSesion(){
-    this.router.navigate(['/login']);
+    localStorage.removeItem('usuario');
+    this.navController.navigateRoot('/login');
   }
 
 }

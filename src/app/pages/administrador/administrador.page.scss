@@ -1,3 +1,15 @@
+.input-error {
+  --highlight-color-invalid: #ff4d4f; /* Color rojo para el borde */
+  border: 1px solid #ff4d4f; /* Borde rojo */
+}
+
+.error-message {
+  color: #ff4d4f; /* Color rojo para el mensaje de error */
+  font-size: 12px; /* Tamaño del texto del mensaje de error */
+  margin-top: 5px; /* Espacio entre el campo y el mensaje de error */
+}
+
+
 /* Estilos para el formulario */
 .form-card {
     --background: #f9f9f9;

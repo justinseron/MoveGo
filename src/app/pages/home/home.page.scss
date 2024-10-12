@@ -1,220 +1,172 @@
-/* Fija los tabs en la parte inferior de la pantalla */
-.welcome-message {
+.custom-toolbar {
+  background-color: #f8f9fa;
+  color: #333;
+}
+
+.user-status {
   display: flex;
-  justify-content: center;
   align-items: center;
-  padding: 20px;
-  height: 100%; /* Ocupa toda la altura disponible */
+  gap: 8px; /* Espacio entre la luz y el texto */
 }
 
-.welcome-card {
-  width: 90%; /* Ancho del card */
-  max-width: 400px; /* Máximo ancho del card */
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2); /* Sombra del card */
-  border-radius: 15px; /* Bordes redondeados */
-  overflow: hidden; /* Asegura que el contenido no sobresalga */
-  background-color: #f9f9f9; /* Fondo suave para el card */
+.status-light {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background-color: #28a745; /* Verde para indicar "conectado" */
+  border: 2px solid white; /* Borde blanco */
 }
 
-.welcome-image {
-  width: 100%; /* Asegura que la imagen ocupe todo el ancho */
-  height: 150px; /* Altura fija para la imagen */
-  object-fit: cover; /* Mantiene la proporción de la imagen */
+.user-type {
+  font-size: 16px;
+  font-weight: 600;
+  color: white;
 }
 
-.welcome-title {
-  text-align: center; /* Centra el título */
-  font-size: 1.8rem; /* Tamaño del título */
-  color: #333; /* Color del texto */
-  margin: 10px 0; /* Espacio superior e inferior */
-}
-
-.welcome-text {
-  text-align: center; /* Centra el texto */
-  font-size: 1.2rem; /* Tamaño del texto */
-  color: #555; /* Color del texto */
-  margin: 10px 0; /* Espacio superior e inferior */
-}
-
-
-.fixed-tabs {
-  position:relative;
-  bottom: 0;
-  width: 100%;
-  z-index: 1000; /* Para que los tabs siempre estén por encima del contenido */
-}
-
-/* Asegura que el contenido no se superponga con los tabs */
-ion-content {
-  padding-bottom: 60px; /* Deja espacio para los tabs en la parte inferior */
-}
-
-/* Personaliza el estilo de la barra de tabs */
-.tab-bar {
-  background-color: #f8f9fa; /* Color de fondo para la barra de tabs */
-  border-top: 1px solid #e0e0e0; /* Borde superior para separar los tabs del contenido */
-}
-
-.tab-label {
-  font-size: 1rem; /* Tamaño del texto en los tabs */
-  color: #333; /* Color del texto */
-}
-
-ion-tab-button {
-  color: #007bff; /* Color del icono y texto en el tab activo */
-}
-
-ion-tab-button[aria-selected="true"] .tab-label {
-  color: #007bff; /* Color del tab activo */
+.logo-img {
+  width: 40px;
+  height: auto;
 }
 
 .title-link {
-  text-decoration: none; /* Elimina el subrayado del enlace */
-  color: inherit; /* Hereda el color del texto del título */
+  font-size: 20px;
+  font-weight: 600;
+  color: white; /* Letras blancas */
+  text-decoration: none;
 }
 
 .title-link:hover {
-  color: #007bff; /* Cambia el color al pasar el ratón sobre el enlace (opcional) */
-}
-/* Estilos para el contenido del ion-card */
-ion-card-content {
-  font-size: 1.2rem; /* Tamaño de fuente general */
-  line-height: 1.5;  /* Altura de línea para mejorar la legibilidad */
+  color: #cccccc; /* Color más claro al hacer hover */
 }
 
-/* Estilos para los encabezados h3 */
-ion-card-content h3 {
-  font-size: 1.5rem; /* Tamaño de fuente para los encabezados h3 */
-  margin-top: 16px;  /* Espacio superior */
-  margin-bottom: 8px; /* Espacio inferior */
-  font-weight: bold; /* Hacer los encabezados más destacados */
-}
-
-/* Estilos para listas */
-ion-card-content ul {
-  padding-left: 20px; /* Espacio a la izquierda de la lista */
-}
-
-ion-card-content li {
-  font-size: 1.2rem; /* Tamaño de fuente para los elementos de la lista */
-  margin-bottom: 8px; /* Espacio inferior entre elementos de la lista */
-}
-
-#bienvenida {
+.user-type {
+  background-color: rgba(0, 0, 0, 0.5); /* Fondo negro semi-transparente */
+  padding: 5px 10px; /* Espaciado alrededor del texto */
   border-radius: 12px; /* Bordes redondeados */
-  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1); /* Sombra suave alrededor de la tarjeta */
-  overflow: hidden; /* Asegura que el contenido no sobresalga de los bordes redondeados */
-  margin: 20px; /* Añade margen alrededor de la tarjeta */
-  background-color: #ffffff; /* Color de fondo blanco para la tarjeta */
+  color: white; /* Texto en blanco */
+  font-weight: bold; /* Texto grueso */
+  font-size: 14px; /* Tamaño de letra */
 }
 
-/* Estilos para la imagen dentro de la tarjeta */
-#bienvenida img {
-  width: 100%; /* Asegura que la imagen ocupe todo el ancho de la tarjeta */
-  height: 40%; /* Mantiene la proporción de la imagen */
+
+body {
+  margin: 0;
+  font-family: 'Arial', sans-serif;
 }
 
-/* Estilos para el encabezado de la tarjeta */
+/* -- Tabs Estilos -- */
+.fixed-tabs {
+  position: relative;
+  bottom: 0;
+  width: 100%;
+  z-index: 1000;
+}
+
+ion-content {
+  padding-bottom: 60px; /* Espacio para tabs */
+}
+
+.tab-bar {
+  background-color: #f8f9fa;
+  border-top: 1px solid #e0e0e0;
+}
+
+.tab-label {
+  font-size: 1rem;
+  color: #333;
+}
+
+ion-tab-button {
+  color: #007bff;
+}
+
+ion-tab-button[aria-selected="true"] .tab-label {
+  color: #007bff;
+}
+
+/* -- Card Estilos -- */
+ion-card {
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+  margin: 20px;
+}
+
+ion-card img {
+  width: 100%;
+  height: 40%;
+}
+
 ion-card-header {
-  background-color: #f7f7f7; /* Color de fondo claro para el encabezado */
-  padding: 16px; /* Espaciado interno */
-  text-align: center; /* Centra el contenido dentro del encabezado */
-  border-bottom: 1px solid #e0e0e0; /* Línea separadora debajo del encabezado */
+  background-color: #f7f7f7;
+  padding: 16px;
+  text-align: center;
+  border-bottom: 1px solid #e0e0e0;
 }
 
-/* Estilos para el título de la tarjeta */
 ion-card-title {
-  font-size: 1.8rem; /* Tamaño grande para el título */
-  font-weight: bold; /* Texto en negrita */
-  color: #333; /* Color del texto del título */
-  margin-bottom: 4px; /* Espaciado inferior */
+  font-size: 1.8rem;
+  font-weight: bold;
+  color: #333;
 }
 
-/* Estilos para el subtítulo de la tarjeta */
 ion-card-subtitle {
-  font-size: 1.2rem; /* Tamaño del texto del subtítulo */
-  color: #666; /* Color gris para el subtítulo */
-  margin-bottom: 12px; /* Espaciado inferior del subtítulo */
+  font-size: 1.2rem;
+  color: #666;
+  margin-bottom: 12px;
 }
 
-/* Estilos para el contenido de la tarjeta */
 ion-card-content {
-  font-size: 1.2rem; /* Tamaño de la fuente del contenido */
-  color: #333; /* Color del texto del contenido */
-  padding: 16px; /* Espaciado interno */
-  text-align: center; /* Centra el texto dentro del contenido */
+  font-size: 1.2rem;
+  line-height: 1.5;
+  color: #333;
+  padding: 16px;
+  text-align: center;
 }
 
+/* -- Bienvenida Estilos -- */
+#bienvenida {
+  border-radius: 12px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+  margin: 20px;
+  background-color: #ffffff;
+}
 
-/* Estilo para el footer de derechos de autor */
+#bienvenida img {
+  width: 100%;
+  height: 40%;
+}
+
+#labelbienvenida {
+  position: absolute;
+  top: 38%; 
+  left: 23%;
+  transform: translateX(-50%);
+  text-align: center;
+  overflow: visible;
+}
+
+/* -- Estilos para el footer -- */
 .footer {
   position: absolute;
   bottom: 0;
   left: 0;
   width: 100%;
-  background: #002f6c; /* Color de fondo del footer */
-  color: #ffffff; /* Color del texto del footer */
+  background: #002f6c;
+  color: #ffffff;
   text-align: center;
   padding: 10px 0;
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 10px; /* Espacio entre el logo y el texto */
+  gap: 10px;
 }
 
-/* Estilo para el logotipo del footer */
 .footer-logo {
-  height: 20px; /* Ajusta el tamaño del logo del footer */
+  height: 20px;
   width: auto;
 }
 
-/* Estilo para el texto del footer */
 .footer-text {
-  font-size: 0.9rem; /* Tamaño de fuente del texto del footer */
+  font-size: 0.9rem;
 }
-
-
-.displayed{
-  display: block;
-  margin-left: auto;
-  margin-right: 100%;
-}
-
-#logomenu{
-  margin-left: 3%;
-  margin-top: auto;
-}
-
-#letrasmenu{
-  margin-left: 22%;
-  margin-top: 2%;
-}
-
-#perfildefault{
-  position: relatie;
-  top: 45%;
-  left: 50%;
-  transform: translate(-50%, -50%); 
-  max-width: 200px;
-  margin-bottom: 30px;
-}
-
-#labelbienvenida{
-  position: bottom;
-  top: 38%; /* Ajusta esta propiedad para controlar la distancia con #perfildefault */
-  left: 23%;
-  transform: translateX(-50%); /* Centra horizontalmente #labelbienvenida */
-  text-align: center; /* Alinea el texto al centro */
-  overflow: visible;
-}
-
-#itemmenu{
-  width: 100%;
-  max-width: 100%;
-}
-
-.toolbar-title{
-  align-items: center;
-}
-/* Estilos generales para el ion-card */
-

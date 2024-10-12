@@ -1,20 +1,28 @@
 <ion-header>
   <ion-toolbar class="custom-toolbar">
-    <p slot="end">Bienvenido: {{usuario.nombre | titlecase}}</p>
-    <ion-buttons slot="start">
-      <a [routerLink]="['']">
-        <img id="logomenu" src="assets/images/logo.png" alt="Logo">
-      </a>
-      <ion-button slot="end" (click)="logout()" >
-        <ion-icon name="log-out"></ion-icon>
-      </ion-button>
+    <!-- Usuario tipo con estilo formal y luz verde -->
+    <ion-buttons slot="end">
+      <div class="user-status">
+        <span class="status-light"></span>
+        <p class="user-type">{{ usuario.nombre | titlecase }}</p>
+      </div>
     </ion-buttons>
+
+    <!-- Logo ajustado para mejor alineación -->
+    <ion-buttons slot="start">
+      <a [routerLink]="['']" class="logo-link">
+        <img id="logomenu" src="assets/images/logo.png" alt="Logo" class="logo-img">
+      </a>
+    </ion-buttons>
+
+    <!-- Título central estilizado -->
     <ion-title class="toolbar-title">
       <a [routerLink]="['']" class="title-link">MoveGo</a>
     </ion-title>
-    
   </ion-toolbar>
 </ion-header>
+
+
 
 <ion-content>
   <div class="welcome-message">
