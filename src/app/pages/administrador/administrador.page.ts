@@ -29,6 +29,7 @@ export class AdministradorPage implements OnInit {
 
   usuarios: any[] = [];
   botonModificar: boolean = true;
+  
 
   constructor(@Inject(UsuarioService)private usuarioService: UsuarioService, private alertController: AlertController,private router: Router) { }
 

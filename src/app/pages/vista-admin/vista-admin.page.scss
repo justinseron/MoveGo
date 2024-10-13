@@ -1,0 +1,43 @@
+.custom-card {
+    background: linear-gradient(to right, rgba(0, 0, 255, 0.8), rgba(255, 255, 255, 0.4));
+    color: white;
+    transition: transform 0.3s ease, box-shadow 0.3s ease; /* Añadir suavidad */
+    border: 3px solid #007bff;
+    border-radius: 15px; /* Aumentar el radio de borde */
+    box-shadow: 0 4px 15px rgba(0, 0, 255, 0.5);
+    padding: 16px;
+    position: relative; /* Para el efecto de elevación */
+    overflow: hidden; /* Para evitar que los elementos internos se salgan */
+  }
+  
+  .card-title {
+    font-weight: bold;
+    font-size: 1.2rem; /* Aumentar el tamaño del título */
+  }
+  
+  .card-description {
+    color: #eaeaea; /* Un color más suave para la descripción */
+    font-size: 0.9rem; /* Tamaño de fuente más pequeño para la descripción */
+  }
+  
+  .custom-card:hover {
+    transform: translateY(-10px); /* Levantar la carta al pasar el mouse */
+    box-shadow: 0 10px 30px rgba(0, 0, 255, 0.8); /* Aumentar la sombra */
+  }
+  
+  /* Efecto de animación en el botón */
+  ion-button {
+    margin-top: 10px; /* Espacio superior para el botón */
+    transition: background-color 0.3s ease, transform 0.3s ease; /* Transición suave para el botón */
+  }
+  
+  ion-button:hover {
+    background-color: rgba(255, 255, 255, 0.6); /* Cambiar color del fondo al pasar el mouse */
+    transform: scale(1.05); /* Aumentar ligeramente el botón */
+  }
+  
+  /* Efecto para el texto al pasar el mouse */
+  .card-title:hover {
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.8); /* Efecto de resplandor */
+  }
+  

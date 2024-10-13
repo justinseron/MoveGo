@@ -3,13 +3,13 @@
   <ion-card class="detalles-viaje">
     <br>
     <ion-card-title class="ion-text-center">DETALLES DEL VIAJE</ion-card-title>
-      <ion-card-content>
+      <ion-card-content *ngIf="viaje">
         <ion-list>
           <ion-item>
             <ion-label>
               <b>Destino:</b>
             </ion-label>
-            <ion-label slot="end">{{ destino }}</ion-label>
+            <ion-label slot="end">{{ viaje.destino }}</ion-label>
           </ion-item>
           <ion-item>
             <ion-label>

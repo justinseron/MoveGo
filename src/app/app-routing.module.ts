@@ -52,9 +52,18 @@ const routes: Routes = [
     loadChildren: () => import('./pages/verificar-codigo/verificar-codigo.module').then( m => m.VerificarCodigoPageModule)
   },
   {
+    path: 'administrar-viajes',
+    loadChildren: () => import('./pages/administrar-viajes/administrar-viajes.module').then( m => m.AdministrarViajesPageModule)
+  },
+  {
+    path: 'vista-admin',
+    loadChildren: () => import('./pages/vista-admin/vista-admin.module').then( m => m.VistaAdminPageModule)
+  },
+  {
     path: '**',
     loadChildren: () => import('./pages/error404/error404.module').then( m => m.Error404PageModule)
   },
+
 
 
 ];

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { AlertController } from '@ionic/angular';
 
 @Component({
@@ -13,7 +13,7 @@ export class DetallesViajePage implements OnInit {
   tipoViaje: string | null = null;
 
   constructor(private router: Router, private alertController: AlertController) { }
-
+  viaje: any;
   ngOnInit() {
     // Usar location.state para acceder al estado de navegación
     const navigation = this.router.getCurrentNavigation();
