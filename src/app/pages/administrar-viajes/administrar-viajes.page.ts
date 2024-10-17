@@ -15,7 +15,6 @@ export class AdministrarViajesPage implements OnInit {
   usuarios:any[] = [];
   conductores: any[] = [];
   botonModificar: boolean = true; // Cambiado a número para el ID del viaje
-
   constructor(
     private viajeService: ViajesService,
     private usuarioService: UsuarioService,
@@ -23,7 +22,8 @@ export class AdministrarViajesPage implements OnInit {
     private router: Router
   ) {
     // Inicializa el formulario aquí para una mejor legibilidad
-    this.viaje = new FormGroup({// Campo solo lectura
+    this.viaje = new FormGroup({
+      id__viaje: new FormControl({value: '', disabled: true}),// Campo solo lectura
       conductor: new FormControl('', [Validators.required]),
       patente: new FormControl('', [Validators.required]),
       color_auto: new FormControl('', [Validators.required]),
@@ -33,6 +33,8 @@ export class AdministrarViajesPage implements OnInit {
       longitud: new FormControl('', [Validators.required, Validators.min(1)]),
       distancia_metros: new FormControl('', [Validators.required, Validators.min(0)]),
       costo_viaje: new FormControl('', [Validators.required]),
+      metodo_pago: new FormControl('efectivo',[Validators.required]),
+      numero_tarjeta:new FormControl('',[]),
       duracion_viaje: new FormControl('', [Validators.required]),
       hora_salida: new FormControl('', [Validators.required]),
       pasajeros: new FormControl('', [Validators.required]),
@@ -42,11 +44,12 @@ export class AdministrarViajesPage implements OnInit {
     this.cargarConductores();
   }
   async ngOnInit() {
-    this.viajes = await this.viajeService.getViajes();
-    this.usuarios = await this.usuarioService.getUsuarios();
+    
     this.usuarioService.usuarios$.subscribe(usuarios => {
       this.conductores = usuarios.filter(usuario => usuario.tipo_usuario === 'Conductor');
     });
+    this.viajes = await this.viajeService.getViajes();
+    this.usuarios = await this.usuarioService.getUsuarios();
 
   }
   
@@ -77,30 +80,35 @@ export class AdministrarViajesPage implements OnInit {
   limpiar() {
     this.viaje.reset(); // Resetea todos los controles del formulario
     this.botonModificar = true; // Restablece el botón de modificar
+    this.viaje.get('id__viaje')?.disable(); // Deshabilita el campo de ID
   }
 
   async onSubmit() {
-  if( await this.viajeService.createViaje(this.viaje.value) ){
-    this.viajes = await this.viajeService.getViajes();
-    alert("Viaje creado con éxito!");
-    this.viaje.reset();
-  }else{
-    alert("ERROR! Viaje no creado")
+    const nuevoViaje = { ...this.viaje.value };
+    delete nuevoViaje.id__viaje;
+    if( await this.viajeService.createViaje(nuevoViaje) ){
+      this.viajes = await this.viajeService.getViajes();
+      alert("Viaje creado con éxito!");
+      this.viaje.reset();
+    }else{
+      alert("ERROR! Viaje no creado")
   }}
 
   async buscar(id__viaje: number) {
     const viajeData = await this.viajeService.getViaje(id__viaje);
-    this.viaje.setValue(viajeData);
-    this.botonModificar = false;
+    if (viajeData) {
+      this.viaje.patchValue(viajeData);
+      this.botonModificar = false; // Cambia a 'false' para indicar que estamos en modo de edición
+    } else {
+      await this.mostrarAlerta("Error", "Viaje no encontrado.");
+    }
   }
 
 
-
   async modificar() {
-    const idViajeControl = this.viaje.get('id__viaje'); // Obtén el control directamente
-    const buscar_viaje: number = idViajeControl && idViajeControl.value ? +idViajeControl.value : 0; // Asegúrate de que sea un número
-
-    if (buscar_viaje > 0) { // Asegúrate de que el ID sea positivo antes de proceder
+    const buscar_viaje: number = this.viaje.get('id__viaje')?.value; // Obtiene el ID
+  
+    if (buscar_viaje) { // Asegúrate de que el ID no esté vacío
       try {
         const result = await this.viajeService.updateViaje(buscar_viaje, this.viaje.value);
         if (result) {
@@ -118,6 +126,7 @@ export class AdministrarViajesPage implements OnInit {
       await this.mostrarAlerta("Error", "Por favor, proporciona un ID de viaje válido.");
     }
   }
+  
 
   async eliminar(viaje_eliminar: number) {
     const confirmacion = await this.presentConfirmAlert(

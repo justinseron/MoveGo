@@ -8,6 +8,7 @@ export class UsuarioService {
   private usuariosSubject = new BehaviorSubject<any[]>([]);
   usuarios$ = this.usuariosSubject.asObservable();
 
+
   //Aquí podemos crear variables:
   usuarios: any[] = [
   ];
@@ -18,6 +19,7 @@ export class UsuarioService {
 
   async init(){
     await this.storage.create();
+    const usuariosGuardados = await this.getUsuarios();
     let admin =   {
       "rut": "20792608-6",
       "nombre": "Administrador",
@@ -66,17 +68,18 @@ export class UsuarioService {
       "asientos_disponibles": "4",
       "tipo_usuario": "Conductor"
     };
-  
-    await this.createUsuario(conductor1);
-    await this.createUsuario(conductor2);
-    let usuarios = await this.getUsuarios();
-    this.usuariosSubject.next(usuarios);  // Emitir usuarios al iniciar
+    if (usuariosGuardados.length === 0) { // Solo agregar si no hay usuarios
+      await this.createUsuario(admin);
+      await this.createUsuario(conductor1);
+      await this.createUsuario(conductor2);
+    }
+    this.usuarios = await this.getUsuarios(); // Cargar la lista actualizada
+    this.usuariosSubject.next(this.usuarios); // Emitir usuarios al iniciar
   }
   public async getConductores(): Promise<any[]> {
-    let usuarios: any[] = await this.storage.get("usuarios") || [];
-    return usuarios.filter(usuario => usuario.tipo_usuario=== 'Conductor');
+    // Usar la lista actualizada en lugar de cargar de nuevo
+    return this.usuarios.filter(usuario => usuario.tipo_usuario === 'Conductor');
   }
-
   //aquí vamos a crear toda nuestra lógica de programación
   //DAO:
   public async createUsuario(usuario:any): Promise<boolean>{
@@ -86,7 +89,7 @@ export class UsuarioService {
     }
     usuarios.push(usuario);
     await this.storage.set("usuarios",usuarios);
-    this.usuariosSubject.next(usuarios);
+    this.usuariosSubject.next(this.usuarios);
     return true;
   }
 
