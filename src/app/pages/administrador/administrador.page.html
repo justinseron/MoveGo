@@ -82,11 +82,14 @@
         <ion-input formControlName="asientos_disponibles" type="text"></ion-input>
       </ion-item>
 
-      <ion-select formControlName="tipo_usuario" label="Tipo usuario" labelPlacement="stacked">
-        <ion-select-option>Administrador</ion-select-option>
-        <ion-select-option>Conductor</ion-select-option>
-        <ion-select-option>Pasajero</ion-select-option>
-      </ion-select>
+      <ion-item>
+        <ion-label position="stacked">Tipo usuario</ion-label>
+        <ion-select formControlName="tipo_usuario">
+          <ion-select-option value="Administrador">Administrador</ion-select-option>
+          <ion-select-option value="Conductor">Conductor</ion-select-option>
+          <ion-select-option value="Pasajero">Pasajero</ion-select-option>
+        </ion-select>
+      </ion-item>
 
       <ion-button [disabled]="persona.invalid" type="submit" size="block" color="warning">Registrar</ion-button>
       <ion-button [disabled]="botonModificar || persona.invalid" (click)="modificar()" size="block" color="dark">Modificar</ion-button>

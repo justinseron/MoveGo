@@ -11,21 +11,23 @@ export class ViajesService {
   }
   async init(){
     await this.storage.create();
+    let viajes: any[] = await this.storage.get("viajes") || [];
+    const nuevoID = viajes.length > 0 ? Math.max(...viajes.map(v => parseInt(v.id__viaje))) + 1 : 1; // Obtener el siguiente ID
     let viaje =   {
-      "id__viaje":"1",
-      "ubicacion_destino":"El quillay 1157",  
-      "coordenadas_destino":"-33.58657458374411, -70.64117873393926",
-      "ubicacion_inicio":"DuocUc Puente Alto",  
-      "coordenadas_inicio":"-33.598415908974424, -70.5788192627744",
-      "hora_salida":"17:00",
-      "hora_regreso":"19:00",
-      "numero_pasajeros":"4",
-      "costo_estimado":"4000",
-      "metodo_pago":"efectivo",
-      "patente_auto":"AA123",
-      "marca_vehiculo":"Nissan",
-      "color_vehiculo":"Rojo",
-      "numero_tarjeta":"123456",
+      "id__viaje": "1", //dejarlo de manera automatica
+      "conductor": "Patricio Mora",
+      "patente": "AABB32",
+      "color_auto": "Rojo",
+      "asientos_disponibles": "0",
+      "nombre_destino": "Municipalidad de Puente Alto, 1820, Avenida Concha y Toro",
+      "latitud":-33.59523505,
+      "longitud": -70.57963843136085,
+      "distancia_metros":1939.2,
+      "costo_viaje":2000,
+      "duracion_viaje":202.2/60|| "Minutos",
+      "hora_salida": "13:00",
+      "pasajeros": "4",
+      "estado_viaje": "pendiente",
 
     };
     await this.createViaje(viaje);
@@ -33,13 +35,19 @@ export class ViajesService {
 
 
   public async createViaje(viaje:any): Promise<boolean>{
-    let viajes: any[] = await this.storage.get("viajes") || [];
-    if(viajes.find(viaje=>viaje.id__viaje==viaje.id__viaje)!=undefined){
+    try {
+      let viajes: any[] = await this.storage.get("viajes") || [];
+      if (viajes.find(v => v.id__viaje === viaje.id__viaje) !== undefined) {
+        console.error('El viaje ya existe:', viaje.id__viaje);
+        return false;
+      }
+      viajes.push(viaje);
+      await this.storage.set("viajes", viajes);
+      return true;
+    } catch (error) {
+      console.error('Error al crear el viaje:', error);
       return false;
     }
-    viajes.push(viaje);
-    await this.storage.set("viajes",viajes);
-    return true;
   }
 
   public async getViaje(id__viaje:number): Promise<any>{

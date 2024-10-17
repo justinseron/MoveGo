@@ -3,7 +3,7 @@ import { AbstractControl, FormControl, FormGroup, Validators } from '@angular/fo
 import { Router } from '@angular/router';
 import { AlertController } from '@ionic/angular';
 import { ViajesService } from 'src/app/services/viajes.service';
-
+import { UsuarioService } from 'src/app/services/usuario.service';
 @Component({
   selector: 'app-administrar-viajes',
   templateUrl: './administrar-viajes.page.html',
@@ -12,36 +12,50 @@ import { ViajesService } from 'src/app/services/viajes.service';
 export class AdministrarViajesPage implements OnInit {
   viaje: FormGroup;
   viajes: any[] = [];
+  usuarios:any[] = [];
+  conductores: any[] = [];
   botonModificar: boolean = true; // Cambiado a número para el ID del viaje
 
   constructor(
     private viajeService: ViajesService,
+    private usuarioService: UsuarioService,
     private alertController: AlertController,
     private router: Router
   ) {
     // Inicializa el formulario aquí para una mejor legibilidad
-    this.viaje = new FormGroup({
-      id__viaje: new FormControl('', [Validators.required]), // Campo solo lectura
-      ubicacion_destino: new FormControl('', [Validators.required]),
-      coordenadas_destino: new FormControl('', [Validators.required]),
-      ubicacion_inicio: new FormControl('', [Validators.required]),
-      coordenadas_inicio: new FormControl('', [Validators.required]),
+    this.viaje = new FormGroup({// Campo solo lectura
+      conductor: new FormControl('', [Validators.required]),
+      patente: new FormControl('', [Validators.required]),
+      color_auto: new FormControl('', [Validators.required]),
+      asientos_disponibles: new FormControl('', [Validators.required]),
+      nombre_destino: new FormControl('', [Validators.required]),
+      latitud: new FormControl('', [Validators.required]),
+      longitud: new FormControl('', [Validators.required, Validators.min(1)]),
+      distancia_metros: new FormControl('', [Validators.required, Validators.min(0)]),
+      costo_viaje: new FormControl('', [Validators.required]),
+      duracion_viaje: new FormControl('', [Validators.required]),
       hora_salida: new FormControl('', [Validators.required]),
-      hora_regreso: new FormControl('', [Validators.required]),
-      numero_pasajeros: new FormControl(1, [Validators.required, Validators.min(1)]),
-      costo_estimado: new FormControl(0, [Validators.required, Validators.min(0)]),
-      metodo_pago: new FormControl('', [Validators.required]),
-      patente_auto: new FormControl('', [Validators.required]),
-      marca_vehiculo: new FormControl('', [Validators.required]),
-      color_vehiculo: new FormControl('', [Validators.required]),
-      numero_tarjeta: new FormControl('', []),
+      pasajeros: new FormControl('', [Validators.required]),
+      estado_viaje: new FormControl('pendiente', []),
     });
+    this.loadViajes();
+    this.cargarConductores();
   }
-
   async ngOnInit() {
     this.viajes = await this.viajeService.getViajes();
-  }
+    this.usuarios = await this.usuarioService.getUsuarios();
+    this.usuarioService.usuarios$.subscribe(usuarios => {
+      this.conductores = usuarios.filter(usuario => usuario.tipo_usuario === 'Conductor');
+    });
 
+  }
+  
+  async cargarConductores() {
+    this.conductores = await this.usuarioService.getConductores();
+  }
+  async loadViajes() {
+    this.viajes = await this.viajeService.getViajes();
+  }
   private async mostrarAlerta(titulo: string, mensaje: string) {
     const alert = await this.alertController.create({
       header: titulo,
@@ -60,24 +74,19 @@ export class AdministrarViajesPage implements OnInit {
   isCardPayment(): boolean {
     return this.viaje.get('metodo_pago')?.value === 'tarjeta';
   }
+  limpiar() {
+    this.viaje.reset(); // Resetea todos los controles del formulario
+    this.botonModificar = true; // Restablece el botón de modificar
+  }
 
   async onSubmit() {
-    if (this.viaje.valid) {
-      console.log("Formulario enviado:", this.viaje.value);
-
-      try {
-        await this.viajeService.createViaje(this.viaje.value);
-        await this.mostrarAlerta("Éxito", "El viaje se ha guardado correctamente.");
-        this.router.navigate(['../administrar-viajes']);
-        this.limpiar(); // Limpiar formulario después de guardar
-      } catch (error) {
-        console.error("Error al guardar el viaje:", error);
-        await this.mostrarAlerta("Error", "Hubo un problema al guardar el viaje.");
-      }
-    } else {
-      await this.mostrarAlerta("Formulario inválido", "Por favor, completa todos los campos requeridos.");
-    }
-  }
+  if( await this.viajeService.createViaje(this.viaje.value) ){
+    this.viajes = await this.viajeService.getViajes();
+    alert("Viaje creado con éxito!");
+    this.viaje.reset();
+  }else{
+    alert("ERROR! Viaje no creado")
+  }}
 
   async buscar(id__viaje: number) {
     const viajeData = await this.viajeService.getViaje(id__viaje);
@@ -85,10 +94,7 @@ export class AdministrarViajesPage implements OnInit {
     this.botonModificar = false;
   }
 
-  limpiar() {
-    this.viaje.reset(); // Resetea todos los controles del formulario
-    this.botonModificar = true; // Restablece el botón de modificar
-  }
+
 
   async modificar() {
     const idViajeControl = this.viaje.get('id__viaje'); // Obtén el control directamente

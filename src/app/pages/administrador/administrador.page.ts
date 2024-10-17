@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, Inject, OnInit } from '@angular/core';
 import { AbstractControl, FormControl, FormGroup, ValidatorFn, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AlertController } from '@ionic/angular';
@@ -31,10 +31,18 @@ export class AdministradorPage implements OnInit {
   botonModificar: boolean = true;
   
 
-  constructor(@Inject(UsuarioService)private usuarioService: UsuarioService, private alertController: AlertController,private router: Router) { }
+  constructor(@Inject(UsuarioService)private usuarioService: UsuarioService, private alertController: AlertController,private router: Router,private cdr: ChangeDetectorRef ) { }
 
   async ngOnInit() {
+    await this.cargarUsuarios();
+    this.usuarioService.usuarios$.subscribe(usuarios => {
+      this.usuarios = usuarios;
+    });
+  }
+
+  async cargarUsuarios() {
     this.usuarios = await this.usuarioService.getUsuarios();
+    this.cdr.detectChanges();  // Forzar la detección de cambios
   }
   private async mostrarAlerta(titulo: string, mensaje: string) {
     const alert = await this.alertController.create({
@@ -101,6 +109,7 @@ export class AdministradorPage implements OnInit {
   
     if (await this.usuarioService.createUsuario(this.persona.value)) {
       this.usuarios = await this.usuarioService.getUsuarios();
+      await this.cargarUsuarios();
       this.persona.reset();
       await this.mostrarAlerta("Éxito", "¡Usuario creado con éxito!");
     }
@@ -117,6 +126,7 @@ export class AdministradorPage implements OnInit {
       this.usuarios = await this.usuarioService.getUsuarios();
       await this.mostrarAlerta("Éxito", "¡Usuario modificado con éxito!");
       this.botonModificar = true;
+      await this.cargarUsuarios();
       this.persona.reset();
     } else {
       await this.mostrarAlerta("Error", "¡Error! Usuario no modificado.");
@@ -128,6 +138,7 @@ export class AdministradorPage implements OnInit {
     const confirmacion = await this.presentConfirmAlert("Confirmar Eliminación", "¿Estás seguro de que deseas eliminar este usuario?", async () => {
       if (await this.usuarioService.deleteUsuario(rut_eliminar)) {
         this.usuarios = await this.usuarioService.getUsuarios();
+        await this.cargarUsuarios();
         await this.mostrarAlerta("Éxito", "¡Usuario eliminado con éxito!");
       } else {
         await this.mostrarAlerta("Error", "¡Error! Usuario no eliminado.");
