@@ -3,7 +3,7 @@
     <h2 style="color: #0056b3;">Formulario de Viaje</h2>
     <p style="font-size: 16px; color: #555;">Por favor, complete todos los campos requeridos.</p>
   </div>
-
+  <div id="map_html"></div>
   <form [formGroup]="viaje" (ngSubmit)="onSubmit()">
     <ion-list>
       <ion-item>
@@ -33,22 +33,22 @@
 
       <ion-item>
         <ion-label position="stacked">Nombre Destino</ion-label>
-        <ion-input type="text" formControlName="nombre_destino" placeholder="Ej: Playa"></ion-input>
+        <ion-input type="text" [(ngModel)]="direccion" formControlName="nombre_destino" placeholder="Ej: Playa"></ion-input>
       </ion-item>
 
       <ion-item>
         <ion-label position="stacked">Latitud</ion-label>
-        <ion-input type="number" formControlName="latitud" placeholder="Ej: -34.6097"></ion-input>
+        <ion-input type="number" [(ngModel)]="latitud" formControlName="latitud" placeholder="Ej: -34.6097"></ion-input>
       </ion-item>
 
       <ion-item>
         <ion-label position="stacked">Longitud</ion-label>
-        <ion-input type="number" formControlName="longitud" placeholder="Ej: -58.3816"></ion-input>
+        <ion-input type="number" [(ngModel)]="longitud" formControlName="longitud" placeholder="Ej: -58.3816"></ion-input>
       </ion-item>
 
       <ion-item>
         <ion-label position="stacked">Distancia (metros)</ion-label>
-        <ion-input type="number" formControlName="distancia_metros" placeholder="Ej: 1500"></ion-input>
+        <ion-input type="number" [(ngModel)]="distancia_metros" formControlName="distancia_metros" placeholder="Ej: 1500"></ion-input>
       </ion-item>
 
       <ion-item>
@@ -70,7 +70,7 @@
       </ion-item>
       <ion-item>
         <ion-label position="stacked">Duración del Viaje</ion-label>
-        <ion-input type="text" formControlName="duracion_viaje" placeholder="Ej: 30 mins"></ion-input>
+        <ion-input type="text" [(ngModel)]="tiempo_segundos" formControlName="duracion_viaje" placeholder="Ej: 30 mins"></ion-input>
       </ion-item>
 
       <ion-item>

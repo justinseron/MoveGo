@@ -1,79 +1,73 @@
 <ion-content>
-    <ion-input label="Latitud" [(ngModel)]="latitud"></ion-input>
-    <ion-input label="Longitud" [(ngModel)]="longitud"></ion-input>
-    <ion-input label="Direccion" [(ngModel)]="direccion"></ion-input>
-    <ion-input label="Distancia metros" [(ngModel)]="distancia_metros"></ion-input>
-    <ion-input label="Tiempo segundos" [(ngModel)]="tiempo_segundos"></ion-input>
-
-    <div id="map_html"></div>
   
-    <!-- Contenedor principal -->
-    <ion-list class="ion-margin">
-      <div class="ion-margin">
-  
-        <!-- Segmento para selección de tipo de viaje -->
-        <ion-segment mode="ios" value="basico" (ionChange)="onSegmentChange($event)" color="primary">
-          <ion-segment-button value="basico">
-            <ion-label>Destino</ion-label>
-          </ion-segment-button>
-          <ion-segment-button value="priority">
-            <ion-label>Historial Viajes</ion-label>
-          </ion-segment-button>
-        </ion-segment>
-  
-        <!-- Texto descriptivo para viaje básico -->
-        <ion-text *ngIf="isBasicoSelected" class="ion-text-center ion-margin-top">
-          <p style="font-size: 16px; color: #061b30;">Preparate para tu próximo destino con MoveGo</p>
-          <div *ngIf="viajes.length > 0; else noHayViajes" class="user-list-container">
-            <ion-list>
-              <ion-item-sliding *ngFor="let viaje of viajes">
-                <ion-item>
-                  <ion-label>
-                    <h2>{{ viaje.id_viaje }}</h2>
-                    <p>{{ viaje.ubicacion_destino }}</p>
-                  </ion-label>
-                </ion-item>
-                <ion-item-options side="start">
-                  <ion-item-option click="ver(viaje)" color="success">Ver</ion-item-option>
-                </ion-item-options>
-              </ion-item-sliding>
-            </ion-list>
-          </div>
-          <ng-template #noHayViajes>
-            <ion-item>
-              <ion-label>
-                <h2>No hay viajes disponibles.</h2>
-              </ion-label>
-            </ion-item>
-          </ng-template>
-        </ion-text>
-        
-  
-        <!-- Texto descriptivo para viaje priority -->
-        <ion-text *ngIf="!isBasicoSelected" class="ion-text-center ion-margin-top">
-          <p style="font-size: 16px; color: #061b30;">Explora tus destinos pasados con MoveGo</p>
-          <ion-list>
-            <ion-item
-              *ngFor="let destino of filteredDestinos"
-              (click)="onDestinoSelect(destino)"
-              id="destinos"
-              lines="full"
-              detail="false"
-              style="border-radius: 8px; margin-bottom: 8px; background-color: #ffffff; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
-              <ion-label style="color: #003d99;">{{ destino }}</ion-label>
-            </ion-item>
-          </ion-list>
-        </ion-text>
-  
-        <!-- Barra de búsqueda -->
-        <ion-searchbar
-          (ionInput)="onSearch($event)"
-          placeholder="Buscar Destino..."
-          id="busquedaDestinos"
-          style="--background: #e6f0ff; --placeholder-color: #007bff; --input-padding-start: 12px; --padding-start: 12px;">
-        </ion-searchbar> 
-  
-      </div>
-    </ion-list>
-  </ion-content>
+  <!-- Contenedor principal -->
+   <ion-list class="ion-margin">
+     <div class="ion-margin">
+ 
+       <!-- Segmento para selección de tipo de viaje -->
+       <ion-segment mode="ios" value="basico" (ionChange)="onSegmentChange($event)" color="primary">
+         <ion-segment-button value="basico">
+           <ion-label>Mis viajes</ion-label>
+         </ion-segment-button>
+         <ion-segment-button value="priority">
+           <ion-label>Viajes Disponibles</ion-label>
+         </ion-segment-button>
+       </ion-segment>
+ 
+       <!-- Texto descriptivo para viaje básico -->
+       <ion-text *ngIf="isBasicoSelected" class="ion-text-center ion-margin-top">
+         <p style="font-size: 16px; color: #061b30;">Viajes realizados</p>
+         <div *ngIf="viajes.length > 0; else noHayViajes" class="user-list-container">
+           <ion-list>
+             <ion-item-sliding *ngFor="let viaje of viajes">
+               <ion-item>
+                 <ion-label>
+                   <h2>{{ viaje.id_viaje }}</h2>
+                   <p>{{ viaje.ubicacion_destino }}</p>
+                 </ion-label>
+               </ion-item>
+               <ion-item-options side="start">
+                 <ion-item-option click="ver(viaje)" color="success">Ver</ion-item-option>
+               </ion-item-options>
+             </ion-item-sliding>
+           </ion-list>
+         </div>
+         <ng-template #noHayViajes>
+           <ion-item>
+             <ion-label>
+               <h2>No hay viajes disponibles.</h2>
+             </ion-label>
+           </ion-item>
+         </ng-template>
+       </ion-text>
+       
+ 
+       <!-- Texto descriptivo para viaje priority -->
+       <ion-text *ngIf="!isBasicoSelected" class="ion-text-center ion-margin-top">
+         <p style="font-size: 16px; color: #061b30;">Explora tus destinos pasados con MoveGo</p>
+         <ion-list>
+           <ion-item
+             *ngFor="let destino of filteredDestinos"
+             (click)="onDestinoSelect(destino)"
+             id="destinos"
+             lines="full"
+             detail="false"
+             style="border-radius: 8px; margin-bottom: 8px; background-color: #ffffff; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+             <ion-label style="color: #003d99;">{{ destino }}</ion-label>
+           </ion-item>
+         </ion-list>
+       </ion-text>
+ 
+       <!-- Barra de búsqueda -->
+       <ion-searchbar
+         (ionInput)="onSearch($event)"
+         placeholder="Buscar Destino..."
+         id="busquedaDestinos"
+         style="--background: #e6f0ff; --placeholder-color: #007bff; --input-padding-start: 12px; --padding-start: 12px;">
+       </ion-searchbar> 
+ 
+     </div>
+   </ion-list>
+ </ion-content>
+ 
   

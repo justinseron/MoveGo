@@ -1,38 +1,18 @@
 import { Component, AfterViewInit, OnInit } from '@angular/core';
 import { NavigationStart, Router } from '@angular/router';
-import * as L from 'leaflet';
-import * as G from 'leaflet-control-geocoder';
-import 'leaflet-routing-machine';
 import { ViajesService } from 'src/app/services/viajes.service';
-
 @Component({
   selector: 'app-viajes',
   templateUrl: './viajes.page.html',
   styleUrls: ['./viajes.page.scss'],
 })
 export class ViajesPage implements OnInit, AfterViewInit {
-  private map: L.Map | undefined;
-  private geocoder: G.Geocoder | undefined;
-  private routingControl: L.Routing.Control | undefined;  
-  private currentMarker: L.Marker | undefined;
-  latitud: number = 0;
-  longitud: number = 0;
-  direccion: string = '';
-  distancia_metros: number = 0;
-  tiempo_segundos: number = 0;
-
   viajes: any[] = []; // Agregar esta línea para almacenar los viajes
 
   constructor(private router: Router, private viajeService: ViajesService) {
-    this.router.events.subscribe((event) => {
-      if (event instanceof NavigationStart) {
-        this.resetMap();
-      }
-    });
   }
 
   ngOnInit() {
-    this.initMap();
     this.cargarViajes(); // Cargar los viajes en ngOnInit
   }
 
@@ -46,81 +26,6 @@ export class ViajesPage implements OnInit, AfterViewInit {
     this.router.navigate(['/detalles-viaje'], {
       state: { viaje: viaje } // Pasar el viaje como estado
     });
-  }
-
-  initMap() {
-    this.map = L.map('map_html').locate({ setView: true, maxZoom: 16 });
-    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      maxZoom: 19,
-      attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
-    }).addTo(this.map);
-
-    this.geocoder = G.geocoder({
-      placeholder: 'Ingrese dirección a buscar',
-      errorMessage: 'Dirección no encontrada',
-    }).addTo(this.map);
-
-    this.map.on('locationfound', (e) => {
-      const lat = e.latlng.lat;
-      const lng = e.latlng.lng;
-      this.latitud = lat;
-      this.longitud = lng;
-
-      if (this.map) {
-        if (this.currentMarker) {
-          this.map.removeLayer(this.currentMarker);
-        }
-        this.currentMarker = L.marker([lat, lng]).addTo(this.map).bindPopup('¡Estás aquí!').openPopup();
-      }
-    });
-
-    this.map?.on('locationerror', () => {
-      alert('No se pudo obtener la ubicación.');
-    });
-
-    this.geocoder.on('markgeocode', (e) => {
-      const destinoLat = e.geocode.center.lat;
-      const destinoLng = e.geocode.center.lng;
-      this.direccion = e.geocode.properties['display_name'];
-
-      if (this.map) {
-        const ubicacionActualLat = this.latitud;
-        const ubicacionActualLng = this.longitud;
-
-        if (this.routingControl) {
-          this.map.removeControl(this.routingControl);
-        }
-
-        this.routingControl = L.Routing.control({
-          waypoints: [
-            L.latLng(ubicacionActualLat, ubicacionActualLng),
-            L.latLng(destinoLat, destinoLng),
-          ],
-          routeWhileDragging: true,
-          fitSelectedRoutes: true,
-        })
-          .on('routesfound', (e) => {
-            this.distancia_metros = e.routes[0].summary.totalDistance;
-            this.tiempo_segundos = e.routes[0].summary.totalTime;
-          })
-          .addTo(this.map);
-      }
-    });
-  }
-
-  resetMap() {
-    if (this.map) {
-      this.map.eachLayer((layer) => {
-        if (layer instanceof L.Marker) {
-          this.map?.removeLayer(layer);
-        }
-      });
-
-      if (this.routingControl) {
-        this.map.removeControl(this.routingControl);
-        this.routingControl = undefined;  
-      }
-    }
   }
 
   isBasicoSelected: boolean = true;

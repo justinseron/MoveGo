@@ -1,9 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { AbstractControl, FormControl, FormGroup, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { NavigationStart, Router } from '@angular/router';
 import { AlertController } from '@ionic/angular';
 import { ViajesService } from 'src/app/services/viajes.service';
 import { UsuarioService } from 'src/app/services/usuario.service';
+import * as L from 'leaflet';
+import * as G from 'leaflet-control-geocoder';
+import 'leaflet-routing-machine';
 @Component({
   selector: 'app-administrar-viajes',
   templateUrl: './administrar-viajes.page.html',
@@ -15,12 +18,29 @@ export class AdministrarViajesPage implements OnInit {
   usuarios:any[] = [];
   conductores: any[] = [];
   botonModificar: boolean = true; // Cambiado a número para el ID del viaje
+  private map: L.Map | undefined;
+  private geocoder: G.Geocoder | undefined;
+  private routingControl: L.Routing.Control | undefined;  
+  private currentMarker: L.Marker | undefined;
+  latitud: number = 0;
+  longitud: number = 0;
+  direccion: string = '';
+  distancia_metros: number = 0;
+  tiempo_segundos: number = 0;
+
+
   constructor(
     private viajeService: ViajesService,
     private usuarioService: UsuarioService,
     private alertController: AlertController,
-    private router: Router
+    private router: Router,
+    
   ) {
+    this.router.events.subscribe((event) => {
+      if (event instanceof NavigationStart) {
+        this.resetMap();
+      }
+    });
     // Inicializa el formulario aquí para una mejor legibilidad
     this.viaje = new FormGroup({
       id__viaje: new FormControl({value: '', disabled: true}),// Campo solo lectura
@@ -30,8 +50,8 @@ export class AdministrarViajesPage implements OnInit {
       asientos_disponibles: new FormControl('', [Validators.required]),
       nombre_destino: new FormControl('', [Validators.required]),
       latitud: new FormControl('', [Validators.required]),
-      longitud: new FormControl('', [Validators.required, Validators.min(1)]),
-      distancia_metros: new FormControl('', [Validators.required, Validators.min(0)]),
+      longitud: new FormControl('', [Validators.required]),
+      distancia_metros: new FormControl('', [Validators.required]),
       costo_viaje: new FormControl('', [Validators.required]),
       metodo_pago: new FormControl('efectivo',[Validators.required]),
       numero_tarjeta:new FormControl('',[]),
@@ -44,6 +64,8 @@ export class AdministrarViajesPage implements OnInit {
     this.cargarConductores();
   }
   async ngOnInit() {
+    this.initMap();
+    this.cargarViajes(); // Cargar los viajes en ngOnInit
     
     this.usuarioService.usuarios$.subscribe(usuarios => {
       this.conductores = usuarios.filter(usuario => usuario.tipo_usuario === 'Conductor');
@@ -166,5 +188,123 @@ export class AdministrarViajesPage implements OnInit {
     });
 
     await alert.present();
+  }
+  
+  // Método para cargar viajes
+  async cargarViajes() {
+    this.viajes = await this.viajeService.getViajes();
+    console.log(this.viajes);
+  }
+
+  ver(viaje: any) {
+    this.router.navigate(['/detalles-viaje'], {
+      state: { viaje: viaje } // Pasar el viaje como estado
+    });
+  }
+
+  initMap() {
+    this.map = L.map('map_html').locate({ setView: true, maxZoom: 16 });
+    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 19,
+      attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+    }).addTo(this.map);
+
+    this.geocoder = G.geocoder({
+      placeholder: 'Ingrese dirección a buscar',
+      errorMessage: 'Dirección no encontrada',
+    }).addTo(this.map);
+
+    this.map.on('locationfound', (e) => {
+      const lat = e.latlng.lat;
+      const lng = e.latlng.lng;
+      this.latitud = lat;
+      this.longitud = lng;
+
+      if (this.map) {
+        if (this.currentMarker) {
+          this.map.removeLayer(this.currentMarker);
+        }
+        this.currentMarker = L.marker([lat, lng]).addTo(this.map).bindPopup('¡Estás aquí!').openPopup();
+      }
+    });
+
+    this.map?.on('locationerror', () => {
+      alert('No se pudo obtener la ubicación.');
+    });
+
+    this.geocoder.on('markgeocode', (e) => {
+      const destinoLat = e.geocode.center.lat;
+      const destinoLng = e.geocode.center.lng;
+      this.direccion = e.geocode.properties['display_name'];
+
+      if (this.map) {
+        const ubicacionActualLat = this.latitud;
+        const ubicacionActualLng = this.longitud;
+
+        if (this.routingControl) {
+          this.map.removeControl(this.routingControl);
+        }
+
+        this.routingControl = L.Routing.control({
+          waypoints: [
+            L.latLng(ubicacionActualLat, ubicacionActualLng),
+            L.latLng(destinoLat, destinoLng),
+          ],
+          routeWhileDragging: true,
+          fitSelectedRoutes: true,
+        })
+          .on('routesfound', (e) => {
+            this.distancia_metros = e.routes[0].summary.totalDistance;
+            this.tiempo_segundos = e.routes[0].summary.totalTime;
+          })
+          .addTo(this.map);
+      }
+    });
+  }
+
+  resetMap() {
+    if (this.map) {
+      this.map.eachLayer((layer) => {
+        if (layer instanceof L.Marker) {
+          this.map?.removeLayer(layer);
+        }
+      });
+
+      if (this.routingControl) {
+        this.map.removeControl(this.routingControl);
+        this.routingControl = undefined;  
+      }
+    }
+  }
+
+  isBasicoSelected: boolean = true;
+  destinos: string[] = ['Duoc UC, Sede Puente Alto', 'Casa #123', 'Casa amigo #321', 'Destino X #111'];
+  filteredDestinos: string[] = [];
+  selectedDestino: string | null = null;
+
+  ngAfterViewInit() {
+    this.filteredDestinos = this.destinos;
+  }
+
+  onSegmentChange(event: any) {
+    const selectedValue = event.detail.value;
+    this.isBasicoSelected = selectedValue === 'basico';
+  }
+
+  onSearch(event: any) {
+    const searchTerm = event.target.value.toLowerCase();
+    this.filteredDestinos = this.destinos.filter((destino) =>
+      destino.toLowerCase().includes(searchTerm)
+    );
+  }
+
+  onDestinoSelect(destino: string) {
+    const tipoViaje = this.isBasicoSelected ? 'BÁSICO' : 'PRIORITY';
+    this.router.navigate(['/detalles-viaje'], {
+      state: {
+        destino: destino,
+        tipoViaje: tipoViaje,
+      },
+    });
   }
 }
