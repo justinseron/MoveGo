@@ -20,49 +20,27 @@ MoveGo aborda estos problemas conectando a los estudiantes con vehículos dispon
 - **Incentivo a la Asistencia**: Estimula la asistencia presencial a clases.
 - **Reducción de la Huella de Carbono**: Contribuye a una movilidad más sostenible.
 
-Instalación
+## Instalación
 Sigue estos pasos para configurar y ejecutar el proyecto en tu entorno local:
 
-1. Moverse al Disco D
- Primero, abre una terminal o consola y navega al disco D:
+ 1. Ingresa a Git Bash.
+ 2. Copia, pega y ejecuta estos comandos en orden:
 
- bash
-  cd d:
-2. Crear una Carpeta para el Proyecto
-Crea una nueva carpeta donde quieras clonar el repositorio:
-
-  bash
-  mkdir MoveGo
-3. Moverse a la Carpeta
-Navega dentro de la carpeta recién creada:
-
-bash
-  cd MoveGo
-4. Clonar el Repositorio
-Clona el repositorio de GitHub dentro de la carpeta:
-
-bash
-  git clone https://github.com/justinseron/MoveGo.git
-5. Moverse al Directorio del Repositorio
-Una vez clonado, navega dentro del directorio del proyecto:
-
-bash
-  cd MoveGo/
-6. Instalar Dependencias
-Ejecuta el siguiente comando para instalar todas las dependencias necesarias:
-
-bash
-  npm install
-7. Abrir el Proyecto en Visual Studio Code
-Abre el proyecto en VS Code directamente desde la terminal:
-
-bash
+   ```bash
+   git clone https://github.com/justinseron/MoveGo.git
+   ```
+   ```bash
+   cd MoveGo/
+   ```
+   ```bash
    code .
-8. Ejecutar la Aplicación
-Para iniciar el servidor de desarrollo con Ionic, ejecuta:
-
-bash
-  ionic serve
+   ```
+   ```bash
+   npm install
+   ```
+   ```bash
+   ionic serve
+   ```
 
 
 <p align="center">
