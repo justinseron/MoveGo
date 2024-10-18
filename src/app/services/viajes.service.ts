@@ -5,6 +5,8 @@ import { Storage } from '@ionic/storage-angular';
   providedIn: 'root'
 })
 export class ViajesService {
+  private misViajesKey = "mis_viajes";
+
   constructor(private storage: Storage) { 
     this.init();
   }
@@ -16,11 +18,11 @@ export class ViajesService {
     // Solo crea un viaje nuevo si no hay ninguno en el almacenamiento
     if (viajes.length === 0) {
       let viaje = {
-        "id__viaje": "1", // Asignar ID inicial como string
+        "id__viaje": "1", 
         "conductor": "Juan Pérez",
         "patente": "AABB32",
         "color_auto": "Rojo",
-        "asientos_disponibles": "0",
+        "asientos_disponibles": "4",
         "nombre_destino": "Municipalidad de Puente Alto, 1820, Avenida Concha y Toro",
         "latitud": -33.59523505,
         "longitud": -70.57963843136085,
@@ -28,9 +30,9 @@ export class ViajesService {
         "costo_viaje": 2000,
         "metodo_pago": "efectivo",
         "numero_tarjeta": "",
-        "duracion_viaje": "Minutos", // Cambiado a "Minutos" directamente
+        "duracion_viaje": "Minutos",
         "hora_salida": "13:00",
-        "pasajeros": "4",
+        "pasajeros": "6",
         "estado_viaje": "pendiente",
       };
       await this.createViaje(viaje);
@@ -41,12 +43,10 @@ export class ViajesService {
     try {
       let viajes: any[] = await this.storage.get("viajes") || [];
       
-      // Asigna el ID automático solo si no se ha definido
       if (!viaje.id__viaje) {
         viaje.id__viaje = (viajes.length > 0 ? (parseInt(viajes[viajes.length - 1].id__viaje) + 1).toString() : "1");
       }
 
-      // Verifica si el viaje ya existe por ID
       if (viajes.find(v => v.id__viaje === viaje.id__viaje) !== undefined) {
         return false; // Viaje ya existe
       }
@@ -70,6 +70,29 @@ export class ViajesService {
     return viajes;
   }
 
+  public async tomarViaje(id__viaje: number): Promise<boolean> {
+    let viajes: any[] = await this.storage.get("viajes") || [];
+    let indice: number = viajes.findIndex(viaje => viaje.id__viaje === id__viaje.toString());
+
+    if (indice === -1) {
+      return false; // Viaje no encontrado
+    }
+
+    // Obtener el viaje seleccionado
+    const viajeTomado = viajes[indice];
+
+    // Agregar el viaje a "Mis Viajes"
+    let misViajes: any[] = await this.storage.get(this.misViajesKey) || [];
+    misViajes.push(viajeTomado);
+    await this.storage.set(this.misViajesKey, misViajes);
+
+    // Eliminar el viaje de "Viajes Disponibles"
+    viajes.splice(indice, 1);
+    await this.storage.set("viajes", viajes);
+    
+    return true;
+  }
+
   public async updateViaje(id__viaje: number, nuevoViaje: any): Promise<boolean> {
     let viajes: any[] = await this.storage.get("viajes") || [];
     let indice: number = viajes.findIndex(viaje => viaje.id__viaje === id__viaje.toString());
@@ -78,7 +101,7 @@ export class ViajesService {
       return false; // Viaje no encontrado
     }
 
-    nuevoViaje.id__viaje = id__viaje.toString(); // Asegúrate de que el ID se mantenga como string
+    nuevoViaje.id__viaje = id__viaje.toString();
     viajes[indice] = nuevoViaje;
     await this.storage.set("viajes", viajes);
     return true;

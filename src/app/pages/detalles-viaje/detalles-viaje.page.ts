@@ -29,4 +29,43 @@ export class DetallesViajePage implements OnInit {
       this.viaje = await this.viajesService.getViaje(this.id);
     }
   }
+
+  async confirmarTomaViaje() {
+    const alert = await this.alertController.create({
+      header: 'Confirmar Toma de Viaje',
+      message: '¿Está seguro de que desea tomar este viaje?',
+      buttons: [
+        {
+          text: 'Cancelar',
+          role: 'cancel',
+          cssClass: 'secondary',
+        },
+        {
+          text: 'Aceptar',
+          handler: async () => {
+            if (this.viaje.asientos_disponibles > 0) {
+              // Disminuir los asientos disponibles
+              this.viaje.asientos_disponibles = (parseInt(this.viaje.asientos_disponibles) - 1).toString();
+
+              // Actualizar el viaje en el servicio
+              await this.viajesService.updateViaje(this.viaje.id__viaje, this.viaje);
+
+              // Actualizar la variable 'viaje' para reflejar el cambio
+              this.viaje = { ...this.viaje }; // Para forzar la actualización del binding
+            } else {
+              // Aquí puedes manejar la situación de que no haya asientos disponibles
+              const noSeatsAlert = await this.alertController.create({
+                header: 'Sin Asientos',
+                message: 'No hay asientos disponibles para este viaje.',
+                buttons: ['Aceptar']
+              });
+              await noSeatsAlert.present();
+            }
+          }
+        }
+      ]
+    });
+
+    await alert.present();
+  }
 }

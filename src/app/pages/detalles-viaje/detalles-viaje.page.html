@@ -1,6 +1,15 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button></ion-back-button>
+    </ion-buttons>
+    <ion-title>Detalle Viaje</ion-title>
+  </ion-toolbar>
+</ion-header>
+
 <ion-content>
   <img src="assets/images/logo.png" alt="logo" id="logo">
-  
+
   <ion-card class="detalles-viaje" *ngIf="viaje">
     <ion-card-header>
       <ion-card-title>Detalles del Viaje</ion-card-title>
@@ -43,6 +52,10 @@
           <ion-label>Estado del Viaje:</ion-label>
           <ion-text>{{ viaje.estado_viaje }}</ion-text>
         </ion-item>
+        <ion-item>
+          <ion-label>Asientos Disponibles:</ion-label>
+          <ion-text>{{ viaje.asientos_disponibles }}</ion-text>
+        </ion-item>
       </ion-list>
     </ion-card-content>
   </ion-card>
@@ -53,3 +66,9 @@
     </ion-card-content>
   </ion-card>
 </ion-content>
+
+<ion-footer>
+  <ion-button expand="full" color="primary" (click)="confirmarTomaViaje()">
+    Tomar Viaje
+  </ion-button>
+</ion-footer>
