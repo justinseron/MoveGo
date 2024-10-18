@@ -44,17 +44,17 @@ export class AdministrarViajesPage implements OnInit {
     // Inicializa el formulario aquí para una mejor legibilidad
     this.viaje = new FormGroup({
       id__viaje: new FormControl({ value: '', disabled: true }), // Campo solo lectura
-      conductor: new FormControl('', [Validators.required]),
-      patente: new FormControl('', [Validators.required]),
-      color_auto: new FormControl('', [Validators.required]),
-      asientos_disponibles: new FormControl('', [Validators.required]),
+      conductor: new FormControl('', [Validators.required]), 
+      patente: new FormControl('', [Validators.required]),//validar
+      color_auto: new FormControl('', [Validators.required]),//*
+      asientos_disponibles: new FormControl('', [Validators.required]), //validar max 7
       nombre_destino: new FormControl('', [Validators.required]),
       latitud: new FormControl('', [Validators.required]),
       longitud: new FormControl('', [Validators.required]),
       distancia_metros: new FormControl('', [Validators.required]),
-      costo_viaje: new FormControl('', [Validators.required]),
+      costo_viaje: new FormControl('', [Validators.required]), //validar mayor a 0
       metodo_pago: new FormControl('efectivo', [Validators.required]),
-      numero_tarjeta: new FormControl('', []),
+      numero_tarjeta: new FormControl('', []), //validar mayor a 0
       duracion_viaje: new FormControl('', [Validators.required]),
       hora_salida: new FormControl('', [Validators.required]),
       pasajeros: new FormControl('', [Validators.required]),
