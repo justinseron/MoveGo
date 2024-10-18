@@ -7,7 +7,14 @@ import { ViajesService } from 'src/app/services/viajes.service';
   styleUrls: ['./viajes.page.scss'],
 })
 export class ViajesPage implements OnInit, AfterViewInit {
+
   viajes: any[] = []; // Agregar esta línea para almacenar los viajes
+  destinosFiltrados: any[] = [];
+
+  isBasicoSelected: boolean = true;
+  destinos: string[] = ['Duoc UC, Sede Puente Alto', 'Casa #123', 'Casa amigo #321', 'Destino X #111'];
+  filteredDestinos: string[] = [];
+  selectedDestino: string | null = null;
 
   constructor(private router: Router, private viajeService: ViajesService) {
   }
@@ -19,7 +26,14 @@ export class ViajesPage implements OnInit, AfterViewInit {
   // Método para cargar viajes
   async cargarViajes() {
     this.viajes = await this.viajeService.getViajes();
-    console.log(this.viajes);
+    this.destinosFiltrados = this.viajes;
+  }
+
+  onSearch(event: any) {
+    const searchTerm = event.target.value.toLowerCase();
+    this.destinosFiltrados = this.viajes.filter((viaje) =>
+      viaje.nombre_destino.toLowerCase().includes(searchTerm)
+    );
   }
 
   ver(viaje: any) {
@@ -28,13 +42,8 @@ export class ViajesPage implements OnInit, AfterViewInit {
     });
   }
 
-  isBasicoSelected: boolean = true;
-  destinos: string[] = ['Duoc UC, Sede Puente Alto', 'Casa #123', 'Casa amigo #321', 'Destino X #111'];
-  filteredDestinos: string[] = [];
-  selectedDestino: string | null = null;
-
   ngAfterViewInit() {
-    this.filteredDestinos = this.destinos;
+    //...
   }
 
   onSegmentChange(event: any) {
@@ -42,12 +51,6 @@ export class ViajesPage implements OnInit, AfterViewInit {
     this.isBasicoSelected = selectedValue === 'basico';
   }
 
-  onSearch(event: any) {
-    const searchTerm = event.target.value.toLowerCase();
-    this.filteredDestinos = this.destinos.filter((destino) =>
-      destino.toLowerCase().includes(searchTerm)
-    );
-  }
 
   onDestinoSelect(destino: string) {
     const tipoViaje = this.isBasicoSelected ? 'BÁSICO' : 'PRIORITY';

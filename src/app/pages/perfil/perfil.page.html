@@ -1,8 +1,9 @@
 <ion-content>
   <!-- Sección de la foto de perfil y el nombre de usuario -->
   <div class="ion-text-center" id="foto-perfil">
-    <img src="assets/images/perfildefault.png" alt="Foto de perfil" id="imagen-perfil">
+    <img [src]="fotoPerfil" alt="Foto de perfil" id="imagen-perfil" (click)="fileInput.click()">
     <h1 id="labelNombre">{{ usuario.nombre | titlecase }}</h1>
+    <input type="file" accept="=images/*" (change)="cambiarFotoPerfil($event)" hidden #fileInput>
   </div>
 
   <div id="detalles-perfil">

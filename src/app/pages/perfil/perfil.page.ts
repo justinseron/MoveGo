@@ -9,13 +9,33 @@ import { AlertController, NavController } from '@ionic/angular';
 })
 export class PerfilPage implements OnInit {
 
-  constructor(private router: Router, private alertController: AlertController,private navController: NavController) { }
   usuario: any;
+  fotoPerfil: string = 'assets/images/perfildefault.png'; // Ruta por defecto para la foto de perfil
+
+  constructor(private router: Router, private alertController: AlertController, private navController: NavController) { }
+
   ngOnInit() {
-    this.usuario = JSON.parse(localStorage.getItem("usuario") || '');
+    this.usuario = JSON.parse(localStorage.getItem("usuario") || '{}');
+    const fotoGuardada = localStorage.getItem("fotoPerfil");
+    if (fotoGuardada) {
+      this.fotoPerfil = fotoGuardada;
+    }
   }
 
-  async confirmarCerrar(){
+  cambiarFotoPerfil(event: any) {
+    const archivo = event.target.files[0];
+    if (archivo) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        this.fotoPerfil = reader.result as string;
+        // Guardar la foto en localStorage
+        localStorage.setItem("fotoPerfil", this.fotoPerfil);
+      };
+      reader.readAsDataURL(archivo);
+    }
+  }
+
+  async confirmarCerrar() {
     const alert = await this.alertController.create({
       header: 'Confirmar Cierre de Sesión',
       message: '¿Está seguro de que desea cerrar la sesión?',
@@ -24,25 +44,24 @@ export class PerfilPage implements OnInit {
           text: 'Cancelar',
           role: 'cancel',
           handler: () => {
-            //No hacer NADA si cancela
+            // No hacer nada si cancela
           }
         },
         {
           text: 'Aceptar',
           handler: () => {
-            this.cerrarSesion(); //Llama a la función si se acepta
+            this.cerrarSesion(); // Llama a la función si se acepta
           }
         }
       ]
     });
 
-    await alert.present(); //Mostramos la alerta.
+    await alert.present(); // Mostrar la alerta
   }
 
-  //Cerrar sesión provisorio
-  cerrarSesion(){
+  cerrarSesion() {
     localStorage.removeItem('usuario');
+    localStorage.removeItem('fotoPerfil');
     this.navController.navigateRoot('/login');
   }
-
 }

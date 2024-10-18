@@ -1,46 +1,55 @@
 <ion-content>
   <img src="assets/images/logo.png" alt="logo" id="logo">
-  <ion-card class="detalles-viaje">
-    <br>
-    <ion-card-title class="ion-text-center">DETALLES DEL VIAJE</ion-card-title>
-      <ion-card-content *ngIf="viaje">
-        <ion-list>
-          <ion-item>
-            <ion-label>
-              <b>Destino:</b>
-            </ion-label>
-            <ion-label slot="end">{{ viaje.destino }}</ion-label>
-          </ion-item>
-          <ion-item>
-            <ion-label>
-              <b>Inicio de Viaje:</b>
-            </ion-label>
-            <ion-label slot="end">(inicio)</ion-label>
-          </ion-item>
-          <ion-item>
-            <ion-label>
-              <b>Tipo de Viaje:</b>
-            </ion-label>
-            <ion-label slot="end">{{ tipoViaje }}</ion-label>
-          </ion-item>
-          <ion-item>
-            <ion-label>
-              <b>Tarifa por KMs:</b>
-            </ion-label>
-            <ion-label slot="end">(tarifa)</ion-label>
-          </ion-item>
-          <ion-item>
-            <ion-label>
-              <b>TOTAL DEL VIAJE:</b>
-            </ion-label>
-            <ion-label slot="end">(total)</ion-label>
-          </ion-item>
-        </ion-list>
-        <ion-button size="block" shape="round" color="secondary" (click)="confirmarAlerta()">CONFIRMAR VIAJE</ion-button>
-        <br>
-        <div class="ion-text-center">
-          <ion-button shape="round" color="dark" (click)="cancelarAlerta()" id="btnVolver">VOLVER</ion-button>
-        </div>
-      </ion-card-content>
+  
+  <ion-card class="detalles-viaje" *ngIf="viaje">
+    <ion-card-header>
+      <ion-card-title>Detalles del Viaje</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-list>
+        <ion-item>
+          <ion-label>Conductor:</ion-label>
+          <ion-text>{{ viaje.conductor }}</ion-text>
+        </ion-item>
+        <ion-item>
+          <ion-label>Patente:</ion-label>
+          <ion-text>{{ viaje.patente }}</ion-text>
+        </ion-item>
+        <ion-item>
+          <ion-label>Color del Auto:</ion-label>
+          <ion-text>{{ viaje.color_auto }}</ion-text>
+        </ion-item>
+        <ion-item>
+          <ion-label>Destino:</ion-label>
+          <ion-text>{{ viaje.nombre_destino }}</ion-text>
+        </ion-item>
+        <ion-item>
+          <ion-label>Duración del Viaje:</ion-label>
+          <ion-text>{{ viaje.duracion_viaje }}</ion-text>
+        </ion-item>
+        <ion-item>
+          <ion-label>Costo:</ion-label>
+          <ion-text>{{ viaje.costo_viaje | currency: 'CLP' }}</ion-text>
+        </ion-item>
+        <ion-item>
+          <ion-label>Método de Pago:</ion-label>
+          <ion-text>{{ viaje.metodo_pago }}</ion-text>
+        </ion-item>
+        <ion-item>
+          <ion-label>Hora de Salida:</ion-label>
+          <ion-text>{{ viaje.hora_salida }}</ion-text>
+        </ion-item>
+        <ion-item>
+          <ion-label>Estado del Viaje:</ion-label>
+          <ion-text>{{ viaje.estado_viaje }}</ion-text>
+        </ion-item>
+      </ion-list>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-card *ngIf="!viaje">
+    <ion-card-content>
+      <p>Detalles del viaje no disponibles.</p>
+    </ion-card-content>
   </ion-card>
 </ion-content>
