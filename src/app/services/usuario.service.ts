@@ -97,6 +97,7 @@ export class UsuarioService {
     return true;
   }
 
+
   public async getUsuario(rut:string): Promise<any>{
     let usuarios: any[] = await this.storage.get("usuarios") || [];
     return usuarios.find(usu=>usu.rut==rut);
@@ -141,8 +142,9 @@ export class UsuarioService {
     }
     return false;
 }
-public getUserRut(): string | null {
-  return localStorage.getItem("userRut");
+getUserRut(): string {
+  // Suponiendo que tienes el RUT almacenado en el almacenamiento local
+  return localStorage.getItem('userRut') || '';
 }
 
   public async recuperarUsuario(correo:string): Promise<any>{

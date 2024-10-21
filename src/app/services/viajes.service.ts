@@ -39,6 +39,11 @@ export class ViajesService {
       };
       await this.createViaje(viaje);
     }
+     this.viajesDisponibles = viajes.filter(viaje => viaje.estado_viaje === 'pendiente');
+  }
+  async tieneViajeVinculado(rutPasajero: string): Promise<boolean> {
+    const viajes = await this.getViajes(); // Obtener todos los viajes
+    return viajes.some(viaje => viaje.pasajeros.includes(rutPasajero));
   }
 
   public async createViaje(viaje: any): Promise<boolean> {
@@ -76,43 +81,52 @@ export class ViajesService {
   }
 
   async tomarViaje(idViaje: number, usuarioRut: string): Promise<boolean> {
-    const viajes = await this.getViajes(); // Obtener todos los viajes disponibles
+    const viajes = await this.getViajes();
     const viajeIndex = viajes.findIndex(viaje => viaje.id__viaje === idViaje.toString());
 
     if (viajeIndex !== -1) {
-      const viajeTomado = viajes[viajeIndex];
-      viajeTomado.pasajeros = viajeTomado.pasajeros || [];
-      
-      // Comprobar si el usuario ya ha tomado el viaje
-      if (viajeTomado.pasajeros.includes(usuarioRut)) {
-        return false; // El usuario ya tomó este viaje
-      }
+        const viajeTomado = viajes[viajeIndex];
+        viajeTomado.pasajeros = viajeTomado.pasajeros || []; // Asegúrate de que sea un arreglo
 
-      viajeTomado.pasajeros.push(usuarioRut); // Agregar el usuario a la lista de pasajeros
-      viajeTomado.asientos_disponibles -= 1; // Decrementar el número de asientos disponibles
-      
-      // Comprobar si no hay asientos disponibles y cambiar el estado
-      if (viajeTomado.asientos_disponibles === 0) {
-        viajeTomado.estado_viaje = "en_curso"; // Cambiar estado si no hay asientos disponibles
-      }
+        // Comprobar si el usuario ya ha tomado el viaje
+        if (Array.isArray(viajeTomado.pasajeros) && viajeTomado.pasajeros.includes(usuarioRut)) {
+            return false; // El usuario ya tomó este viaje
+        }
 
-      // Actualizar la lista de viajes en el almacenamiento
-      await this.updateViaje(viajeTomado.id__viaje, viajeTomado); // Actualizar viaje
-      
-      // Mover el viaje a "Mis viajes"
-      this.misViajes.push(viajeTomado);
-      this.viajesDisponibles = this.viajesDisponibles.filter(v => v.id__viaje !== viajeTomado.id__viaje); // Eliminar de "Viajes disponibles"
-      
-      return true; // Retornar éxito
+        viajeTomado.pasajeros.push(usuarioRut);
+        viajeTomado.asientos_disponibles -= 1;
+
+        // Comprobar si no hay asientos disponibles y cambiar el estado
+        if (viajeTomado.asientos_disponibles === 0) {
+            viajeTomado.estado_viaje = "en_curso";
+        }
+
+        // Actualizar la lista de viajes en el almacenamiento
+        await this.updateViaje(viajeTomado.id__viaje, viajeTomado);
+
+        // Mover el viaje a "Mis viajes" si no existe
+        if (!this.misViajes.find(v => v.id__viaje === viajeTomado.id__viaje)) {
+            this.misViajes.push(viajeTomado);
+        }
+
+        // Eliminar de "Viajes disponibles"
+        this.viajesDisponibles = this.viajesDisponibles.filter(v => v.id__viaje !== viajeTomado.id__viaje);
+
+        return true; // Retornar éxito
     }
     return false; // No se pudo tomar el viaje
-  }
+}
+
+  
   public async cancelarViaje(idViaje: number, usuarioRut: string): Promise<boolean> {
     const viajes = await this.getViajes(); // Obtener todos los viajes
     const viajeIndex = viajes.findIndex(viaje => viaje.id__viaje === idViaje.toString());
   
     if (viajeIndex !== -1) {
       const viaje = viajes[viajeIndex];
+  
+      // Asegúrate de que pasajeros sea un arreglo
+      viaje.pasajeros = viaje.pasajeros || []; 
   
       // Remover al usuario de la lista de pasajeros
       viaje.pasajeros = viaje.pasajeros.filter((pasajero: any) => pasajero !== usuarioRut); // Especificar el tipo aquí como 'any'
@@ -139,6 +153,7 @@ export class ViajesService {
   
     return false; // No se pudo cancelar el viaje
   }
+  
     
 
   public async updateViaje(id__viaje: number, nuevoViaje: any): Promise<boolean> {
@@ -169,10 +184,10 @@ export class ViajesService {
     return true;
   }
 
-  // Método para obtener "Mis viajes"
   getMisViajes(usuarioRut: string) {
-    return this.misViajes.filter(viaje => viaje.pasajeros.includes(usuarioRut));
-  }
+    return this.misViajes.filter(viaje => Array.isArray(viaje.pasajeros) && viaje.pasajeros.includes(usuarioRut));
+}
+
 
   getViajesDisponibles() {
     return this.viajesDisponibles; // Devolver viajes disponibles

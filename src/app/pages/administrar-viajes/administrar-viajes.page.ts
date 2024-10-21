@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { AbstractControl, FormControl, FormGroup, Validators } from '@angular/forms';
+import { AbstractControl, FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
 import { NavigationStart, Router } from '@angular/router';
 import { AlertController } from '@ionic/angular';
 import { ViajesService } from 'src/app/services/viajes.service';
@@ -58,10 +58,10 @@ export class AdministrarViajesPage implements OnInit {
       distancia_metros: new FormControl('', [Validators.required]),
       costo_viaje: new FormControl('',[Validators.min(0), Validators.required]),
       metodo_pago: new FormControl('efectivo', [Validators.required]),
-      numero_tarjeta:  new FormControl('',[Validators.min(0),]),
+      numero_tarjeta:  new FormControl('',[Validators.min(0)]),
       duracion_viaje: new FormControl('', [Validators.required]),
       hora_salida: new FormControl('', [Validators.required]),
-      pasajeros: new FormControl('', [Validators.required]),
+      pasajeros: new FormControl('',[]),
       estado_viaje: new FormControl('pendiente', []),
     });
     this.loadViajes();
@@ -81,9 +81,25 @@ export class AdministrarViajesPage implements OnInit {
     this.usuarios = await this.usuarioService.getUsuarios();
   }
 
+  onConductorChange(event: any) {
+    const conductorSeleccionado = event.detail.value; // Esto debería ser el objeto del conductor completo
+    
+    if (conductorSeleccionado) {
+      // Asignar las propiedades del conductor al formulario
+      this.viaje.patchValue({
+        conductor: conductorSeleccionado.nombre,
+        patente: conductorSeleccionado.patente_auto, // Asegúrate de que esta propiedad existe
+        color_auto: conductorSeleccionado.color_auto, // Asegúrate de que esta propiedad existe
+        // Agrega otras propiedades que quieras actualizar aquí
+        asientos_disponibles: conductorSeleccionado.asientos_disponibles,
+      });
+    } 
+  }
+  
   async cargarConductores() {
     this.conductores = await this.usuarioService.getConductores();
   }
+  
 
   async loadViajes() {
     this.viajes = await this.viajeService.getViajes();
@@ -108,22 +124,29 @@ export class AdministrarViajesPage implements OnInit {
   }
 
   limpiar() {
-    this.viaje.reset(); // Resetea todos los controles del formulario
+    this.viaje.reset(); // Restablece todos los controles del formulario
     this.botonModificar = true; // Restablece el botón de modificar
     this.viaje.get('id__viaje')?.disable(); // Deshabilita el campo de ID
   }
-
   async onSubmit() {
-    const nuevoViaje = { ...this.viaje.value };
-    delete nuevoViaje.id__viaje;
-    if (await this.viajeService.createViaje(nuevoViaje)) {
-      this.viajes = await this.viajeService.getViajes();
-      alert('Viaje creado con éxito!');
-      this.viaje.reset();
+    if (this.viaje.valid) {
+      const nuevoViaje = { ...this.viaje.value };
+      delete nuevoViaje.id__viaje; // Eliminar el ID si es necesario para crear el viaje
+      if (await this.viajeService.createViaje(nuevoViaje)) {
+        this.viajes = await this.viajeService.getViajes();
+        await this.mostrarAlerta('Éxito', 'Viaje creado con éxito!');
+        this.limpiar(); // Limpia el formulario después de crear el viaje
+      } else {
+        await this.mostrarAlerta('Error', 'ERROR! Viaje no creado');
+      }
     } else {
-      alert('ERROR! Viaje no creado');
+      await this.mostrarAlerta('Error', 'Por favor, completa todos los campos requeridos.');
     }
   }
+  
+
+  
+  
 
   async buscar(id__viaje: number) {
     const viajeData = await this.viajeService.getViaje(id__viaje);
@@ -139,23 +162,20 @@ export class AdministrarViajesPage implements OnInit {
     const buscar_viaje: number = this.viaje.get('id__viaje')?.value;
 
     if (buscar_viaje) {
-      try {
-        const result = await this.viajeService.updateViaje(buscar_viaje, this.viaje.value);
-        if (result) {
-          this.viajes = await this.viajeService.getViajes();
-          await this.mostrarAlerta('Éxito', '¡Viaje modificado con éxito!');
-          this.botonModificar = true;
-          this.limpiar();
-        } else {
-          throw new Error('Error en la modificación del viaje');
+        try {
+            await this.viajeService.updateViaje(buscar_viaje, this.viaje.value);
+            this.viajes = await this.viajeService.getViajes();
+            await this.mostrarAlerta('Éxito', '¡Viaje modificado con éxito!');
+            this.botonModificar = true;
+            this.limpiar();
+        } catch (error) {
+            await this.mostrarAlerta('Error', '¡Error! Viaje no modificado.');
         }
-      } catch (error) {
-        await this.mostrarAlerta('Error', '¡Error! Viaje no modificado.');
-      }
     } else {
-      await this.mostrarAlerta('Error', 'Por favor, proporciona un ID de viaje válido.');
+        await this.mostrarAlerta('Error', 'Por favor, proporciona un ID de viaje válido.');
     }
-  }
+}
+
 
   async eliminar(viaje_eliminar: number) {
     const confirmacion = await this.presentConfirmAlert(
@@ -210,7 +230,6 @@ export class AdministrarViajesPage implements OnInit {
 
 
   //mapita
-
 
   initMap() {
     const initialLat = -33.598246116458384;

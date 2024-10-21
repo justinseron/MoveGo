@@ -25,27 +25,24 @@
       <ng-container *ngIf="isBasicoSelected; else disponiblesSection">
         <ion-text class="ion-text-center ion-margin-top">
           <div class="ion-padding">
-            <ng-container *ngIf="misViajes.length > 0; else noHayViajes">
+            <ng-container *ngIf="misViajes && misViajes.length > 0; else noHayViajes">
               <div *ngFor="let viaje of misViajes">
-                <ion-card >
+                <ion-card *ngIf="viaje && viaje.nombre_destino && viaje.asientos_disponibles !== undefined">
                   <ion-card-header>
-                    <ion-card-title>{{ viaje.nombre_destino  | titlecase}}</ion-card-title>
+                    <ion-card-title>{{ viaje.nombre_destino | titlecase }}</ion-card-title>
                   </ion-card-header>
                   <ion-card-content>
                     <p>Asientos Disponibles: {{ viaje.asientos_disponibles }}</p>
                     <p>Precio: {{ (viaje.distancia_metros / 200 * 100) | currency:'CLP' }}</p>
                   </ion-card-content>
-                  <ion-button 
-                  (click)="ver(viaje)" 
-                  size="block">
-                  Ver Detalle
-                </ion-button>
+                  <ion-button (click)="ver(viaje)" size="block">Ver Detalle</ion-button>
                 </ion-card>
               </div>
             </ng-container>
           </div>
         </ion-text>
       </ng-container>
+      
 
       <!-- Sección "Viajes Disponibles" -->
       <ng-template #disponiblesSection>
@@ -53,7 +50,7 @@
           <p style="font-size: 16px; color: #061b30;">Explora todos los viajes disponibles en MoveGo</p>
         </ion-text>
         <div class="ion-padding" *ngFor="let viaje of viajesDisponibles">
-          <ion-card *ngIf="viaje.estado_viaje === 'pendiente'">
+          <ion-card *ngIf="viaje && viaje.estado_viaje === 'pendiente'">
             <ion-card-header>
               <ion-card-title>{{ viaje.nombre_destino }}</ion-card-title>
               <ion-card-subtitle>{{ viaje.estado_viaje | titlecase }}</ion-card-subtitle>
@@ -62,15 +59,13 @@
               <p>Asientos Disponibles: {{ viaje.asientos_disponibles }}</p>
               <p>Precio: {{ (viaje.distancia_metros / 200 * 100) | currency:'CLP' }}</p>
             </ion-card-content>
-            <ion-button 
-            (click)="ver(viaje)" 
-            size="block" 
-            [disabled]="viaje.asientos_disponibles == 0">
-            Ver Detalle
-          </ion-button>
+            <ion-button (click)="ver(viaje)" size="block" [disabled]="viaje.asientos_disponibles === 0">
+              Ver Detalle
+            </ion-button>
           </ion-card>
         </div>
       </ng-template>
+      
 
       <!-- Mensaje cuando no hay viajes -->
       <ng-template #noHayViajes>

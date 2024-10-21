@@ -26,29 +26,33 @@ export class ViajesPage implements OnInit, AfterViewInit {
   async cargarViajes() {
     const todosLosViajes = await this.viajesService.getViajes(); // Obtener todos los viajes
     console.log("Todos los viajes desde el almacenamiento:", todosLosViajes); // Log para verificar
-
+  
     // Verificar si cada viaje tiene un id válido
     todosLosViajes.forEach(viaje => {
       if (!viaje.id && !viaje.id__viaje) {
         console.error("Este viaje no tiene un ID válido:", viaje);
       }
+  
+      // Asegúrate de que 'pasajeros' esté siempre inicializado como un arreglo
+      viaje.pasajeros = viaje.pasajeros || []; // Inicializa como arreglo si es undefined
     });
-
+  
     // Filtrar los viajes disponibles
     this.viajesDisponibles = todosLosViajes.filter(viaje => 
       viaje.estado_viaje === 'pendiente' &&
       viaje.asientos_disponibles > 0 &&
       !(viaje.pasajeros && viaje.pasajeros.includes(this.usuarioRut)) // Excluir viajes que ya tomó el usuario
     );
-
+  
     // Filtrar los viajes que el usuario ya ha tomado
     this.misViajes = todosLosViajes.filter(viaje => 
-      viaje.pasajeros && viaje.pasajeros.includes(this.usuarioRut)
+      viaje.pasajeros.includes(this.usuarioRut) // No necesitas la verificación anterior
     );
-
+  
     console.log("Viajes Disponibles:", this.viajesDisponibles); // Log para verificar
     console.log("Mis Viajes:", this.misViajes); // Log para verificar
   }
+  
 
   filtrarViajes() {
     if (this.isBasicoSelected) {
