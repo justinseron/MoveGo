@@ -33,6 +33,9 @@ export class PerfilPage implements OnInit {
       };
       reader.readAsDataURL(archivo);
     }
+  }   
+  irAViajesTerminados() {
+    this.router.navigate(['home/perfil-viajes']); // Redirige a la página de viajes terminados
   }
 
   async confirmarCerrar() {

@@ -68,7 +68,9 @@
 </ion-content>
 
 <ion-footer>
-  <ion-button expand="full" color="primary" (click)="confirmarTomaViaje()">
-    Tomar Viaje
+  <ion-button expand="full" color="primary" 
+    (click)="viaje?.estado_viaje === 'en_curso' ? volver() : confirmarTomaViaje()">
+    {{ viaje?.estado_viaje === 'en_curso' ? 'Volver' : 'Tomar Viaje' }}
   </ion-button>
 </ion-footer>
+

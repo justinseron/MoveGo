@@ -7,7 +7,11 @@ const routes: Routes = [
   {
     path: '',
     component: PagesPage
+  },  {
+    path: 'perfil-viajes',
+    loadChildren: () => import('./perfil-viajes/perfil-viajes.module').then( m => m.PerfilViajesPageModule)
   }
+
 ];
 
 @NgModule({

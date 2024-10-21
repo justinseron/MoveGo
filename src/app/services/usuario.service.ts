@@ -1,6 +1,7 @@
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Storage } from '@ionic/storage-angular';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 @Injectable({
   providedIn: 'root'
 })
@@ -13,7 +14,7 @@ export class UsuarioService {
   usuarios: any[] = [
   ];
 
-  constructor(private storage: Storage) {
+  constructor(private storage: Storage,private httpClient: HttpClient) {
     this.init();
    }
 
@@ -80,6 +81,9 @@ export class UsuarioService {
     // Usar la lista actualizada en lugar de cargar de nuevo
     return this.usuarios.filter(usuario => usuario.tipo_usuario === 'Conductor');
   }
+  public getConductorData(nombre: string): Observable<any> {
+    return this.httpClient.get<any>(`/api/conductores/${nombre}`);
+  }
   //aquí vamos a crear toda nuestra lógica de programación
   //DAO:
   public async createUsuario(usuario:any): Promise<boolean>{
@@ -127,18 +131,23 @@ export class UsuarioService {
     return true;
   }
 
-  public async login(correo: string, contrasena: string): Promise<any>{
+  public async login(correo: string, contrasena: string): Promise<any> {
     let usuarios: any[] = await this.storage.get("usuarios") || [];
-    const usu = usuarios.find(elemento=> elemento.correo==correo && elemento.password==contrasena);
-    if(usu){
-      localStorage.setItem("usuario",JSON.stringify(usu));
-      return true;
+    const usu = usuarios.find(elemento => elemento.correo == correo && elemento.password == contrasena);
+    if (usu) {
+        localStorage.setItem("userRut", usu.rut); // Asegúrate de guardar el RUT aquí
+        localStorage.setItem("usuario", JSON.stringify(usu)); // Puedes seguir guardando el objeto completo si es necesario
+        return true;
     }
     return false;
-  }
+}
+public getUserRut(): string | null {
+  return localStorage.getItem("userRut");
+}
 
   public async recuperarUsuario(correo:string): Promise<any>{
     let usuarios: any[] = await this.storage.get("usuarios") || [];
     return usuarios.find(elemento=> elemento.correo == correo);
   }
+  
 }

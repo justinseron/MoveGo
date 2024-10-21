@@ -58,7 +58,7 @@ export class AdministrarViajesPage implements OnInit {
       distancia_metros: new FormControl('', [Validators.required]),
       costo_viaje: new FormControl('',[Validators.min(0), Validators.required]),
       metodo_pago: new FormControl('efectivo', [Validators.required]),
-      numero_tarjeta:  new FormControl('',[Validators.min(0), Validators.required]),
+      numero_tarjeta:  new FormControl('',[Validators.min(0),]),
       duracion_viaje: new FormControl('', [Validators.required]),
       hora_salida: new FormControl('', [Validators.required]),
       pasajeros: new FormControl('', [Validators.required]),

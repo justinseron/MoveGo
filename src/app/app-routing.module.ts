@@ -42,7 +42,7 @@ const routes: Routes = [
     loadChildren: () => import('./pages/portada/portada.module').then(m => m.PortadaPageModule)
   },
   {
-    path: 'home/viajes/detalles-viaje/:id__viaje',
+    path: 'home/viajes/detalles-viaje/:id',
     loadChildren: () => import('./pages/detalles-viaje/detalles-viaje.module').then(m => m.DetallesViajePageModule)
   },
   {
