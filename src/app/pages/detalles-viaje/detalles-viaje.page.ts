@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AlertController } from '@ionic/angular';
+import { UsuarioService } from 'src/app/services/usuario.service';
 import { ViajesService } from 'src/app/services/viajes.service';
 
 @Component({
@@ -12,12 +13,13 @@ export class DetallesViajePage implements OnInit {
   id: number = 0;
   usuarioRut: string = "";
   viaje: any;
-
+  viajeTomado: boolean = false;
   constructor(
     private router: Router,
     private alertController: AlertController,
     private activatedRoute: ActivatedRoute,
-    private viajesService: ViajesService
+    private viajesService: ViajesService,
+    private usuarioService: UsuarioService
   ) {}
 
   async ngOnInit() {
@@ -30,6 +32,9 @@ export class DetallesViajePage implements OnInit {
       if (this.id) {
         await this.loadViaje(this.id);
         console.log("Detalles del viaje:", this.viaje); // Para verificar los detalles del viaje
+        
+        // Verificar si el usuario ha tomado el viaje
+        this.viajeTomado = this.viaje.pasajeros.includes(this.usuarioRut);
       } else {
         console.error("ID de viaje no proporcionado.");
       }
@@ -92,11 +97,51 @@ export class DetallesViajePage implements OnInit {
       await alert.present(); // Presenta la alerta de confirmación
     }
   }
+  async cancelarViaje() {
+    const alert = await this.alertController.create({
+      header: 'Confirmar Cancelación',
+      message: `¿Estás seguro de que quieres cancelar el viaje a ${this.viaje.nombre_destino}?`,
+      buttons: [
+        {
+          text: 'Cancelar',
+          role: 'cancel',
+          cssClass: 'secondary',
+          handler: () => {
+            console.log('El usuario canceló la solicitud de cancelación del viaje.');
+          }
+        },
+        {
+          text: 'Confirmar',
+          handler: async () => {
+            const exito = await this.viajesService.cancelarViaje(this.viaje.id__viaje, this.usuarioRut);
+            if (exito) {
+              console.log('Viaje cancelado exitosamente');
+              this.router.navigate(['/home/viajes']); // Redirigir a "Mis viajes"
+            } else {
+              console.error('No se pudo cancelar el viaje. Puede que no lo haya tomado.');
+  
+              const errorAlert = await this.alertController.create({
+                header: 'Error',
+                message: 'No se puede cancelar el viaje. Puede que no lo haya tomado.',
+                buttons: ['Aceptar']
+              });
+  
+              await errorAlert.present();
+            }
+          }
+        }
+      ]
+    });
+  
+    await alert.present();
+  }
   
   
+  // Método para cancelar el viaje
+
   isButtonDisabled(): boolean {
     if (!this.viaje) return true; // Si no hay viaje, deshabilitar
-  
+    
     const pasajeros = this.viaje.pasajeros || []; // Asegúrate de que pasajeros sea un arreglo
     const isTaken = pasajeros.includes(this.usuarioRut); // Verifica si el usuario ya ha tomado el viaje
     const isPending = this.viaje.estado_viaje === 'pendiente'; // Verifica si el estado es pendiente
@@ -104,6 +149,7 @@ export class DetallesViajePage implements OnInit {
     console.log("Usuario ya tomado:", isTaken); // Para depuración
     console.log("Estado del viaje:", this.viaje.estado_viaje); // Para depuración
   
-    return isTaken || !isPending; // Deshabilitar si ya lo tomó o si no está pendiente
+    // Habilitar el botón si el usuario no ha tomado el viaje o si está pendiente
+    return isTaken || !isPending; // Cambia la lógica para permitir tomar el viaje aunque no haya asientos
   }
 }

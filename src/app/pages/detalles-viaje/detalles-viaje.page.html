@@ -68,9 +68,18 @@
 </ion-content>
 
 <ion-footer>
+  <ion-button expand="full" color="danger" 
+    *ngIf="viajeTomado" (click)="cancelarViaje()">
+    Cancelar Viaje
+  </ion-button>
+
   <ion-button expand="full" color="primary" 
-    (click)="viaje?.estado_viaje === 'en_curso' ? volver() : confirmarTomaViaje()">
-    {{ viaje?.estado_viaje === 'en_curso' ? 'Volver' : 'Tomar Viaje' }}
+    *ngIf="viajeTomado" (click)="volver()">
+    Volver
+  </ion-button>
+
+  <ion-button expand="full" color="warning" 
+    *ngIf="!viajeTomado" (click)="confirmarTomaViaje()">
+    Tomar Viaje
   </ion-button>
 </ion-footer>
-

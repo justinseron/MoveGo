@@ -107,6 +107,39 @@ export class ViajesService {
     }
     return false; // No se pudo tomar el viaje
   }
+  public async cancelarViaje(idViaje: number, usuarioRut: string): Promise<boolean> {
+    const viajes = await this.getViajes(); // Obtener todos los viajes
+    const viajeIndex = viajes.findIndex(viaje => viaje.id__viaje === idViaje.toString());
+  
+    if (viajeIndex !== -1) {
+      const viaje = viajes[viajeIndex];
+  
+      // Remover al usuario de la lista de pasajeros
+      viaje.pasajeros = viaje.pasajeros.filter((pasajero: any) => pasajero !== usuarioRut); // Especificar el tipo aquí como 'any'
+  
+      // Incrementar el número de asientos disponibles
+      viaje.asientos_disponibles += 1;
+  
+      // Cambiar el estado a 'pendiente' si hay asientos disponibles
+      if (viaje.asientos_disponibles > 0) {
+        viaje.estado_viaje = 'pendiente';
+      }
+  
+      // Actualizar la lista de viajes
+      await this.updateViaje(viaje.id__viaje, viaje);
+  
+      // Remover el viaje de "Mis viajes"
+      this.misViajes = this.misViajes.filter(v => v.id__viaje !== viaje.id__viaje);
+  
+      // Devolver el viaje a "Viajes Disponibles"
+      this.viajesDisponibles.push(viaje);
+  
+      return true; // Viaje cancelado con éxito
+    }
+  
+    return false; // No se pudo cancelar el viaje
+  }
+    
 
   public async updateViaje(id__viaje: number, nuevoViaje: any): Promise<boolean> {
     let viajes: any[] = await this.storage.get("viajes") || [];

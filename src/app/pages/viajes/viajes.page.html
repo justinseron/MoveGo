@@ -36,11 +36,10 @@
                     <p>Precio: {{ (viaje.distancia_metros / 200 * 100) | currency:'CLP' }}</p>
                   </ion-card-content>
                   <ion-button 
-                    (click)="ver(viaje)" 
-                    size="block" 
-                    [disabled]="viaje.asientos_disponibles == 0">
-                    Ver Detalle
-                  </ion-button>
+                  (click)="ver(viaje)" 
+                  size="block">
+                  Ver Detalle
+                </ion-button>
                 </ion-card>
               </div>
             </ng-container>
@@ -64,11 +63,11 @@
               <p>Precio: {{ (viaje.distancia_metros / 200 * 100) | currency:'CLP' }}</p>
             </ion-card-content>
             <ion-button 
-              [routerLink]="['/home/viajes/detalles-viaje', viaje.id]" 
-              size="block" 
-              [disabled]="viaje.asientos_disponibles == 0">
-              Ver Detalle
-            </ion-button>
+            (click)="ver(viaje)" 
+            size="block" 
+            [disabled]="viaje.asientos_disponibles == 0">
+            Ver Detalle
+          </ion-button>
           </ion-card>
         </div>
       </ng-template>
