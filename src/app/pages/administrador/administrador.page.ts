@@ -25,8 +25,7 @@ export class AdministradorPage implements OnInit {
     color_auto: new FormControl('',[]), //*
     asientos_disponibles: new FormControl('', [
       Validators.min(2),  // Mayor a 1
-      Validators.max(6),  // Menor a 7
-      Validators.required  // Campo requerido si el usuario tiene auto
+      Validators.max(6),  // Menor a 7 // Campo requerido si el usuario tiene auto
     ]),
     tipo_usuario: new FormControl('', [Validators.required]),
   });

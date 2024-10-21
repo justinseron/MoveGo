@@ -42,9 +42,9 @@ export class ViajesService {
      this.viajesDisponibles = viajes.filter(viaje => viaje.estado_viaje === 'pendiente');
   }
   async tieneViajeVinculado(rutPasajero: string): Promise<boolean> {
-    const viajes = await this.getViajes(); // Obtener todos los viajes
-    return viajes.some(viaje => viaje.pasajeros.includes(rutPasajero));
-  }
+  const viajes = await this.getViajes(); // Obtener todos los viajes
+  return viajes.some(viaje => viaje.pasajeros.includes(rutPasajero));
+}
 
   public async createViaje(viaje: any): Promise<boolean> {
     try {
@@ -81,78 +81,85 @@ export class ViajesService {
   }
 
   async tomarViaje(idViaje: number, usuarioRut: string): Promise<boolean> {
+    // Verifica si el usuario ya tiene un viaje activo
+    const tieneViajeEnCurso = await this.tieneViajeVinculado(usuarioRut);
+    
+    if (tieneViajeEnCurso) {
+        const confirmCancel = confirm("Ya tienes un viaje activo. ¿Deseas cancelarlo para tomar este nuevo viaje?");
+        if (!confirmCancel) {
+            return false; // No se toma el nuevo viaje
+        }
+        
+        // Si el usuario decide cancelar, cancela el viaje activo
+        const viajeActivo = await this.getViajes().then(viajes => viajes.find(v => v.pasajeros.includes(usuarioRut)));
+        if (viajeActivo) {
+            await this.cancelarViaje(parseInt(viajeActivo.id__viaje), usuarioRut);
+        }
+    }
+
     const viajes = await this.getViajes();
     const viajeIndex = viajes.findIndex(viaje => viaje.id__viaje === idViaje.toString());
-
+  
     if (viajeIndex !== -1) {
         const viajeTomado = viajes[viajeIndex];
         viajeTomado.pasajeros = viajeTomado.pasajeros || []; // Asegúrate de que sea un arreglo
 
         // Comprobar si el usuario ya ha tomado el viaje
-        if (Array.isArray(viajeTomado.pasajeros) && viajeTomado.pasajeros.includes(usuarioRut)) {
+        if (viajeTomado.pasajeros.includes(usuarioRut)) {
             return false; // El usuario ya tomó este viaje
         }
 
-        viajeTomado.pasajeros.push(usuarioRut);
-        viajeTomado.asientos_disponibles -= 1;
+        // Si el viaje tiene asientos disponibles
+        if (viajeTomado.asientos_disponibles > 0) {
+            viajeTomado.pasajeros.push(usuarioRut); // Añadir al pasajero
+            viajeTomado.asientos_disponibles -= 1; // Disminuir asientos disponibles
 
-        // Comprobar si no hay asientos disponibles y cambiar el estado
-        if (viajeTomado.asientos_disponibles === 0) {
-            viajeTomado.estado_viaje = "en_curso";
+            // Cambiar el estado a "en curso" si no hay asientos disponibles
+            if (viajeTomado.asientos_disponibles === 0) {
+                viajeTomado.estado_viaje = "en curso"; // Cambiar estado si no hay asientos
+            }
+          
+            // Actualizar la lista de viajes en el almacenamiento
+            await this.updateViaje(viajeTomado.id__viaje, viajeTomado);
+
+            // Mover el viaje a "Mis viajes" si no existe
+            if (!this.misViajes.find(v => v.id__viaje === viajeTomado.id__viaje)) {
+                this.misViajes.push(viajeTomado);
+            }
+
+            // Eliminar de "Viajes disponibles"
+            this.viajesDisponibles = this.viajesDisponibles.filter(v => v.id__viaje !== viajeTomado.id__viaje);
+
+            return true; // Retornar éxito
         }
-
-        // Actualizar la lista de viajes en el almacenamiento
-        await this.updateViaje(viajeTomado.id__viaje, viajeTomado);
-
-        // Mover el viaje a "Mis viajes" si no existe
-        if (!this.misViajes.find(v => v.id__viaje === viajeTomado.id__viaje)) {
-            this.misViajes.push(viajeTomado);
-        }
-
-        // Eliminar de "Viajes disponibles"
-        this.viajesDisponibles = this.viajesDisponibles.filter(v => v.id__viaje !== viajeTomado.id__viaje);
-
-        return true; // Retornar éxito
     }
     return false; // No se pudo tomar el viaje
 }
 
+
   
-  public async cancelarViaje(idViaje: number, usuarioRut: string): Promise<boolean> {
-    const viajes = await this.getViajes(); // Obtener todos los viajes
-    const viajeIndex = viajes.findIndex(viaje => viaje.id__viaje === idViaje.toString());
+
   
-    if (viajeIndex !== -1) {
+async cancelarViaje(idViaje: number, usuarioRut: string): Promise<boolean> {
+  const viajes = await this.getViajes();
+  const viajeIndex = viajes.findIndex(viaje => viaje.id__viaje === idViaje.toString());
+
+  if (viajeIndex !== -1) {
       const viaje = viajes[viajeIndex];
-  
-      // Asegúrate de que pasajeros sea un arreglo
-      viaje.pasajeros = viaje.pasajeros || []; 
-  
-      // Remover al usuario de la lista de pasajeros
-      viaje.pasajeros = viaje.pasajeros.filter((pasajero: any) => pasajero !== usuarioRut); // Especificar el tipo aquí como 'any'
-  
-      // Incrementar el número de asientos disponibles
-      viaje.asientos_disponibles += 1;
-  
-      // Cambiar el estado a 'pendiente' si hay asientos disponibles
-      if (viaje.asientos_disponibles > 0) {
-        viaje.estado_viaje = 'pendiente';
+      const pasajerosIndex = viaje.pasajeros.indexOf(usuarioRut);
+      
+      if (pasajerosIndex !== -1) {
+          viaje.pasajeros.splice(pasajerosIndex, 1); // Elimina el RUT del pasajero
+          viaje.asientos_disponibles += 1; // Aumenta los asientos disponibles
+
+          // Actualiza la lista de viajes en el almacenamiento
+          await this.updateViaje(viaje.id__viaje, viaje);
+          return true; // Retorna éxito
       }
-  
-      // Actualizar la lista de viajes
-      await this.updateViaje(viaje.id__viaje, viaje);
-  
-      // Remover el viaje de "Mis viajes"
-      this.misViajes = this.misViajes.filter(v => v.id__viaje !== viaje.id__viaje);
-  
-      // Devolver el viaje a "Viajes Disponibles"
-      this.viajesDisponibles.push(viaje);
-  
-      return true; // Viaje cancelado con éxito
-    }
-  
-    return false; // No se pudo cancelar el viaje
   }
+  return false; // No se pudo cancelar el viaje
+}
+
   
     
 
