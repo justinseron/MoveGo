@@ -1,20 +1,22 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Viajes del Conductor</ion-title>
+  </ion-toolbar>
+</ion-header>
 
 <ion-content>
-  <ion-list>
-    <ion-item *ngFor="let viaje of viajesDelConductor">
+  <ion-list *ngFor="let viaje of viajesDelConductor">
+    <ion-item>
       <ion-label>
-        <h2>Destino: {{ viaje.nombre_destino }}</h2>
-        <p>Duración: {{ viaje.duracion_viaje }}</p>
-        <p>Costo: {{ viaje.costo_viaje | currency: 'CLP' }}</p>
+        <h2>{{ viaje.nombre_destino }}</h2>
+        <p>Conductor: {{ viaje.conductor }}</p>
+        <p>Asientos disponibles: {{ viaje.asientos_disponibles }}</p>
+        <p>Estado: {{ viaje.estado_viaje }}</p>
+        <p>Pasajeros:</p>
+        <ul>
+          <li *ngFor="let nombre of nombresPasajeros[viaje.id__viaje]">{{ nombre }}</li>
+        </ul>
       </ion-label>
     </ion-item>
   </ion-list>
-
-  <ng-template #noViajes>
-    <ion-card>
-      <ion-card-header>
-        <ion-card-title>No tienes viajes registrados.</ion-card-title>
-      </ion-card-header>
-    </ion-card>
-  </ng-template>
 </ion-content>

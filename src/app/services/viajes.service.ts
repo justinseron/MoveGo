@@ -169,7 +169,6 @@ public async createViaje(viaje: any): Promise<boolean> {
             await this.cancelarViaje(parseInt(viajeActivo.id__viaje), usuarioRut);
         }
     }
-
     const viajes = await this.getViajes();
     const viajeIndex = viajes.findIndex(viaje => viaje.id__viaje === idViaje.toString());
   
@@ -184,7 +183,8 @@ public async createViaje(viaje: any): Promise<boolean> {
 
         // Si el viaje tiene asientos disponibles
         if (viajeTomado.asientos_disponibles > 0) {
-            viajeTomado.pasajeros.push(usuarioRut); // Añadir al pasajero
+            const nombrePasajero = await this.usuarioService.getNombreByRut(usuarioRut);
+            viajeTomado.pasajeros.push(usuarioRut,nombrePasajero); // Añadir al pasajero
             viajeTomado.asientos_disponibles -= 1; // Disminuir asientos disponibles
 
             // Cambiar el estado a "en curso" si no hay asientos disponibles
