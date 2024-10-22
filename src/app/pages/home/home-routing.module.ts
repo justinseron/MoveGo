@@ -12,7 +12,7 @@ const routes: Routes = [
         loadChildren: () => import('../viajes/viajes.module').then( m => m.ViajesPageModule)
       },
       {
-        path: 'administrar',
+        path: 'mis-viajes',
         loadChildren: () => import('../vista-admin/vista-admin.module').then( m => m.VistaAdminPageModule)
       },
       {
@@ -30,6 +30,10 @@ const routes: Routes = [
       {
         path: 'perfil-viajes',
         loadChildren: () => import('../perfil-viajes/perfil-viajes.module').then( m => m.PerfilViajesPageModule)
+      },
+      {
+        path: 'viajes-terminados',
+        loadChildren: () => import('../viajes-terminados/viajes-terminados.module').then( m => m.ViajesTerminadosPageModule)
       }
       
     ]

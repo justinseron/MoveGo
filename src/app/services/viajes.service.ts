@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Storage } from '@ionic/storage-angular';
+import { UsuarioService } from './usuario.service';
 
 @Injectable({
   providedIn: 'root'
@@ -9,7 +10,7 @@ export class ViajesService {
   private viajesDisponibles: any[] = []; // Array de viajes disponibles
   private misViajes: any[] = []; // Array de "Mis viajes"
 
-  constructor(private storage: Storage) { 
+  constructor(private storage: Storage,private usuarioService: UsuarioService) { 
     this.init();
   }
 
@@ -17,62 +18,134 @@ export class ViajesService {
     await this.storage.create();
     let viajes: any[] = await this.storage.get("viajes") || [];
 
-    // Solo crea un viaje nuevo si no hay ninguno en el almacenamiento
+    // Solo crea viajes nuevos si no hay ninguno en el almacenamiento
     if (viajes.length === 0) {
-      let viaje = {
-        "id__viaje": "1", 
-        "conductor": "Juan Pérez",
-        "patente": "AABB32",
-        "color_auto": "Rojo",
-        "asientos_disponibles": 2,
-        "nombre_destino": "Municipalidad de Puente Alto, 1820, Avenida Concha y Toro",
-        "latitud": -33.59523505,
-        "longitud": -70.57963843136085,
-        "distancia_metros": 1939.2,
-        "costo_viaje": 2000,
-        "metodo_pago": "efectivo",
-        "numero_tarjeta": "",
-        "duracion_viaje": "Minutos",
-        "hora_salida": "13:00",
-        "pasajeros": [],
-        "estado_viaje": "pendiente",
-      };
-      await this.createViaje(viaje);
-    }
-     this.viajesDisponibles = viajes.filter(viaje => viaje.estado_viaje === 'pendiente');
+      let nuevosViajes = [
+          {
+              "id__viaje": "1",
+              "conductor": "Juan Pérez",
+              "rut": "8208490-8",
+              "patente": "AABB32",
+              "color_auto": "Rojo",
+              "asientos_disponibles": 2,
+              "nombre_destino": "Municipalidad de Puente Alto, 1820, Avenida Concha y Toro",
+              "latitud": -33.59523505,
+              "longitud": -70.57963843136085,
+              "distancia_metros": 1939.2,
+              "costo_viaje": 2000,
+              "metodo_pago": "efectivo",
+              "numero_tarjeta": "",
+              "duracion_viaje": "15 minutos",
+              "hora_salida": "13:00",
+              "pasajeros": [],
+              "estado_viaje": "pendiente",
+          },
+          {
+              "id__viaje": "2",
+              "conductor": "Juan Pérez",
+              "rut": "8208490-8",
+              "patente": "BCDE44",
+              "color_auto": "Azul",
+              "asientos_disponibles": 3,
+              "nombre_destino": "Metro Protectora de la Infancia, Puente Alto",
+              "latitud": -33.592333,
+              "longitud": -70.584442,
+              "distancia_metros": 800,
+              "costo_viaje": 1500,
+              "metodo_pago": "tarjeta",
+              "numero_tarjeta": "1234567812345678",
+              "duracion_viaje": "8 minutos",
+              "hora_salida": "12:30",
+              "pasajeros": [],
+              "estado_viaje": "pendiente",
+          },
+          {
+              "id__viaje": "3",
+              "conductor": "María López",
+              "rut": "20792607-8",
+              "patente": "QWER66",
+              "color_auto": "Negro",
+              "asientos_disponibles": 1,
+              "nombre_destino": "Plaza de Puente Alto",
+              "latitud": -33.610104,
+              "longitud": -70.575749,
+              "distancia_metros": 2500,
+              "costo_viaje": 1800,
+              "metodo_pago": "efectivo",
+              "numero_tarjeta": "",
+              "duracion_viaje": "12 minutos",
+              "hora_salida": "14:00",
+              "pasajeros": [],
+              "estado_viaje": "pendiente",
+          },
+          {
+              "id__viaje": "4",
+              "conductor": "María López",
+              "rut": "20792607-8",
+              "patente": "XZGT89",
+              "color_auto": "Blanco",
+              "asientos_disponibles": 4,
+              "nombre_destino": "Hospital Sótero del Río",
+              "latitud": -33.584539,
+              "longitud": -70.564979,
+              "distancia_metros": 3000,
+              "costo_viaje": 2200,
+              "metodo_pago": "tarjeta",
+              "numero_tarjeta": "8765432187654321",
+              "duracion_viaje": "18 minutos",
+              "hora_salida": "12:00",
+              "pasajeros": [],
+              "estado_viaje": "pendiente",
+          }
+      ];
+      for (let viaje of nuevosViajes) {
+          await this.createViaje(viaje);
+      }
   }
+
+  this.viajesDisponibles = viajes.filter(viaje => viaje.estado_viaje === 'pendiente');
+}
   async tieneViajeVinculado(rutPasajero: string): Promise<boolean> {
   const viajes = await this.getViajes(); // Obtener todos los viajes
   return viajes.some(viaje => viaje.pasajeros.includes(rutPasajero));
 }
+public async getViajesPorConductor(rutConductor: string): Promise<any[]> {
+  const viajes: any[] = await this.storage.get("viajes") || [];
+  console.log('Viajes disponibles:', viajes); // Log para verificar los viajes
+  const viajesFiltrados = viajes.filter(viaje => viaje.rut === rutConductor);
+  console.log('Viajes del conductor:', viajesFiltrados); // Log para verificar los viajes filtrados
+  return viajesFiltrados;
+}
 
-  public async createViaje(viaje: any): Promise<boolean> {
-    try {
-      let viajes: any[] = await this.storage.get("viajes") || [];
-      
-      if (!viaje.id__viaje) {
-        viaje.id__viaje = (viajes.length > 0 ? (parseInt(viajes[viajes.length - 1].id__viaje) + 1).toString() : "1");
-      }
-
-      viaje.pasajeros = viaje.pasajeros || []; // Asegúrate de inicializar pasajeros
-
-      if (viajes.find(v => v.id__viaje === viaje.id__viaje) !== undefined) {
-        return false; // Viaje ya existe
-      }
-
-      viajes.push(viaje);
-      await this.storage.set("viajes", viajes);
-      return true;
-    } catch (error) {
-      console.error('Error al crear el viaje:', error);
-      return false;
+public async createViaje(viaje: any): Promise<boolean> {
+  try {
+    let viajes: any[] = await this.storage.get("viajes") || [];
+    
+    if (!viaje.id__viaje) {
+      viaje.id__viaje = (viajes.length > 0 ? (parseInt(viajes[viajes.length - 1].id__viaje) + 1).toString() : "1");
     }
+
+    viaje.pasajeros = viaje.pasajeros || []; // Asegúrate de inicializar pasajeros
+
+    if (viajes.find(v => v.id__viaje === viaje.id__viaje) !== undefined) {
+      return false; // Viaje ya existe
+    }
+
+    viajes.push(viaje);
+    await this.storage.set("viajes", viajes);
+    return true;
+  } catch (error) {
+    console.error('Error al crear el viaje:', error);
+    return false;
   }
+}
 
   public async getViaje(id: number): Promise<any> {
     const viajes = await this.getViajes(); // Obtener todos los viajes
     return viajes.find(viaje => viaje.id__viaje === id.toString()); // Comparar como string
   }
+
+
 
   public async getViajes(): Promise<any[]> {
     const viajes = await this.storage.get('viajes'); // Obtener viajes desde el almacenamiento
@@ -199,4 +272,14 @@ async cancelarViaje(idViaje: number, usuarioRut: string): Promise<boolean> {
   getViajesDisponibles() {
     return this.viajesDisponibles; // Devolver viajes disponibles
   }
+
+  async obtenerViajesPorConductor(): Promise<any> {
+    const rutConductor = this.usuarioService.getRUTLogueado(); // Obtiene el RUT del conductor logueado
+    const viajes = await this.getViajes(); // Obtén todos los viajes
+
+    // Filtra los viajes para que solo se muestren los del conductor logueado
+    return viajes.filter(viaje => viaje.rut === rutConductor);
+}
+
+  
 }

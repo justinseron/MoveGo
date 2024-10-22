@@ -8,6 +8,10 @@ import { BehaviorSubject, Observable } from 'rxjs';
 export class UsuarioService {
   private usuariosSubject = new BehaviorSubject<any[]>([]);
   usuarios$ = this.usuariosSubject.asObservable();
+  private rutConductorLogueado: string | null = null;
+  public setRutConductor(rut: string) {
+    this.rutConductorLogueado = rut;
+  }
 
 
   //Aquí podemos crear variables:
@@ -69,10 +73,36 @@ export class UsuarioService {
       "asientos_disponibles": "4",
       "tipo_usuario": "Conductor"
     };
+    let pasajero1 = {
+      "rut": "5995618-3",
+      "nombre": "Carlos Rivera",
+      "correo": "carlos@duocuc.cl",
+      "fecha_nacimiento": "1995-05-05",
+      "password": "Pasajero123.",
+      "confirm_password": "Pasajero123.",
+      "genero": "masculino",
+      "tiene_auto": "no",
+      "tipo_usuario": "Pasajero"
+    };
+
+    let pasajero2 = {
+      "rut": "17052872-7",
+      "nombre": "Ana Torres",
+      "correo": "ana@duocuc.cl",
+      "fecha_nacimiento": "1997-07-07",
+      "password": "Pasajero123.",
+      "confirm_password": "Pasajero123.",
+      "genero": "femenino",
+      "tiene_auto": "no",
+      "tipo_usuario": "Pasajero"
+    };
+
     if (usuariosGuardados.length === 0) { // Solo agregar si no hay usuarios
       await this.createUsuario(admin);
       await this.createUsuario(conductor1);
       await this.createUsuario(conductor2);
+      await this.createUsuario(pasajero1);
+      await this.createUsuario(pasajero2);
     }
     this.usuarios = await this.getUsuarios(); // Cargar la lista actualizada
     this.usuariosSubject.next(this.usuarios); // Emitir usuarios al iniciar
@@ -81,9 +111,16 @@ export class UsuarioService {
     // Usar la lista actualizada en lugar de cargar de nuevo
     return this.usuarios.filter(usuario => usuario.tipo_usuario === 'Conductor');
   }
+  public async getPasajeros(): Promise<any[]> {
+    return this.usuarios.filter(usuario => usuario.tipo_usuario === 'Pasajero');
+  }
   public getConductorData(nombre: string): Observable<any> {
     return this.httpClient.get<any>(`/api/conductores/${nombre}`);
   }
+  public getRutConductor(): string | null {
+    return this.getUserRut() || null;
+}
+
   //aquí vamos a crear toda nuestra lógica de programación
   //DAO:
   public async createUsuario(usuario:any): Promise<boolean>{
@@ -138,18 +175,26 @@ export class UsuarioService {
     if (usu) {
         localStorage.setItem("userRut", usu.rut); // Asegúrate de guardar el RUT aquí
         localStorage.setItem("usuario", JSON.stringify(usu)); // Puedes seguir guardando el objeto completo si es necesario
+        localStorage.setItem("nombreConductor", usu.nombre);
         return true;
     }
     return false;
 }
-getUserRut(): string {
-  // Suponiendo que tienes el RUT almacenado en el almacenamiento local
-  return localStorage.getItem('userRut') || '';
-}
+
+  getUserRut(): string {
+    // Suponiendo que tienes el RUT almacenado en el almacenamiento local
+    return localStorage.getItem('userRut') || '';
+  }
+
+  getRUTLogueado(): string {
+    // Suponiendo que tienes el RUT almacenado en el almacenamiento local
+    return localStorage.getItem('userRut') || '';
+  }
 
   public async recuperarUsuario(correo:string): Promise<any>{
     let usuarios: any[] = await this.storage.get("usuarios") || [];
     return usuarios.find(elemento=> elemento.correo == correo);
   }
+
   
 }

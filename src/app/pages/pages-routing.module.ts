@@ -10,6 +10,10 @@ const routes: Routes = [
   },  {
     path: 'perfil-viajes',
     loadChildren: () => import('./perfil-viajes/perfil-viajes.module').then( m => m.PerfilViajesPageModule)
+  },
+  {
+    path: 'viajes-terminados',
+    loadChildren: () => import('./viajes-terminados/viajes-terminados.module').then( m => m.ViajesTerminadosPageModule)
   }
 
 ];

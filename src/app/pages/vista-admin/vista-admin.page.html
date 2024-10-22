@@ -1,35 +1,20 @@
-<ion-content class="ion-padding" style="background-color: #f0f4ff;"> <!-- Cambié el fondo a un color más claro -->
-  <div style="text-align: center; margin-bottom: 20px;">
-    <h2 style="color: #233343;">¿Qué deseas hacer? </h2>
-    <p style="font-size: 16px; color: #44494d;">Selecciona una de las opciones para continuar. 🚀</p>
-  </div>
 
-  <ion-grid>
-    <ion-row>
-      <ion-col size="12" size-md="6" class="ion-margin-bottom">
-        <ion-card style="background: rgba(255, 255, 255, 0.8); color: #007bff; transition: transform 0.3s, box-shadow 0.3s; border-radius: 10px; border: 3px solid #007bff; box-shadow: 0 4px 15px rgba(0, 123, 255, 0.3);">
-          <ion-card-header>
-            <ion-card-title style="color: #007bff;">🚘 Administrar Viajes</ion-card-title>
-          </ion-card-header>
-          <ion-card-content>
-            <p style="color: #444; font-size: 14px;">Gestiona todos los viajes registrados en la aplicación.</p>
-            <ion-button expand="full" color="primary" routerLink="../administrar-viajes">Ir a Viajes</ion-button>
-          </ion-card-content>
-        </ion-card>
-      </ion-col>
+<ion-content>
+  <ion-list>
+    <ion-item *ngFor="let viaje of viajesDelConductor">
+      <ion-label>
+        <h2>Destino: {{ viaje.nombre_destino }}</h2>
+        <p>Duración: {{ viaje.duracion_viaje }}</p>
+        <p>Costo: {{ viaje.costo_viaje | currency: 'CLP' }}</p>
+      </ion-label>
+    </ion-item>
+  </ion-list>
 
-      <ion-col size="12" size-md="6" class="ion-margin-bottom">
-        <ion-card style="background: rgba(255, 255, 255, 0.8); color: #007bff; transition: transform 0.3s, box-shadow 0.3s; border-radius: 10px; border: 3px solid #007bff; box-shadow: 0 4px 15px rgba(0, 123, 255, 0.3);">
-          <ion-card-header>
-            <ion-card-title style="color: #007bff;">👤 Administrar Usuarios</ion-card-title>
-          </ion-card-header>
-          <ion-card-content>
-            <p style="color: #444; font-size: 14px;">Gestiona todos los usuarios registrados en la aplicación.</p>
-            <ion-button expand="full" color="primary" routerLink="../administrador">Ir a Usuarios</ion-button>
-          </ion-card-content>
-        </ion-card>
-      </ion-col>
-    </ion-row>
-  </ion-grid>
+  <ng-template #noViajes>
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title>No tienes viajes registrados.</ion-card-title>
+      </ion-card-header>
+    </ion-card>
+  </ng-template>
 </ion-content>
-

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { AbstractControl, FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
+import { AbstractControl, FormArray, FormControl, FormGroup, ValidatorFn, Validators } from '@angular/forms';
 import { NavigationStart, Router } from '@angular/router';
 import { AlertController } from '@ionic/angular';
 import { ViajesService } from 'src/app/services/viajes.service';
@@ -44,7 +44,8 @@ export class AdministrarViajesPage implements OnInit {
     // Inicializa el formulario aquí para una mejor legibilidad
     this.viaje = new FormGroup({
       id__viaje: new FormControl({ value: '', disabled: true }), // Campo solo lectura
-      conductor: new FormControl('', [Validators.required]), 
+      conductor: new FormControl('', [Validators.required]),
+      rut:new FormControl('',[]),
       patente: new FormControl('',[ Validators.pattern("^[A-Z0-9.-]*$"),Validators.maxLength(8)]),
       color_auto: new FormControl('', [Validators.required]),//*
       asientos_disponibles: new FormControl('', [
@@ -92,6 +93,7 @@ export class AdministrarViajesPage implements OnInit {
         color_auto: conductorSeleccionado.color_auto, // Asegúrate de que esta propiedad existe
         // Agrega otras propiedades que quieras actualizar aquí
         asientos_disponibles: conductorSeleccionado.asientos_disponibles,
+        rut:conductorSeleccionado.rut,
       });
     } 
   }
@@ -143,10 +145,6 @@ export class AdministrarViajesPage implements OnInit {
       await this.mostrarAlerta('Error', 'Por favor, completa todos los campos requeridos.');
     }
   }
-  
-
-  
-  
 
   async buscar(id__viaje: number) {
     const viajeData = await this.viajeService.getViaje(id__viaje);

@@ -39,13 +39,25 @@
 
   <ion-tabs>
     <ion-tab-bar slot="bottom" class="tab-bar">
-      <ion-tab-button tab="viajes">
+      <ion-tab-button tab="mis-viajes" *ngIf="usuario.tipo_usuario=='Conductor'">
+        <ion-icon name="person-outline"></ion-icon>
+        <span class="tab-label">Mis viajes</span>
+      </ion-tab-button>
+      <ion-tab-button tab="administrar-viajes" *ngIf="usuario.tipo_usuario=='Administrador' || usuario.tipo_usuario=='Conductor'">
+        <ion-icon name="business-outline"></ion-icon>
+        <span class="tab-label">Administrar Viajes</span>
+      </ion-tab-button>
+      <ion-tab-button tab="viajes" *ngIf="usuario.tipo_usuario=='Pasajero'">
         <ion-icon name="car-sport-outline"></ion-icon>
         <span class="tab-label">Viajes</span>
       </ion-tab-button>
-      <ion-tab-button tab="administrar" *ngIf="usuario.tipo_usuario=='Administrador'">
+      <ion-tab-button tab="viajes-terminados" *ngIf="usuario.tipo_usuario=='Pasajero'">
+        <ion-icon name="car-sport-outline"></ion-icon>
+        <span class="tab-label">Historial Viajes</span>
+      </ion-tab-button>
+      <ion-tab-button tab="administrador" *ngIf="usuario.tipo_usuario=='Administrador'">
         <ion-icon name="business-outline"></ion-icon>
-        <span class="tab-label">Administrar</span>
+        <span class="tab-label">Administrar Usuarios</span>
       </ion-tab-button>
       <ion-tab-button tab="perfil">
         <ion-icon name="person-outline"></ion-icon>
