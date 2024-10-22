@@ -1,22 +1,29 @@
-<ion-header>
-  <ion-toolbar>
-    <ion-title>Viajes del Conductor</ion-title>
-  </ion-toolbar>
-</ion-header>
-
 <ion-content>
-  <ion-list *ngFor="let viaje of viajesDelConductor">
-    <ion-item>
-      <ion-label>
-        <h2>{{ viaje.nombre_destino }}</h2>
-        <p>Conductor: {{ viaje.conductor }}</p>
-        <p>Asientos disponibles: {{ viaje.asientos_disponibles }}</p>
-        <p>Estado: {{ viaje.estado_viaje }}</p>
-        <p>Pasajeros:</p>
-        <ul>
-          <li *ngFor="let nombre of nombresPasajeros[viaje.id__viaje]">{{ nombre }}</li>
-        </ul>
-      </ion-label>
+  <ion-list>
+    <ion-item *ngFor="let viaje of viajesDelConductor">
+      <ion-card class="viaje-card">
+        <ion-card-header>
+          <ion-card-title class="destino">{{ viaje.nombre_destino }}</ion-card-title>
+        </ion-card-header>
+        <ion-card-content class="contenido-card">
+          <p class="conductor"><strong>Conductor:</strong> {{ viaje.conductor }}</p>
+          <p class="asientos"><strong>Asientos disponibles:</strong> {{ viaje.asientos_disponibles }}</p>
+          <p class="estado"><strong>Estado:</strong> {{ viaje.estado_viaje }}</p>
+          <p class="pasajeros"><strong>Pasajeros:</strong></p>
+          <ion-list>
+            <ion-item *ngFor="let rut of viaje.pasajeros" class="pasajero-item">
+              <ion-label>
+                {{ nombresPasajeros[rut] || 'Nombre no disponible' }} ({{ rut }})
+              </ion-label>
+            </ion-item>
+            <ion-item *ngIf="viaje.pasajeros.length === 0" class="sin-pasajeros">
+              <ion-label>
+                Aún no hay pasajeros en este viaje.
+              </ion-label>
+            </ion-item>
+          </ion-list>
+        </ion-card-content>
+      </ion-card>
     </ion-item>
   </ion-list>
 </ion-content>

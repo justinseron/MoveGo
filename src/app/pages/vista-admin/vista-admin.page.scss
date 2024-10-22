@@ -1,43 +1,56 @@
-.custom-card {
-    background: linear-gradient(to right, rgba(0, 0, 255, 0.8), rgba(255, 255, 255, 0.4));
-    color: white;
-    transition: transform 0.3s ease, box-shadow 0.3s ease; /* Añadir suavidad */
-    border: 3px solid #007bff;
-    border-radius: 15px; /* Aumentar el radio de borde */
-    box-shadow: 0 4px 15px rgba(0, 0, 255, 0.5);
-    padding: 16px;
-    position: relative; /* Para el efecto de elevación */
-    overflow: hidden; /* Para evitar que los elementos internos se salgan */
-  }
-  
-  .card-title {
-    font-weight: bold;
-    font-size: 1.2rem; /* Aumentar el tamaño del título */
-  }
-  
-  .card-description {
-    color: #eaeaea; /* Un color más suave para la descripción */
-    font-size: 0.9rem; /* Tamaño de fuente más pequeño para la descripción */
-  }
-  
-  .custom-card:hover {
-    transform: translateY(-10px); /* Levantar la carta al pasar el mouse */
-    box-shadow: 0 10px 30px rgba(0, 0, 255, 0.8); /* Aumentar la sombra */
-  }
-  
-  /* Efecto de animación en el botón */
-  ion-button {
-    margin-top: 10px; /* Espacio superior para el botón */
-    transition: background-color 0.3s ease, transform 0.3s ease; /* Transición suave para el botón */
-  }
-  
-  ion-button:hover {
-    background-color: rgba(255, 255, 255, 0.6); /* Cambiar color del fondo al pasar el mouse */
-    transform: scale(1.05); /* Aumentar ligeramente el botón */
-  }
-  
-  /* Efecto para el texto al pasar el mouse */
-  .card-title:hover {
-    text-shadow: 0 0 10px rgba(255, 255, 255, 0.8); /* Efecto de resplandor */
-  }
-  
+.viaje-card {
+  margin: 10px 0; /* Espaciado entre tarjetas */
+  height: 250px; /* Establece una altura fija para todas las tarjetas */
+  width: 100%; /* Ocupa el 100% del ancho del contenedor */
+  transition: transform 0.2s; /* Efecto de transición al pasar el ratón */
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* Sombra para darle profundidad */
+  border-radius: 8px; /* Bordes redondeados */
+  display: flex; /* Usar flexbox para alinear el contenido */
+  flex-direction: column; /* Colocar los elementos en columna */
+}
+
+.viaje-card:hover {
+  transform: translateY(-5px); /* Levanta ligeramente la tarjeta al pasar el ratón */
+}
+
+.contenido-card {
+  display: flex;
+  flex-direction: column; /* Coloca los elementos en columna */
+  justify-content: space-between; /* Distribuye el espacio entre elementos */
+  height: 100%; /* Asegura que ocupe toda la altura de la tarjeta */
+}
+
+.destino {
+  font-size: 1.5em; /* Tamaño de fuente más grande para el destino */
+  color: #007aff; /* Color azul para el destino */
+  margin-bottom: 5px; /* Espacio inferior */
+  text-align: center; /* Centrar el título */
+  height: 30px; /* Altura fija para que todos los títulos tengan el mismo tamaño */
+}
+
+.conductor, .asientos, .estado {
+  font-size: 1em; /* Tamaño de fuente estándar */
+  color: #333; /* Color de texto oscuro */
+  margin: 5px 0; /* Espaciado vertical */
+}
+
+.pasajeros {
+  margin-top: 10px; /* Espacio superior para separar de los detalles del viaje */
+}
+
+.pasajero-item {
+  font-size: 0.9em; /* Tamaño de fuente más pequeño para los pasajeros */
+  color: #555; /* Color gris para los nombres de los pasajeros */
+  padding: 5px; /* Espaciado interno para los elementos de pasajeros */
+}
+
+.sin-pasajeros {
+  color: #888; /* Color gris para el mensaje de sin pasajeros */
+  font-style: italic; /* Estilo de fuente itálica para el mensaje */
+  text-align: center; /* Centra el mensaje */
+  margin: 10px 0; /* Espacio vertical alrededor del mensaje */
+  position: absolute; /* Asegura que se muestre en el centro del card */
+  bottom: 10px; /* Posiciona el mensaje cerca de la parte inferior */
+  left: 0;
+  right: 0;
+}

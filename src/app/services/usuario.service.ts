@@ -195,11 +195,10 @@ export class UsuarioService {
     let usuarios: any[] = await this.storage.get("usuarios") || [];
     return usuarios.find(elemento=> elemento.correo == correo);
   }
-  public async getNombreByRut(rut: string): Promise<string> {
-    const usuario = await this.getUsuario(rut);
-    return usuario ? usuario.nombre : 'Desconocido'; // Devuelve el nombre o 'Desconocido' si no se encuentra
+  public async getNombrePorRut(rut: string): Promise<string | null> {
+    const usuarios = await this.getUsuarios(); // Asume que tienes un método para obtener todos los usuarios
+    const usuario = usuarios.find(user => user.rut === rut);
+    return usuario ? usuario.nombre : null; // Devuelve el nombre o null si no se encuentra
   }
-
-
   
 }

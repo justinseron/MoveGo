@@ -183,14 +183,13 @@ public async createViaje(viaje: any): Promise<boolean> {
 
         // Si el viaje tiene asientos disponibles
         if (viajeTomado.asientos_disponibles > 0) {
-            const nombrePasajero = await this.usuarioService.getNombreByRut(usuarioRut);
-            viajeTomado.pasajeros.push(usuarioRut,nombrePasajero); // Añadir al pasajero
+            viajeTomado.pasajeros.push(usuarioRut); // Añadir al pasajero
             viajeTomado.asientos_disponibles -= 1; // Disminuir asientos disponibles
 
             // Cambiar el estado a "en curso" si no hay asientos disponibles
             if (viajeTomado.asientos_disponibles === 0) {
-                viajeTomado.estado_viaje = "en curso"; // Cambiar estado si no hay asientos
-            }
+                viajeTomado.estado_viaje = "pendiente"; // Cambiar estado si no hay asientos
+            } 
           
             // Actualizar la lista de viajes en el almacenamiento
             await this.updateViaje(viajeTomado.id__viaje, viajeTomado);
@@ -233,8 +232,6 @@ async cancelarViaje(idViaje: number, usuarioRut: string): Promise<boolean> {
   return false; // No se pudo cancelar el viaje
 }
 
-  
-    
 
   public async updateViaje(id__viaje: number, nuevoViaje: any): Promise<boolean> {
     let viajes: any[] = await this.storage.get("viajes") || [];

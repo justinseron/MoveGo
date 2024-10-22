@@ -229,7 +229,7 @@ export class AdministrarViajesPage implements OnInit {
 
   //mapita
 
-  initMap() {
+  initMap() { try{
     const initialLat = -33.598246116458384;
     const initialLng = -70.5788192627744;
     // Inicializar el mapa con las coordenadas predeterminadas
@@ -280,7 +280,8 @@ export class AdministrarViajesPage implements OnInit {
       }
     });
   
-  }
+  } catch (error) {
+  }}
 
   private resetMap() {
     if (this.map) {
