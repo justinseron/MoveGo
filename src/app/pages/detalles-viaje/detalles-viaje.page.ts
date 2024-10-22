@@ -29,11 +29,11 @@ export class DetallesViajePage implements OnInit {
 
     this.activatedRoute.paramMap.subscribe(async (params) => {
       this.id = Number(params.get('id'));
-      console.log("ID de viaje:", this.id);
+      //console.log("ID de viaje:", this.id);
 
       if (this.id) {
         await this.loadViaje(this.id);
-        console.log("Detalles del viaje:", this.viaje);
+        //console.log("Detalles del viaje:", this.viaje);
         
         // Verificar si el usuario ha tomado el viaje
         this.viajeTomado = this.viaje.pasajeros.includes(this.usuarioRut);
@@ -109,7 +109,7 @@ export class DetallesViajePage implements OnInit {
           handler: async () => {
             const exito = await this.viajesService.tomarViaje(this.viaje.id__viaje, this.usuarioRut);
             if (exito) {
-              console.log('Viaje tomado exitosamente');
+              //console.log('Viaje tomado exitosamente');
               this.router.navigate(['/home/viajes']); // Redirigir a "Mis viajes"
             } else {
               this.mostrarAlerta('Error', 'No se puede tomar el viaje. Puede que ya lo haya tomado o no hay asientos disponibles.');
@@ -124,24 +124,31 @@ export class DetallesViajePage implements OnInit {
 
   async cancelarViaje() {
     if (this.viajeTomado) {
-      const { value: confirm } = await Swal.fire({
-        title: 'Confirmar Cancelación',
-        text: `¿Estás seguro de que quieres cancelar el viaje a ${this.viaje.nombre_destino}?`,
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonText: 'Sí, cancelar',
-        cancelButtonText: 'No, regresar',
+      const alert = await this.alertController.create({
+        header: 'Confirmar Cancelación',
+        message: `¿Estás seguro de que quieres cancelar el viaje a ${this.viaje.nombre_destino}?`,
+        buttons: [
+          {
+            text: 'No, regresar',
+            role: 'cancel',
+            cssClass: 'secondary',
+          },
+          {
+            text: 'Sí, cancelar',
+            handler: async () => {
+              const exito = await this.viajesService.cancelarViaje(this.viaje.id__viaje, this.usuarioRut);
+              if (exito) {
+                console.log('Viaje cancelado exitosamente');
+                this.router.navigate(['/home/viajes']); // Redirigir a "Mis viajes"
+              } else {
+                this.mostrarAlerta('Error', 'No se puede cancelar el viaje. Puede que no lo haya tomado.');
+              }
+            }
+          }
+        ]
       });
   
-      if (confirm) {
-        const exito = await this.viajesService.cancelarViaje(this.viaje.id__viaje, this.usuarioRut);
-        if (exito) {
-          console.log('Viaje cancelado exitosamente');
-          this.router.navigate(['/home/viajes']); // Redirigir a "Mis viajes"
-        } else {
-          this.mostrarAlerta('Error', 'No se puede cancelar el viaje. Puede que no lo haya tomado.');
-        }
-      }
+      await alert.present();
     } else {
       this.mostrarAlerta('Sin Viaje en Curso', 'No tienes un viaje en curso que cancelar.');
     }
@@ -165,8 +172,8 @@ export class DetallesViajePage implements OnInit {
     const isTaken = pasajeros.includes(this.usuarioRut); // Verifica si el usuario ya ha tomado el viaje
     const isPending = this.viaje.estado_viaje === 'pendiente'; // Verifica si el estado es pendiente
   
-    console.log("Usuario ya tomado:", isTaken); // Para depuración
-    console.log("Estado del viaje:", this.viaje.estado_viaje); // Para depuración
+    //console.log("Usuario ya tomado:", isTaken); // Para depuración
+    //console.log("Estado del viaje:", this.viaje.estado_viaje); // Para depuración
   
     // Deshabilitar el botón si el usuario ya tomó el viaje o si el estado no es 'pendiente'
     return isTaken || !isPending; // Cambia la lógica para permitir tomar el viaje aunque no haya asientos
