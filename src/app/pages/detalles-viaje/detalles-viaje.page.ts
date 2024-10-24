@@ -18,6 +18,7 @@ export class DetallesViajePage implements OnInit {
   longitud: number = 0;
   map: any;
   viajeTomado: boolean = false;
+  duracionViajeMinutos: number = 0;
   
   // Coordenadas del origen: Duoc UC Puente Alto
   origenLat: number = -33.618005; 
@@ -54,6 +55,7 @@ export class DetallesViajePage implements OnInit {
       this.latitud = this.viaje.latitud;  // Obtener latitud del viaje
       this.longitud = this.viaje.longitud;  // Obtener longitud del viaje
       this.viajeTomado = this.viaje.pasajeros?.includes(this.usuarioRut) || false;
+      this.duracionViajeMinutos = Math.floor(this.viaje.duracion_viaje / 60); // Asumiendo que está en segundos
     } else {
       console.error("No se pudo cargar el viaje.");
     }
