@@ -8,7 +8,7 @@
 </ion-header>
 
 <ion-content>
-  <img src="assets/images/logo.png" alt="logo" id="logo">
+  <div id="map"></div>
 
   <ion-card class="detalles-viaje" *ngIf="viaje">
     <ion-card-header>
@@ -67,19 +67,15 @@
   </ion-card>
 </ion-content>
 
-<ion-footer>
-  <ion-button expand="full" color="danger" 
-    *ngIf="viajeTomado" (click)="cancelarViaje()">
-    Cancelar Viaje
-  </ion-button>
+<ion-button expand="full" color="danger" *ngIf="viajeTomado" (click)="cancelarViaje()">
+  Cancelar Viaje
+</ion-button>
 
-  <ion-button expand="full" color="primary" 
-    *ngIf="viajeTomado" (click)="volver()">
-    Volver
-  </ion-button>
+<ion-button expand="full" color="primary" *ngIf="viajeTomado" (click)="volver()">
+  Volver
+</ion-button>
 
-  <ion-button expand="full" color="warning" 
-    *ngIf="!viajeTomado" (click)="confirmarTomaViaje()">
-    Tomar Viaje
-  </ion-button>
-</ion-footer>
+<ion-button expand="full" color="warning" *ngIf="!viajeTomado" (click)="confirmarTomaViaje()">
+  Tomar Viaje
+</ion-button>
+

@@ -3,7 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { AlertController } from '@ionic/angular';
 import { UsuarioService } from 'src/app/services/usuario.service';
 import { ViajesService } from 'src/app/services/viajes.service';
-import Swal from 'sweetalert2';
+import * as L from 'leaflet';  // Importar Leaflet
 
 @Component({
   selector: 'app-detalles-viaje',
@@ -14,7 +14,14 @@ export class DetallesViajePage implements OnInit {
   id: number = 0;
   usuarioRut: string = "";
   viaje: any;
+  latitud: number = 0;
+  longitud: number = 0;
+  map: any;
   viajeTomado: boolean = false;
+  
+  // Coordenadas del origen: Duoc UC Puente Alto
+  origenLat: number = -33.618005; 
+  origenLng: number = -70.590955;
 
   constructor(
     private router: Router,
@@ -26,17 +33,15 @@ export class DetallesViajePage implements OnInit {
 
   async ngOnInit() {
     this.usuarioRut = localStorage.getItem("userRut") || '';
-
+  
     this.activatedRoute.paramMap.subscribe(async (params) => {
       this.id = Number(params.get('id'));
-      //console.log("ID de viaje:", this.id);
-
+  
       if (this.id) {
         await this.loadViaje(this.id);
-        //console.log("Detalles del viaje:", this.viaje);
-        
-        // Verificar si el usuario ha tomado el viaje
-        this.viajeTomado = this.viaje.pasajeros.includes(this.usuarioRut);
+        setTimeout(() => {
+          this.initializeMap();  // Asegúrate de que el mapa se inicialice tras la carga del viaje
+        }, 100);  // Espera 100 ms para que el contenedor del mapa esté disponible
       } else {
         console.error("ID de viaje no proporcionado.");
       }
@@ -45,14 +50,91 @@ export class DetallesViajePage implements OnInit {
 
   async loadViaje(id: number) {
     this.viaje = await this.viajesService.getViaje(id);
-    console.log("Viaje cargado:", this.viaje);
-  
-    if (!this.viaje) {
-      console.error("No se pudo cargar el viaje.");
+    if (this.viaje) {
+      this.latitud = this.viaje.latitud;  // Obtener latitud del viaje
+      this.longitud = this.viaje.longitud;  // Obtener longitud del viaje
+      this.viajeTomado = this.viaje.pasajeros?.includes(this.usuarioRut) || false;
     } else {
-      console.log("Pasajeros del viaje:", this.viaje.pasajeros);
+      console.error("No se pudo cargar el viaje.");
     }
   }
+
+  initializeMap() {
+    const initialLat = -33.598246116458384; // Coordenadas iniciales
+    const initialLng = -70.5788192627744;
+
+    if (this.map) {
+        this.map.remove(); // Remover el mapa si ya existe
+    }
+
+    this.map = L.map('map').setView([initialLat, initialLng], 13);  // Vista inicial en las coordenadas específicas
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: 'Map data © OpenStreetMap contributors'
+    }).addTo(this.map);
+
+    // Crear íconos de marcadores
+    const startIcon = L.icon({
+        iconUrl: 'https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon.png',
+        shadowUrl: 'https://unpkg.com/leaflet@1.7.1/dist/images/marker-shadow.png',
+        iconSize: [25, 41],
+        iconAnchor: [12, 41],
+        popupAnchor: [1, -34],
+    });
+
+    const endIcon = L.icon({
+        iconUrl: 'https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon.png',
+        shadowUrl: '',
+        iconSize: [25, 41],
+        iconAnchor: [12, 41],
+        popupAnchor: [1, -34],
+    });
+    
+    // Marcador de inicio en las coordenadas iniciales
+    L.marker([initialLat, initialLng], { icon: startIcon })
+        .addTo(this.map)
+        .bindPopup('Inicio de ruta')
+        .openPopup();
+
+    // Marcador de destino
+    if (this.latitud && this.longitud) {
+        L.marker([this.latitud, this.longitud], { icon: endIcon })
+            .addTo(this.map)
+            .bindPopup(`Destino: ${this.viaje.nombre_destino}`)
+            .openPopup();
+        
+        // Dibujar la ruta desde las coordenadas iniciales al destino
+        L.Routing.control({
+            waypoints: [
+                L.latLng(initialLat, initialLng),  // Coordenadas iniciales
+                L.latLng(this.latitud, this.longitud)  // Coordenadas de destino
+            ],
+            routeWhileDragging: false,
+            lineOptions: {
+                styles: [{ color: 'blue', weight: 4 }],
+                extendToWaypoints: true,
+                missingRouteTolerance: 10
+            },
+        }).addTo(this.map);
+        
+        // Círculo en el destino
+        L.circle([this.latitud, this.longitud], {
+            color: 'blue',
+            fillColor: '#f03',
+            fillOpacity: 0.5,
+            radius: 200
+        }).addTo(this.map);
+    } else {
+        console.error("Coordenadas de destino no válidas.");
+    }
+
+    setTimeout(() => {
+        this.map.invalidateSize();  // Ajusta el tamaño del mapa correctamente
+    }, 0);
+}
+
+
+
 
   volver() {
     this.router.navigate(['/home/viajes']);
@@ -109,7 +191,7 @@ export class DetallesViajePage implements OnInit {
           handler: async () => {
             const exito = await this.viajesService.tomarViaje(this.viaje.id__viaje, this.usuarioRut);
             if (exito) {
-              //console.log('Viaje tomado exitosamente');
+              this.viajeTomado = true;
               this.router.navigate(['/home/viajes']); // Redirigir a "Mis viajes"
             } else {
               this.mostrarAlerta('Error', 'No se puede tomar el viaje. Puede que ya lo haya tomado o no hay asientos disponibles.');
@@ -138,7 +220,7 @@ export class DetallesViajePage implements OnInit {
             handler: async () => {
               const exito = await this.viajesService.cancelarViaje(this.viaje.id__viaje, this.usuarioRut);
               if (exito) {
-                console.log('Viaje cancelado exitosamente');
+                this.viajeTomado = false;
                 this.router.navigate(['/home/viajes']); // Redirigir a "Mis viajes"
               } else {
                 this.mostrarAlerta('Error', 'No se puede cancelar el viaje. Puede que no lo haya tomado.');
@@ -154,16 +236,14 @@ export class DetallesViajePage implements OnInit {
     }
   }
   
-  
   async mostrarAlerta(header: string, message: string) {
     const alert = await this.alertController.create({
         header,
         message,
         buttons: ['Aceptar']
     });
-    await alert.present(); // Presentar la alerta de error
-}
-
+    await alert.present();
+  }
 
   isButtonDisabled(): boolean {
     if (!this.viaje) return true; // Si no hay viaje, deshabilitar
@@ -171,11 +251,7 @@ export class DetallesViajePage implements OnInit {
     const pasajeros = this.viaje.pasajeros || []; // Asegúrate de que pasajeros sea un arreglo
     const isTaken = pasajeros.includes(this.usuarioRut); // Verifica si el usuario ya ha tomado el viaje
     const isPending = this.viaje.estado_viaje === 'pendiente'; // Verifica si el estado es pendiente
-  
-    //console.log("Usuario ya tomado:", isTaken); // Para depuración
-    //console.log("Estado del viaje:", this.viaje.estado_viaje); // Para depuración
-  
-    // Deshabilitar el botón si el usuario ya tomó el viaje o si el estado no es 'pendiente'
-    return isTaken || !isPending; // Cambia la lógica para permitir tomar el viaje aunque no haya asientos
+
+    return isTaken || !isPending;
   }
 }

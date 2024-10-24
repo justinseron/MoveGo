@@ -34,6 +34,7 @@
     "leaflet": "^1.9.4",
     "leaflet-control-geocoder": "^2.4.0",
     "leaflet-routing-machine": "^3.2.12",
+    "openrouteservice-js": "^0.4.1",
     "rxjs": "~7.8.0",
     "sweetalert2": "^11.14.4",
     "tslib": "^2.3.0",
