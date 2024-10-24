@@ -111,6 +111,9 @@ export class UsuarioService {
     // Usar la lista actualizada en lugar de cargar de nuevo
     return this.usuarios.filter(usuario => usuario.tipo_usuario === 'Conductor');
   }
+  public getConductorPorNombre(nombre: string): any {
+    return this.usuarios.find(usuario => usuario.nombre === nombre && usuario.tipo_usuario === 'Conductor');
+  }
   public async getPasajeros(): Promise<any[]> {
     return this.usuarios.filter(usuario => usuario.tipo_usuario === 'Pasajero');
   }

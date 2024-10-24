@@ -53,7 +53,7 @@
           <ion-card *ngIf="viaje && viaje.estado_viaje === 'pendiente'">
             <ion-card-header>
               <ion-card-title>{{ viaje.nombre_destino }}</ion-card-title>
-              <ion-card-subtitle>{{ viaje.estado_viaje | titlecase }}</ion-card-subtitle>
+              <ion-card-subtitle>Conductor: {{ viaje.conductor | titlecase }}</ion-card-subtitle>
             </ion-card-header>
             <ion-card-content>
               <p>Asientos Disponibles: {{ viaje.asientos_disponibles }}</p>

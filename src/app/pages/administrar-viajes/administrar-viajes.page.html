@@ -8,7 +8,7 @@
       <ion-list>
         <ion-item>
           <ion-label>Conductor</ion-label>
-          <ion-select (ionChange)="onConductorChange($event)">
+          <ion-select (ionChange)="onConductorChange($event)" interface="popover">
             <ion-select-option *ngFor="let conductor of conductores" [value]="conductor">
               {{ conductor.nombre }} <!-- Asegúrate de que esta propiedad exista -->
             </ion-select-option>

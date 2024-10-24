@@ -121,10 +121,10 @@ export class DetallesViajePage implements OnInit {
         
         // Círculo en el destino
         L.circle([this.latitud, this.longitud], {
-            color: 'blue',
-            fillColor: '#f03',
+            color: 'green',
+            fillColor: '#00FF00',
             fillOpacity: 0.5,
-            radius: 200
+            radius: 250
         }).addTo(this.map);
     } else {
         console.error("Coordenadas de destino no válidas.");

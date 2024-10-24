@@ -119,9 +119,36 @@ export class AdministradorPage implements OnInit {
   }
   
   async buscar(rut_buscar: string) {
-    this.persona.setValue(await this.usuarioService.getUsuario(rut_buscar));
-    this.botonModificar = false;
+    const usuario = await this.usuarioService.getUsuario(rut_buscar); // Asegúrate de que este método devuelve el usuario
+  
+    if (usuario) {
+      const esPasajero = usuario.tipo_usuario === 'pasajero'; // Verifica si el usuario es pasajero
+  
+      // Utiliza patchValue para actualizar el formulario según el tipo de usuario
+      this.persona.patchValue({
+        rut: usuario.rut,
+        nombre: usuario.nombre,
+        correo: usuario.correo,
+        fecha_nacimiento: usuario.fecha_nacimiento,
+        password: usuario.password,
+        confirm_password: usuario.confirm_password,
+        genero: usuario.genero,
+        tiene_auto: usuario.tiene_auto,
+        ...(esPasajero ? {} : {  // Solo agrega estos campos si NO es pasajero
+          patente_auto: usuario.patente_auto,
+          marca_auto: usuario.marca_auto,
+          color_auto: usuario.color_auto,
+          asientos_disponibles: usuario.asientos_disponibles,
+        }),
+        tipo_usuario: usuario.tipo_usuario,
+      });
+  
+      this.botonModificar = false; // Habilitar o deshabilitar el botón de modificación
+    } else {
+      await this.mostrarAlerta("Error", "¡Usuario no encontrado!"); // Manejo del caso en que no se encuentra el usuario
+    }
   }
+  
 
   async modificar() {
     var rut_buscar: string = this.persona.controls.rut.value || "";
