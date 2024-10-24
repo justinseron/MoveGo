@@ -44,7 +44,7 @@
       // Inicializa el formulario aquí para una mejor legibilidad
       this.viaje = new FormGroup({
         id__viaje: new FormControl({ value: '', disabled: true }), // Campo solo lectura
-        conductor: new FormControl({ value: '', disabled: true }),
+        conductor: new FormControl('',[]),
         rut:new FormControl('',[]),
         patente: new FormControl('',[ Validators.pattern("^[A-Z0-9.-]*$"),Validators.maxLength(8)]),
         color_auto: new FormControl('', [Validators.required]),//*
