@@ -39,24 +39,11 @@
         <ion-card-title class="welcome-title">✨ ¡Bienvenido a MoveGo! 🚗💨</ion-card-title>
       </ion-card-header>
       <ion-card-content>
-        <p class="welcome-text">Nos alegra tenerte aquí. 🌟 Explora y optimiza tus viajes con nosotros.</p>
       </ion-card-content>
     </ion-card>
   </div>
 
-  <div class="cat-message">
-    <ion-card class="welcome-card">
-      <img src="../../../assets/images/gatojaguolin.jpg" alt="Imagen de Halloween" class="welcome-image">
-      <ion-card-header>
-        <ion-card-title class="welcome-title">🎃 También le damos la bienvenida a la temporada de HALLOWEEN! 🎃</ion-card-title>
-      </ion-card-header>
-      <ion-card-content>
-        <p class="welcome-text">👻 Trae tu mejor disfraz y llévate un descuento de miedo 👻</p>
-      </ion-card-content>
-    </ion-card>
-  </div>
-
-  <ion-tabs class="fixed-tabs">
+  <ion-tabs class="-tabs">
     <ion-tab-bar slot="bottom" class="tab-bar">
       <ion-tab-button tab="mis-viajes" *ngIf="usuario.tipo_usuario === 'Conductor'">
         <ion-icon name="person-outline"></ion-icon>
