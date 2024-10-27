@@ -203,5 +203,11 @@ export class UsuarioService {
     const usuario = usuarios.find(user => user.rut === rut);
     return usuario ? usuario.nombre : null; // Devuelve el nombre o null si no se encuentra
   }
+
+  public async getUsuarioLogueado(): Promise<any> {
+    const rutLogueado = this.getRUTLogueado(); // Obtener RUT del usuario logueado
+    return this.getUsuario(rutLogueado); // Retornar los datos del usuario logueado
+  }   
+
   
 }

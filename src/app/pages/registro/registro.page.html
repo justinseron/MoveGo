@@ -9,8 +9,9 @@
 
 <ion-content id="layoutregistro">
 
-  <div id="logo">
-    <img src="assets/images/logo.png">
+  <div class="ion-text-center" id="foto-perfil">
+    <img [src]="fotoPerfil" alt="Foto de perfil" id="imagen-perfil" (click)="fileInput.click()">
+    <input type="file" accept="=images/*" (change)="cambiarFotoPerfil($event)" hidden #fileInput>
   </div>
 
   <div id="registrouser">

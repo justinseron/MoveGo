@@ -1,0 +1,48 @@
+<ion-content>
+  <ion-card *ngIf="usuarioLogueado">
+    <ion-card-header>
+      <ion-card-title class="ion-text-center">Perfil de Usuario</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-item>
+        <ion-label>Nombre:</ion-label>
+        <ion-label>{{ usuarioLogueado.nombre }}</ion-label>
+      </ion-item>
+      <ion-item>
+        <ion-label>Correo:</ion-label>
+        <ion-label>{{ usuarioLogueado.correo }}</ion-label>
+      </ion-item>
+      <ion-item>
+        <ion-label>Fec. Nacimiento:</ion-label>
+        <ion-label>{{ usuarioLogueado.fecha_nacimiento | date }}</ion-label>
+      </ion-item>
+      <ion-item>
+        <ion-label>Género:</ion-label>
+        <ion-label>{{ usuarioLogueado.genero }}</ion-label>
+      </ion-item>
+      <ion-item *ngIf="usuarioLogueado.tiene_auto === 'si'">
+        <ion-label>Patente del Auto:</ion-label>
+        <ion-label>{{ usuarioLogueado.patente_auto }}</ion-label>
+      </ion-item>
+      <ion-item *ngIf="usuarioLogueado.tiene_auto === 'si'">
+        <ion-label>Marca del Auto:</ion-label>
+        <ion-label>{{ usuarioLogueado.marca_auto }}</ion-label>
+      </ion-item>
+      <ion-item *ngIf="usuarioLogueado.tiene_auto === 'si'">
+        <ion-label>Color del Auto:</ion-label>
+        <ion-label>{{ usuarioLogueado.color_auto }}</ion-label>
+      </ion-item>
+      <ion-item *ngIf="usuarioLogueado.tiene_auto === 'si'">
+        <ion-label>Asientos Disponibles:</ion-label>
+        <ion-label>{{ usuarioLogueado.asientos_disponibles }}</ion-label>
+      </ion-item>
+      <ion-button size="block" type="submit" color="secondary" shape="round" (click)="volver()">VOLVER</ion-button>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-card *ngIf="!usuarioLogueado">
+    <ion-card-header>
+      <ion-card-title>No hay usuario logueado</ion-card-title>
+    </ion-card-header>
+  </ion-card>
+</ion-content>

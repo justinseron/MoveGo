@@ -39,3 +39,12 @@ ion-content {
 ion-input{
   margin-bottom: 16px;
 }
+
+#imagen-perfil {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%; /* Imagen redonda */
+  object-fit: cover; /* Mantiene proporciones de la imagen */
+  margin-top: 20px;
+  border: 2px solid #ccc; /* Borde suave */
+}

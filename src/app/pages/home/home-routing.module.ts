@@ -34,6 +34,10 @@ const routes: Routes = [
       {
         path: 'viajes-terminados',
         loadChildren: () => import('../viajes-terminados/viajes-terminados.module').then( m => m.ViajesTerminadosPageModule)
+      },
+      {
+        path: 'perfil-detalles',
+        loadChildren: () => import('../perfil-detalles/perfil-detalles.module').then( m => m.PerfilDetallesPageModule)
       }
       
     ]

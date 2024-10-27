@@ -32,6 +32,8 @@ export class RegistroPage implements OnInit {
     tipo_usuario: new FormControl('Pasajero'),
   });
 
+  fotoPerfil: string = 'assets/images/perfildefault.png';
+
 
   constructor(private router: Router, private alertController: AlertController,private usuarioService: UsuarioService) { 
     this.persona.get("rut")?.setValidators([Validators.required,Validators.pattern("[0-9]{7,8}-[0-9kK]{1}"),this.validarRut()]);
@@ -117,6 +119,19 @@ export class RegistroPage implements OnInit {
       return null;
     };
   }
+
+  cambiarFotoPerfil(event: any) {
+    const archivo = event.target.files[0];
+    if (archivo) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        this.fotoPerfil = reader.result as string;
+        // Guardar la foto en localStorage
+        localStorage.setItem("fotoPerfil", this.fotoPerfil);
+      };
+      reader.readAsDataURL(archivo);
+    }
+  }  
 
 
 }
