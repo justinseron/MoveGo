@@ -156,7 +156,11 @@ export class UsuarioService {
     }
     usuarios[indice] = nuevoUsuario;
     await this.storage.set("usuarios",usuarios);
+    
     this.usuariosSubject.next(usuarios);
+    if (rut === this.getRUTLogueado()) {
+      localStorage.setItem("usuario", JSON.stringify(nuevoUsuario));
+    }
     return true;
   }
 

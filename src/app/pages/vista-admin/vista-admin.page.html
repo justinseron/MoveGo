@@ -1,5 +1,5 @@
 <ion-content>
-  <ion-list>
+  <ion-list *ngIf="viajesDelConductor.length > 0; else noViajes">
     <ion-item *ngFor="let viaje of viajesDelConductor">
       <ion-card class="viaje-card">
         <ion-card-header>
@@ -38,4 +38,14 @@
       </ion-card>
     </ion-item>
   </ion-list>
+
+  <ng-template #noViajes>
+    <ion-card>
+      <ion-card-content>
+        <ion-label>
+          No tienes viajes creados aún.
+        </ion-label>
+      </ion-card-content>
+    </ion-card>
+  </ng-template>
 </ion-content>

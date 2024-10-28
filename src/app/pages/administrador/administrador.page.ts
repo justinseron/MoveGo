@@ -34,14 +34,62 @@ export class AdministradorPage implements OnInit {
   botonModificar: boolean = true;
   
 
-  constructor(@Inject(UsuarioService)private usuarioService: UsuarioService, private alertController: AlertController,private router: Router,private cdr: ChangeDetectorRef ) { }
+  constructor(@Inject(UsuarioService)private usuarioService: UsuarioService, private alertController: AlertController,private router: Router,private cdr: ChangeDetectorRef ) { 
+    
+  }
 
   async ngOnInit() {
     await this.cargarUsuarios();
     this.usuarioService.usuarios$.subscribe(usuarios => {
       this.usuarios = usuarios;
     });
+    // Escucha cambios en el campo 'tiene_auto'
+    this.persona.get('tiene_auto')?.valueChanges.subscribe(value => {
+      this.toggleAutoFields(value);
+      this.actualizarTipoUsuario(value !== null ? value : 'no'); // Cambia aquí
+    });
+    
+    const value = this.persona.controls.tiene_auto.value;
+    this.toggleAutoFields(value || 'no');
+    this.actualizarTipoUsuario(value || 'no');
   }
+  actualizarTipoUsuario(tieneAuto: string) {
+    const tipoUsuarioControl = this.persona.get('tipo_usuario');
+
+    if (tipoUsuarioControl) {
+      if (tieneAuto === 'si') {
+        tipoUsuarioControl.setValue('Conductor'); // Asigna 'Conductor' si tiene auto
+      } else {
+        tipoUsuarioControl.setValue('Pasajero'); // Asigna 'Pasajero' si no tiene auto
+      }
+    } else {
+      console.error('Control de tipo_usuario no encontrado');
+    }
+  }
+
+  
+  
+  toggleAutoFields(value: string | null) {
+    if (value === 'si') {
+      // Muestra los campos del auto y hazlos obligatorios
+      this.persona.get('patente_auto')?.setValidators([Validators.required, Validators.pattern("^[A-Z0-9.-]*$"), Validators.maxLength(8)]);
+      this.persona.get('marca_auto')?.setValidators([Validators.required]);
+      this.persona.get('color_auto')?.setValidators([Validators.required]);
+      this.persona.get('asientos_disponibles')?.setValidators([Validators.required, Validators.min(2), Validators.max(6)]);
+    } else {
+      // Oculta los campos del auto y quita la validación
+      this.persona.get('patente_auto')?.clearValidators();
+      this.persona.get('marca_auto')?.clearValidators();
+      this.persona.get('color_auto')?.clearValidators();
+      this.persona.get('asientos_disponibles')?.clearValidators();
+    }
+    // Actualiza el estado de los controles después de cambiar las validaciones
+    this.persona.get('patente_auto')?.updateValueAndValidity();
+    this.persona.get('marca_auto')?.updateValueAndValidity();
+    this.persona.get('color_auto')?.updateValueAndValidity();
+    this.persona.get('asientos_disponibles')?.updateValueAndValidity();
+  }
+  
 
   async cargarUsuarios() {
     this.usuarios = await this.usuarioService.getUsuarios();
@@ -109,7 +157,9 @@ export class AdministradorPage implements OnInit {
       await this.mostrarAlerta("Error", "¡Las contraseñas no coinciden!");
       return;
     }
-  
+      // Verifica si el usuario tiene auto y actualiza el tipo de usuario
+      const tieneAuto = this.persona.controls.tiene_auto.value ?? 'no';
+      this.actualizarTipoUsuario(tieneAuto);
     if (await this.usuarioService.createUsuario(this.persona.value)) {
       this.usuarios = await this.usuarioService.getUsuarios();
       await this.cargarUsuarios();
@@ -119,12 +169,12 @@ export class AdministradorPage implements OnInit {
   }
   
   async buscar(rut_buscar: string) {
-    const usuario = await this.usuarioService.getUsuario(rut_buscar); // Asegúrate de que este método devuelve el usuario
+    const usuario = await this.usuarioService.getUsuario(rut_buscar);
   
     if (usuario) {
-      const esPasajero = usuario.tipo_usuario === 'pasajero'; // Verifica si el usuario es pasajero
+      // Verifica si el usuario es pasajero o conductor
+      const esPasajero = usuario.tiene_auto === 'no';
   
-      // Utiliza patchValue para actualizar el formulario según el tipo de usuario
       this.persona.patchValue({
         rut: usuario.rut,
         nombre: usuario.nombre,
@@ -141,17 +191,32 @@ export class AdministradorPage implements OnInit {
           asientos_disponibles: usuario.asientos_disponibles,
         }),
         tipo_usuario: usuario.tipo_usuario,
-      });
+    });
   
       this.botonModificar = false; // Habilitar o deshabilitar el botón de modificación
     } else {
-      await this.mostrarAlerta("Error", "¡Usuario no encontrado!"); // Manejo del caso en que no se encuentra el usuario
+      await this.mostrarAlerta("Error", "¡Usuario no encontrado!");
     }
   }
   
 
   async modificar() {
-    var rut_buscar: string = this.persona.controls.rut.value || "";
+    const rut_buscar: string = this.persona.controls.rut.value || "";
+  
+    // Validar que tenga al menos 18 años
+    if (!this.validarEdad18(this.persona.controls.fecha_nacimiento.value || "")) {
+      await this.mostrarAlerta("Error", "¡El usuario debe tener al menos 18 años para modificar sus datos!");
+      return;
+    }
+  
+    // Validar que el correo sea institucional
+    const correo = this.persona.controls.correo.value;
+    if (correo && !correo.endsWith('@duocuc.cl')) {  // Comprobar que correo no sea null
+      await this.mostrarAlerta("Error", "¡El correo debe ser institucional (terminar con @duocuc.cl)!");
+      return;
+    }
+  
+    // Continuar con la modificación si todas las validaciones pasan
     if (await this.usuarioService.updateUsuario(rut_buscar, this.persona.value)) {
       this.usuarios = await this.usuarioService.getUsuarios();
       await this.mostrarAlerta("Éxito", "¡Usuario modificado con éxito!");
@@ -163,12 +228,15 @@ export class AdministradorPage implements OnInit {
     }
   }
   
+  
+  
 
   async eliminar(rut_eliminar: string) {
     const confirmacion = await this.presentConfirmAlert("Confirmar Eliminación", "¿Estás seguro de que deseas eliminar este usuario?", async () => {
       if (await this.usuarioService.deleteUsuario(rut_eliminar)) {
         this.usuarios = await this.usuarioService.getUsuarios();
         await this.cargarUsuarios();
+        this.persona.reset();
         await this.mostrarAlerta("Éxito", "¡Usuario eliminado con éxito!");
       } else {
         await this.mostrarAlerta("Error", "¡Error! Usuario no eliminado.");

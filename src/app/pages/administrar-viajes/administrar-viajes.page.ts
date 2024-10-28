@@ -216,6 +216,7 @@
             if (result) {
               this.viajes = await this.viajeService.getViajes();
               this.limpiar();
+              this.resetMap();
               await this.mostrarAlerta('Éxito', '¡Viaje eliminado con éxito!');
             } else {
               throw new Error('Error en la eliminación del viaje');
