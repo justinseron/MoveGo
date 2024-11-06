@@ -3,7 +3,15 @@
 // The list of file replacements can be found in `angular.json`.
 
 export const environment = {
-  production: false
+  production: false,
+  firebaseConfig : {
+    apiKey: "AIzaSyBSQ0uA2kPzLh08edYVeyvl3MRUJQM1PtA",
+    authDomain: "movego-d74af.firebaseapp.com",
+    projectId: "movego-d74af",
+    storageBucket: "movego-d74af.firebasestorage.app",
+    messagingSenderId: "101436271501",
+    appId: "1:101436271501:web:cb4bcfd83eaccfde306bc4"
+  }
 };
 
 /*
