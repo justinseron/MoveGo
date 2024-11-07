@@ -1,14 +1,14 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 
+
 @Injectable({
   providedIn: 'root'
 })
-
-export class FireService {
+export class FireusuarioService {
 
   constructor(private fireStore: AngularFirestore) { }
-  
+
   async crearUsuario(usuario: any){
     const docRef = this.fireStore.collection('usuarios').doc(usuario.rut);
     const docActual = await docRef.get().toPromise();

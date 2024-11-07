@@ -3,6 +3,7 @@ import { AbstractControl, FormControl, FormGroup, ValidatorFn, Validators } from
 import { Router } from '@angular/router';
 import { AlertController } from '@ionic/angular';
 import { UsuarioService } from 'src/app/services/usuario.service';
+import {FireusuarioService} from 'src/app/services/fireusuario.service';
 
 @Component({
   selector: 'app-administrador',
@@ -34,7 +35,7 @@ export class AdministradorPage implements OnInit {
   botonModificar: boolean = true;
   
 
-  constructor(@Inject(UsuarioService)private usuarioService: UsuarioService, private alertController: AlertController,private router: Router,private cdr: ChangeDetectorRef ) { 
+  constructor(@Inject(UsuarioService)private usuarioService: UsuarioService, private alertController: AlertController,private router: Router,private cdr: ChangeDetectorRef, private fireusuarioService: FireusuarioService  ) { 
     
   }
 
@@ -160,16 +161,16 @@ export class AdministradorPage implements OnInit {
       // Verifica si el usuario tiene auto y actualiza el tipo de usuario
       const tieneAuto = this.persona.controls.tiene_auto.value ?? 'no';
       this.actualizarTipoUsuario(tieneAuto);
-    if (await this.usuarioService.createUsuario(this.persona.value)) {
-      this.usuarios = await this.usuarioService.getUsuarios();
-      await this.cargarUsuarios();
+    if (await this.fireusuarioService.crearUsuario(this.persona.value)){
+      alert("Usuario Registrado!")
       this.persona.reset();
-      await this.mostrarAlerta("Éxito", "¡Usuario creado con éxito!");
+    }else{
+      alert("Error! Usuario Ya Existe!")
     }
   }
   
-  async buscar(rut_buscar: string) {
-    const usuario = await this.usuarioService.getUsuario(rut_buscar);
+  async buscar(usuario: any) {
+    this.persona.setValue(usuario);
   
     if (usuario) {
       // Verifica si el usuario es pasajero o conductor

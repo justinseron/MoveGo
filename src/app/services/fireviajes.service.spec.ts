@@ -1,13 +1,13 @@
 import { TestBed } from '@angular/core/testing';
 
-import { FireViajesService } from './fire-viajes.service';
+import { FireviajesService } from './fireviajes.service';
 
-describe('FireViajesService', () => {
-  let service: FireViajesService;
+describe('FireviajesService', () => {
+  let service: FireviajesService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
-    service = TestBed.inject(FireViajesService);
+    service = TestBed.inject(FireviajesService);
   });
 
   it('should be created', () => {

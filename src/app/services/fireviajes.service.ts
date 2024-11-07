@@ -1,14 +1,13 @@
 import { Injectable } from '@angular/core';
-import { AngularFirestore } from '@angular/fire/compat/firestore';
+import {AngularFirestore} from '@angular/fire/compat/firestore'
 
 @Injectable({
   providedIn: 'root'
 })
-
-export class FireService {
+export class FireviajesService {
 
   constructor(private fireStore: AngularFirestore) { }
-  
+
   async crearViaje(viaje: any){
     const docRef = this.fireStore.collection('viajes').doc(viaje.id);
     const docActual = await docRef.get().toPromise();
