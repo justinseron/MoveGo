@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AlertController } from '@ionic/angular';
-import { UsuarioService } from 'src/app/services/usuario.service';
+import { FireUsuarioService } from 'src/app/services/fireusuario.service';
+import { LoadingController } from '@ionic/angular';
 
 @Component({
   selector: 'app-perfil-detalles',
@@ -9,18 +10,33 @@ import { UsuarioService } from 'src/app/services/usuario.service';
   styleUrls: ['./perfil-detalles.page.scss'],
 })
 export class PerfilDetallesPage implements OnInit {
-  usuarioLogueado: any;
+  usuarioLogueado: any = {};  // Asegúrate de que esté inicializado
   correoInvalido: boolean = false;
   fechaInvalida: boolean = false;
 
-  constructor(private usuarioService: UsuarioService, private router: Router,private alertController: AlertController) {}
+  constructor(
+    private fireUsuarioService: FireUsuarioService,
+    private router: Router,
+    private alertController: AlertController,
+    private loadingController: LoadingController
+  ) {}
 
   async ngOnInit() {
-
-    this.usuarioLogueado = await this.usuarioService.getUsuarioLogueado();
+    const rutLogueado = this.fireUsuarioService.getRUTLogueado();
+    if (rutLogueado) {
+      this.usuarioLogueado = await this.fireUsuarioService.getUsuarioPorRut(rutLogueado);
+    }
   }
-
-  volver(){
+  async mostrarCargando() {
+    const loading = await this.loadingController.create({
+      message: 'Cargando...',
+      spinner: 'crescent',  // Puedes cambiar el tipo de spinner aquí
+      duration: 10000,      // Duración opcional, si quieres que se cierre después de cierto tiempo
+    });
+    await loading.present();
+    return loading;
+  }
+  volver() {
     this.router.navigate(['home/perfil']);
   }
 
@@ -37,6 +53,7 @@ export class PerfilDetallesPage implements OnInit {
 
     this.fechaInvalida = (edad < 18 || (edad === 18 && mes < 0));
   }
+
   async mostrarAlertaExito() {
     const alert = await this.alertController.create({
       header: 'Éxito',
@@ -47,11 +64,16 @@ export class PerfilDetallesPage implements OnInit {
   }
 
   async guardarCambios() {
+    const loading = await this.mostrarCargando();
     if (!this.correoInvalido && !this.fechaInvalida) {
-      await this.usuarioService.updateUsuario(this.usuarioLogueado.rut, this.usuarioLogueado);
-      this.usuarioLogueado = await this.usuarioService.getUsuarioLogueado(); 
-      this.mostrarAlertaExito();
-      this.volver();
+      // Guardar los cambios del usuario
+      const exito = await this.fireUsuarioService.updateUsuario(this.usuarioLogueado);
+      if (exito) {
+        loading.dismiss();
+        this.mostrarAlertaExito();
+        this.volver();  // Volver al perfil
+      }
     }
   }
+  
 }

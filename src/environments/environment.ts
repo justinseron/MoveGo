@@ -5,12 +5,12 @@
 export const environment = {
   production: false,
   firebaseConfig : {
-    apiKey: "AIzaSyBFM7UInUoCFKYT92--QEdEw7YVnEKP0cQ",
-    authDomain: "movego-51171.firebaseapp.com",
-    projectId: "movego-51171",
-    storageBucket: "movego-51171.firebasestorage.app",
-    messagingSenderId: "999875049800",
-    appId: "1:999875049800:web:4e0691c743118554f41b7d"
+    apiKey: "AIzaSyDdV4grVY8WRlKp19_0_KQeupzHnbymIvg",
+    authDomain: "movego-209af.firebaseapp.com",
+    projectId: "movego-209af",
+    storageBucket: "movego-209af.firebasestorage.app",
+    messagingSenderId: "684040560061",
+    appId: "1:684040560061:web:cb5d6d9403a6f85fd046d4"
   }
 };
 

@@ -195,7 +195,7 @@ export class UsuarioService {
 
   getRUTLogueado(): string {
     // Suponiendo que tienes el RUT almacenado en el almacenamiento local
-    return localStorage.getItem('userRut') || '';
+    return localStorage .getItem('userRut') || '';
   }
 
   public async recuperarUsuario(correo:string): Promise<any>{
