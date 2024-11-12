@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AlertController } from '@ionic/angular';
-import { UsuarioService } from 'src/app/services/usuario.service';
-import { ViajesService } from 'src/app/services/viajes.service';
 import * as L from 'leaflet';  // Importar Leaflet
+import { FireUsuarioService } from 'src/app/services/fireusuario.service';
+import { FireviajesService } from 'src/app/services/fireviajes.service';
 
 @Component({
   selector: 'app-detalles-viaje',
@@ -11,7 +11,7 @@ import * as L from 'leaflet';  // Importar Leaflet
   styleUrls: ['./detalles-viaje.page.scss'],
 })
 export class DetallesViajePage implements OnInit {
-  id: number = 0;
+  id: string | null = null;
   usuarioRut: string = "";
   viaje: any;
   latitud: number = 0;
@@ -28,29 +28,32 @@ export class DetallesViajePage implements OnInit {
     private router: Router,
     private alertController: AlertController,
     private activatedRoute: ActivatedRoute,
-    private viajesService: ViajesService,
-    private usuarioService: UsuarioService
+    private fireViajeService : FireviajesService,
+    private fireUsuarioService : FireUsuarioService
   ) {}
 
   async ngOnInit() {
     this.usuarioRut = localStorage.getItem("userRut") || '';
-  
     this.activatedRoute.paramMap.subscribe(async (params) => {
-      this.id = Number(params.get('id'));
-  
+      this.id = params.get('id');  // Este es un string (ID del viaje)
+    
       if (this.id) {
-        await this.loadViaje(this.id);
+        // Usamos el ID como string directamente, sin convertirlo a número
+        await this.loadViaje(this.id);  // 'this.id' es un string, no es necesario convertirlo
         setTimeout(() => {
-          this.initializeMap();  // Asegúrate de que el mapa se inicialice tras la carga del viaje
-        }, 100);  // Espera 100 ms para que el contenedor del mapa esté disponible
+          this.initializeMap();
+        }, 100);
       } else {
         console.error("ID de viaje no proporcionado.");
       }
     });
+    
+    
+    
   }
 
-  async loadViaje(id: number) {
-    this.viaje = await this.viajesService.getViaje(id);
+  async loadViaje(id: string) {
+    this.viaje = await this.fireViajeService.getViaje(id.toString()); // Convertir id a string
     if (this.viaje) {
       this.latitud = this.viaje.latitud;  // Obtener latitud del viaje
       this.longitud = this.viaje.longitud;  // Obtener longitud del viaje
@@ -144,7 +147,6 @@ export class DetallesViajePage implements OnInit {
 
   async confirmarTomaViaje() {
     if (this.viaje) {
-      // Verifica si el usuario ya tiene un viaje tomado
       if (this.viajeTomado) {
         const alert = await this.alertController.create({
           header: 'Viaje en Curso',
@@ -159,9 +161,10 @@ export class DetallesViajePage implements OnInit {
               text: 'Sí',
               handler: async () => {
                 // Cancelar el viaje anterior
-                const exitoCancelacion = await this.viajesService.cancelarViaje(this.viaje.id__viaje, this.usuarioRut);
+                const exitoCancelacion = await this.fireViajeService.cancelarViaje(this.viaje.id__viaje, this.usuarioRut);
                 if (exitoCancelacion) {
-                  await this.tomarNuevoViaje(); // Permitir al usuario tomar el nuevo viaje
+                  // Permitir al usuario tomar el nuevo viaje
+                  await this.tomarNuevoViaje(); 
                 } else {
                   this.mostrarAlerta('Error', 'No se pudo cancelar el viaje anterior.');
                 }
@@ -172,31 +175,61 @@ export class DetallesViajePage implements OnInit {
 
         await alert.present();
       } else {
-        // Si no tiene un viaje anterior, solo procede a tomar el nuevo viaje
-        await this.tomarNuevoViaje();
+        await this.tomarNuevoViaje();  // Si no tiene un viaje anterior, solo procede a tomar el nuevo viaje
       }
     }
-  }
+}
 
-  async tomarNuevoViaje() {
+
+async tomarNuevoViaje() {
+  const alert = await this.alertController.create({
+    header: 'Confirmar Toma de Viaje',
+    message: `¿Estás seguro de que quieres tomar el viaje a ${this.viaje.nombre_destino}?`,
+    buttons: [
+      {
+        text: 'Cancelar',
+        role: 'cancel',
+        cssClass: 'secondary',
+      },
+      {
+        text: 'Confirmar',
+        handler: async () => {
+          // Tomar el nuevo viaje
+          const exito = await this.fireViajeService.tomarViaje(this.viaje.id__viaje, this.usuarioRut);
+          if (exito) {
+            this.viajeTomado = true;
+            this.router.navigate(['/home/viajes']); // Redirigir a "Mis viajes"
+          } else {
+            this.mostrarAlerta('Error', 'No se puede tomar el viaje. Puede que ya lo haya tomado o no hay asientos disponibles.');
+          }
+        }
+      }
+    ]
+  });
+
+  await alert.present();
+}
+
+async cancelarViaje() {
+  if (this.viajeTomado) {
     const alert = await this.alertController.create({
-      header: 'Confirmar Toma de Viaje',
-      message: `¿Estás seguro de que quieres tomar el viaje a ${this.viaje.nombre_destino}?`,
+      header: 'Confirmar Cancelación',
+      message: `¿Estás seguro de que quieres cancelar el viaje a ${this.viaje.nombre_destino}?`,
       buttons: [
         {
-          text: 'Cancelar',
+          text: 'No, regresar',
           role: 'cancel',
           cssClass: 'secondary',
         },
         {
-          text: 'Confirmar',
+          text: 'Sí, cancelar',
           handler: async () => {
-            const exito = await this.viajesService.tomarViaje(this.viaje.id__viaje, this.usuarioRut);
+            const exito = await this.fireViajeService.cancelarViaje(this.viaje.id__viaje, this.usuarioRut);
             if (exito) {
-              this.viajeTomado = true;
+              this.viajeTomado = false;
               this.router.navigate(['/home/viajes']); // Redirigir a "Mis viajes"
             } else {
-              this.mostrarAlerta('Error', 'No se puede tomar el viaje. Puede que ya lo haya tomado o no hay asientos disponibles.');
+              this.mostrarAlerta('Error', 'No se puede cancelar el viaje. Puede que no lo haya tomado.');
             }
           }
         }
@@ -204,39 +237,10 @@ export class DetallesViajePage implements OnInit {
     });
 
     await alert.present();
+  } else {
+    this.mostrarAlerta('Sin Viaje en Curso', 'No tienes un viaje en curso que cancelar.');
   }
-
-  async cancelarViaje() {
-    if (this.viajeTomado) {
-      const alert = await this.alertController.create({
-        header: 'Confirmar Cancelación',
-        message: `¿Estás seguro de que quieres cancelar el viaje a ${this.viaje.nombre_destino}?`,
-        buttons: [
-          {
-            text: 'No, regresar',
-            role: 'cancel',
-            cssClass: 'secondary',
-          },
-          {
-            text: 'Sí, cancelar',
-            handler: async () => {
-              const exito = await this.viajesService.cancelarViaje(this.viaje.id__viaje, this.usuarioRut);
-              if (exito) {
-                this.viajeTomado = false;
-                this.router.navigate(['/home/viajes']); // Redirigir a "Mis viajes"
-              } else {
-                this.mostrarAlerta('Error', 'No se puede cancelar el viaje. Puede que no lo haya tomado.');
-              }
-            }
-          }
-        ]
-      });
-  
-      await alert.present();
-    } else {
-      this.mostrarAlerta('Sin Viaje en Curso', 'No tienes un viaje en curso que cancelar.');
-    }
-  }
+}
   
   async mostrarAlerta(header: string, message: string) {
     const alert = await this.alertController.create({
@@ -246,7 +250,6 @@ export class DetallesViajePage implements OnInit {
     });
     await alert.present();
   }
-
   isButtonDisabled(): boolean {
     if (!this.viaje) return true; // Si no hay viaje, deshabilitar
     
@@ -254,6 +257,6 @@ export class DetallesViajePage implements OnInit {
     const isTaken = pasajeros.includes(this.usuarioRut); // Verifica si el usuario ya ha tomado el viaje
     const isPending = this.viaje.estado_viaje === 'pendiente'; // Verifica si el estado es pendiente
 
-    return isTaken || !isPending;
-  }
+    return isTaken || !isPending;  // Deshabilitar si ya tiene el viaje o el estado no es pendiente
+}
 }

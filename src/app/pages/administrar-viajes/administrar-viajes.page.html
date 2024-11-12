@@ -14,44 +14,44 @@
             </ion-select-option>
           </ion-select>
         </ion-item>
-        <ion-item>
+        <ion-item [ngStyle]="{ display: 'none' }">
           <ion-label position="stacked">Rut Conductor</ion-label>
           <ion-input type="text" formControlName="rut" placeholder="Ej: ABC1234"></ion-input>
         </ion-item>
         
         <ion-item>
           <ion-label position="stacked">Patente</ion-label>
-          <ion-input type="text" formControlName="patente" placeholder="Ej: ABC1234"></ion-input>
+          <ion-input type="text" formControlName="patente" placeholder="Ej: ABC1234" readonly></ion-input>
         </ion-item>
 
         <ion-item>
           <ion-label position="stacked">Color del Auto</ion-label>
-          <ion-input type="text" formControlName="color_auto" placeholder="Ej: Rojo"></ion-input>
+          <ion-input type="text" formControlName="color_auto" placeholder="Ej: Rojo" readonly></ion-input>
         </ion-item>
 
         <ion-item>
           <ion-label position="stacked">Asientos Disponibles</ion-label>
-          <ion-input type="number" formControlName="asientos_disponibles" placeholder="Ej: 4"></ion-input>
+          <ion-input type="number" formControlName="asientos_disponibles" placeholder="Ej: 4" readonly></ion-input>
         </ion-item>
 
         <ion-item>
           <ion-label position="stacked">Nombre Destino</ion-label>
-          <ion-input type="text" [(ngModel)]="direccion" formControlName="nombre_destino" placeholder="Ej: Playa"></ion-input>
+          <ion-input type="text" [(ngModel)]="direccion" formControlName="nombre_destino" placeholder="Ej: Playa" readonly></ion-input>
         </ion-item>
 
-        <ion-item>
+        <ion-item [ngStyle]="{ display: 'none' }">
           <ion-label position="stacked">Latitud</ion-label>
           <ion-input type="number" [(ngModel)]="latitud" formControlName="latitud" placeholder="Ej: -34.6097"></ion-input>
-        </ion-item>
+        </ion-item>     
 
-        <ion-item>
+        <ion-item [ngStyle]="{ display: 'none' }">
           <ion-label position="stacked">Longitud</ion-label>
           <ion-input type="number" [(ngModel)]="longitud" formControlName="longitud" placeholder="Ej: -58.3816"></ion-input>
         </ion-item>
 
         <ion-item>
           <ion-label position="stacked">Distancia (metros)</ion-label>
-          <ion-input type="number" [(ngModel)]="distancia_metros" formControlName="distancia_metros" placeholder="Ej: 1500"></ion-input>
+          <ion-input type="number" [(ngModel)]="distancia_metros" formControlName="distancia_metros" placeholder="Ej: 1500" readonly></ion-input>
         </ion-item>
 
         <ion-item>
@@ -102,7 +102,7 @@
           <ion-item-options side="start">
             <ion-item-option (click)="buscar(viaje.id__viaje)" color="warning">Buscar</ion-item-option>
           </ion-item-options>
-          <ion-item>{{viaje.id__viaje}} - {{viaje.nombre_destino | titlecase}}</ion-item>
+          <ion-item>{{viaje.nombre_destino | titlecase}}</ion-item>
           <ion-item-options side="end">
             <ion-item-option (click)="eliminar(viaje.id__viaje)" color="danger">Eliminar</ion-item-option>
           </ion-item-options>

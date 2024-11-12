@@ -50,7 +50,7 @@ export class UsuarioService {
       "password": "Conductor123.",
       "confirm_password": "Conductor123.",
       "genero": "masculino",
-      "tiene_auto": "si",
+      "tiene_auto": "si", 
       "patente_auto": "XYZ123",
       "marca_auto": "Ford",
       "color_auto": "Azul",

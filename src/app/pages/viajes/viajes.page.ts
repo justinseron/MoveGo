@@ -1,6 +1,7 @@
 import { Component, AfterViewInit, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { ViajesService } from 'src/app/services/viajes.service';
+import { FireviajesService } from 'src/app/services/fireviajes.service';
+import { LoadingController } from '@ionic/angular';
 
 @Component({
   selector: 'app-viajes',
@@ -16,15 +17,23 @@ export class ViajesPage implements OnInit, AfterViewInit {
   isBasicoSelected: boolean = true; // Control del segmento de selección
   usuarioRut: string = ''; // Almacenar el RUT del usuario
 
-  constructor(private router: Router, private viajesService: ViajesService) {}
+  constructor(private router: Router, private fireViajeService : FireviajesService,private loadingController: LoadingController) {}
 
   async ngOnInit() {
     this.usuarioRut = localStorage.getItem("userRut") || ''; // Obtiene el RUT del usuario
     await this.cargarViajes();
   }
-
+  async mostrarCargando() {
+    const loading = await this.loadingController.create({
+      message: 'Cargando...',
+      spinner: 'crescent',  // Puedes cambiar el tipo de spinner aquí
+      duration: 10000,      // Duración opcional, si quieres que se cierre después de cierto tiempo
+    });
+    await loading.present();
+    return loading;
+  }
   async cargarViajes() {
-    const todosLosViajes = await this.viajesService.getViajes(); // Obtener todos los viajes
+    const todosLosViajes = await this.fireViajeService.getViajes(); // Obtener todos los viajes
     console.log("Todos los viajes desde el almacenamiento:", todosLosViajes); // Log para verificar
 
     // Filtrar los viajes disponibles
@@ -63,7 +72,7 @@ export class ViajesPage implements OnInit, AfterViewInit {
   }
 
   async tomarViaje(viaje: any) {
-    const exito = await this.viajesService.tomarViaje(viaje.id__viaje, this.usuarioRut);
+    const exito = await this.fireViajeService.tomarViaje(viaje.id__viaje, this.usuarioRut);
     if (exito) {
       await this.cargarViajes(); // Recargar los viajes después de tomar uno
       console.log("Viaje tomado con éxito");
