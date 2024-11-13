@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -11,7 +12,7 @@ export class FireUsuarioService {
   usuarios$ = this.usuariosSubject.asObservable();
   private rutConductorLogueado: string | null = null;
 
-  constructor(private fireStore: AngularFirestore) {
+  constructor(private fireStore: AngularFirestore, private fireAuth: AngularFireAuth) {
     this.cargarUsuarios(); // Cargar los usuarios al iniciar el servicio
     this.crearAdminPorDefecto();
   }
@@ -59,7 +60,9 @@ export class FireUsuarioService {
     if (docActual?.exists) {
       return false; // Usuario ya existe
     }
-    await docRef.set(usuario);
+    const credencialesUsuario = await this.fireAuth.createUserWithEmailAndPassword(usuario.correo, usuario.contrasena);
+    const uid = credencialesUsuario.user?.uid;
+    await docRef.set( {...usuario,uid} );
     return true;
   }
 

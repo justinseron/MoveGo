@@ -43,6 +43,10 @@ export class PerfilPage implements OnInit {
     this.router.navigate(['home/perfil-detalles']);
   }
 
+  compartirPerfil() {
+    this.router.navigate(['home/compartir-perfil']);
+  }
+
   async confirmarCerrar() {
     const alert = await this.alertController.create({
       header: 'Confirmar Cierre de Sesión',
