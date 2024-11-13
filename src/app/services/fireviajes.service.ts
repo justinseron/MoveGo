@@ -94,7 +94,7 @@ export class FireviajesService {
     try {
       const viajeRef = this.fireStore.collection('viajes').doc(); // Esto genera un ID automático
       const viajeConId = { ...viaje, id__viaje: viajeRef.ref.id };  // Usa el ID generado por Firestore
-  
+      
       await viajeRef.set(viajeConId);  // Guarda el viaje con el ID generado
       return true;
     } catch (error) {

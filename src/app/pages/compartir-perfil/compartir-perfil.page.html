@@ -7,7 +7,7 @@
       </ion-card-header>
       <div class="qr-container">
         <qrcode  
-          [qrdata]="usuario.rut"
+          [qrdata]="usuario.nombre + ' | ' + usuario.rut + ' | ' + usuario.correo + ' | ' + usuario.tipo_usuario"
           [allowEmptyString]="true"
           [ariaLabel]="'QR Code image with the following content...'"
           [colorDark]="'#000000ff'"

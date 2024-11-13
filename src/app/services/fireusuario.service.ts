@@ -60,7 +60,7 @@ export class FireUsuarioService {
     if (docActual?.exists) {
       return false; // Usuario ya existe
     }
-    const credencialesUsuario = await this.fireAuth.createUserWithEmailAndPassword(usuario.correo, usuario.contrasena);
+    const credencialesUsuario = await this.fireAuth.createUserWithEmailAndPassword(usuario.correo, usuario.password);
     const uid = credencialesUsuario.user?.uid;
     await docRef.set( {...usuario,uid} );
     return true;
