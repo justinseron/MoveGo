@@ -33,6 +33,7 @@
     "@types/leaflet-routing-machine": "^3.2.8",
     "angularx-qrcode": "^18.0.2",
     "firebase": "^11.0.1",
+    "firebase-tools": "^13.25.0",
     "ionicons": "^7.0.0",
     "leaflet": "^1.9.4",
     "leaflet-control-geocoder": "^2.4.0",

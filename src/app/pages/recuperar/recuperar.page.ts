@@ -3,6 +3,7 @@ import {Router} from '@angular/router';
 import { UsuarioService } from 'src/app/services/usuario.service';
 import { ModalController } from '@ionic/angular';
 import { VerificarCodigoPage } from '../verificar-codigo/verificar-codigo.page';
+import { AngularFireAuth } from '@angular/fire/compat/auth';
 
 @Component({
   selector: 'app-recuperar',
@@ -14,7 +15,7 @@ export class RecuperarPage implements OnInit {
   //ngModel
   email: string = "";
 
-  constructor(private modalController: ModalController,private usuarioService: UsuarioService, private router: Router) { }
+  constructor(private auth: AngularFireAuth ,private modalController: ModalController,private usuarioService: UsuarioService, private router: Router) { }
 
   ngOnInit() {
   }
@@ -27,6 +28,10 @@ export class RecuperarPage implements OnInit {
   }
 
   async recuperarContrasena(){
+    
+    //esto se hace en el service, con un métod que se llame recuperar clave que reciba el correo:
+    //this.auth.sendPasswordResetEmail(this.email);
+    
     if(await this.usuarioService.recuperarUsuario(this.email)){
       this.mostrarModalVerificacion()
       this.router.navigate(['/login']);
