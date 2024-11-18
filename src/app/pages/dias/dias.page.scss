@@ -1,0 +1,38 @@
+ion-content {
+    --background: #f9f9f9; /* Fondo gris suave para todo el contenido */
+  }
+  
+  .feriado-card {
+    margin: 10px; /* Espacio entre las tarjetas */
+    padding: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Sombra sutil para las tarjetas */
+    border-radius: 10px; /* Bordes redondeados */
+  }
+  
+  ion-card-header {
+    background-color: #3880ff; /* Color de fondo azul */
+    color: white; /* Color del texto */
+    padding: 10px;
+    border-radius: 10px 10px 0 0; /* Bordes redondeados solo en la parte superior */
+  }
+  
+  ion-card-title {
+    font-size: 18px; /* Tamaño de fuente más grande para el título */
+    font-weight: bold;
+  }
+  
+  ion-card-content {
+    padding: 10px;
+    font-size: 14px;
+    color: #444; /* Color de texto gris oscuro para el contenido */
+  }
+  
+  ion-card-content p {
+    margin: 5px 0; /* Espaciado entre los párrafos */
+  }
+  
+  ion-spinner {
+    display: block;
+    margin: 0 auto;
+    padding: 20px;
+  }

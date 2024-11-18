@@ -22,6 +22,10 @@ const routes: Routes = [
   {
     path: 'compartir-perfil',
     loadChildren: () => import('./compartir-perfil/compartir-perfil.module').then( m => m.CompartirPerfilPageModule)
+  },
+  {
+    path: 'dias',
+    loadChildren: () => import('./dias/dias.module').then( m => m.DiasPageModule)
   }
 
 ];

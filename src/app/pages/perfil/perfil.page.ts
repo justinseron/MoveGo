@@ -43,6 +43,10 @@ export class PerfilPage implements OnInit {
     this.router.navigate(['home/perfil-detalles']);
   }
 
+  goToDias() {
+    this.router.navigate(['/dias']);
+  }
+
   compartirPerfil() {
     this.router.navigate(['home/compartir-perfil']);
   }

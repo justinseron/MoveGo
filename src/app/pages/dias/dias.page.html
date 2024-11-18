@@ -1,0 +1,31 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>
+      Días Festivos 2024
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content *ngIf="loading">
+  <ion-spinner name="crescent"></ion-spinner>
+  Cargando datos...
+</ion-content>
+
+<ion-content *ngIf="!loading && datos.length === 0">
+  <p>No se encontraron datos.</p>
+</ion-content>
+
+<ion-content *ngIf="!loading && datos.length > 0">
+  <ion-list>
+    <ion-card *ngFor="let dia of datos" class="feriado-card">
+      <ion-card-header>
+        <ion-card-title>{{ dia.title }}</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <p><strong>Fecha:</strong> {{ dia.formattedDate }}</p>
+        <p><strong>Tipo:</strong> {{ dia.type }}</p>
+        <p><strong>Detalles:</strong> {{ dia.extra }}</p>
+      </ion-card-content>
+    </ion-card>
+  </ion-list>
+</ion-content>

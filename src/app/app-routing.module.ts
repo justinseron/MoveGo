@@ -58,6 +58,10 @@ const routes: Routes = [
     loadChildren: () => import('./pages/vista-admin/vista-admin.module').then(m => m.VistaAdminPageModule)
   },
   {
+    path: 'dias',
+    loadChildren: () => import('./pages/dias/dias.module').then( m => m.DiasPageModule)
+  },
+  {
     path: '**',
     loadChildren: () => import('./pages/error404/error404.module').then(m => m.Error404PageModule)
   },
