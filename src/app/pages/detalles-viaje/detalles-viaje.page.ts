@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AlertController } from '@ionic/angular';
-import * as L from 'leaflet';  // Importar Leaflet
+import * as L from 'leaflet';
 import { FireUsuarioService } from 'src/app/services/fireusuario.service';
 import { FireviajesService } from 'src/app/services/fireviajes.service';
+import { CurrencyService } from 'src/app/services/currency.service'; // Asegúrate de que esté importado
 
 @Component({
   selector: 'app-detalles-viaje',
@@ -12,30 +13,32 @@ import { FireviajesService } from 'src/app/services/fireviajes.service';
 })
 export class DetallesViajePage implements OnInit {
   id: string | null = null;
-  usuarioRut: string = "";
+  usuarioRut: string = '';
   viaje: any;
   latitud: number = 0;
   longitud: number = 0;
   map: any;
   viajeTomado: boolean = false;
   duracionViajeMinutos: number = 0;
-  
+  costoDolares: number = 0; // Para almacenar el costo en dólares
+
   // Coordenadas del origen: Duoc UC Puente Alto
-  origenLat: number = -33.618005; 
+  origenLat: number = -33.618005;
   origenLng: number = -70.590955;
 
   constructor(
     private router: Router,
     private alertController: AlertController,
     private activatedRoute: ActivatedRoute,
-    private fireViajeService : FireviajesService,
-    private fireUsuarioService : FireUsuarioService
+    private fireViajeService: FireviajesService,
+    private fireUsuarioService: FireUsuarioService,
+    private currencyService: CurrencyService // Inyectamos el servicio de conversión de divisas
   ) {}
 
   async ngOnInit() {
-    this.usuarioRut = localStorage.getItem("userRut") || '';
+    this.usuarioRut = localStorage.getItem('userRut') || '';
     this.activatedRoute.paramMap.subscribe(async (params) => {
-      this.id = params.get('id');  // Este es un string (ID del viaje)
+      this.id = params.get('id'); // Este es un string (ID del viaje)
     
       if (this.id) {
         // Usamos el ID como string directamente, sin convertirlo a número
@@ -43,15 +46,33 @@ export class DetallesViajePage implements OnInit {
         setTimeout(() => {
           this.initializeMap();
         }, 100);
+
+        interface DolarResponse {
+          serie: {
+            valor: number; // El valor del dólar
+          }[];
+        }
+        
+        // Llamar a la API para obtener el valor del dólar
+        this.currencyService.getDolarRate().subscribe(
+          (data: DolarResponse) => {
+            const dolarValue = data.serie[0].valor; // La tasa de cambio
+            if (this.viaje && this.viaje.costo_viaje) {
+              this.costoDolares = this.viaje.costo_viaje / dolarValue; // Convertir el costo
+            }
+          },
+          (error: any) => {
+            console.error('Error al obtener la tasa de cambio', error);
+          }
+        );
+        
       } else {
         console.error("ID de viaje no proporcionado.");
       }
     });
-    
-    
-    
   }
 
+  // Método para cargar los detalles del viaje
   async loadViaje(id: string) {
     this.viaje = await this.fireViajeService.getViaje(id.toString()); // Convertir id a string
     if (this.viaje) {
@@ -138,9 +159,6 @@ export class DetallesViajePage implements OnInit {
     }, 0);
 }
 
-
-
-
   volver() {
     this.router.navigate(['/home/viajes']);
   }
@@ -179,7 +197,6 @@ export class DetallesViajePage implements OnInit {
       }
     }
 }
-
 
 async tomarNuevoViaje() {
   const alert = await this.alertController.create({
@@ -241,22 +258,23 @@ async cancelarViaje() {
     this.mostrarAlerta('Sin Viaje en Curso', 'No tienes un viaje en curso que cancelar.');
   }
 }
-  
-  async mostrarAlerta(header: string, message: string) {
-    const alert = await this.alertController.create({
-        header,
-        message,
-        buttons: ['Aceptar']
-    });
-    await alert.present();
-  }
-  isButtonDisabled(): boolean {
-    if (!this.viaje) return true; // Si no hay viaje, deshabilitar
-    
-    const pasajeros = this.viaje.pasajeros || []; // Asegúrate de que pasajeros sea un arreglo
-    const isTaken = pasajeros.includes(this.usuarioRut); // Verifica si el usuario ya ha tomado el viaje
-    const isPending = this.viaje.estado_viaje === 'pendiente'; // Verifica si el estado es pendiente
 
-    return isTaken || !isPending;  // Deshabilitar si ya tiene el viaje o el estado no es pendiente
+async mostrarAlerta(header: string, message: string) {
+  const alert = await this.alertController.create({
+      header,
+      message,
+      buttons: ['Aceptar']
+  });
+  await alert.present();
+}
+
+isButtonDisabled(): boolean {
+  if (!this.viaje) return true; // Si no hay viaje, deshabilitar
+  
+  const pasajeros = this.viaje.pasajeros || []; // Asegúrate de que pasajeros sea un arreglo
+  const isTaken = pasajeros.includes(this.usuarioRut); // Verifica si el usuario ya ha tomado el viaje
+  const isPending = this.viaje.estado_viaje === 'pendiente'; // Verifica si el estado es pendiente
+
+  return isTaken || !isPending;  // Deshabilitar si ya tiene el viaje o el estado no es pendiente
 }
 }

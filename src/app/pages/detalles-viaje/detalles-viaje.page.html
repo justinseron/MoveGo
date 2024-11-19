@@ -47,6 +47,11 @@
           <ion-text slot="end">{{ viaje.costo_viaje | currency: 'CLP' }}</ion-text>
         </ion-item>
         <ion-item>
+          <ion-icon name="cash" slot="start"></ion-icon>
+          <ion-label>Costo en USD:</ion-label>
+          <ion-text slot="end">{{ costoDolares | currency: 'USD' : 'symbol' : '1.0-2' }}</ion-text>
+        </ion-item>
+        <ion-item>
           <ion-icon name="card" slot="start"></ion-icon>
           <ion-label>Método de Pago:</ion-label>
           <ion-text slot="end">{{ viaje.metodo_pago }}</ion-text>
