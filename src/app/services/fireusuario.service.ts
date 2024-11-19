@@ -44,6 +44,15 @@ export class FireUsuarioService {
     }
   }
 
+  async enviarCorreoRecuperacion(email: string): Promise<void> {
+    try {
+      await this.fireAuth.sendPasswordResetEmail(email);
+    } catch (error) {
+      console.error('Error en el servicio de recuperación:', error);
+      throw error;
+    }
+  }
+
   public setRutConductor(rut: string) {
     this.rutConductorLogueado = rut;
   }
