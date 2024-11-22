@@ -143,13 +143,15 @@ export class AdministradorPage implements OnInit {
     const loading = await this.mostrarCargando();
     if (usuario) {
       loading.dismiss();
-      this.persona.setValue(usuario);
+      this.persona.reset();  // Resetea el formulario antes de llenarlo
+      this.persona.patchValue(usuario);  // Ahora aplica los valores del usuario
       this.botonModificar = true;
     } else {
       await this.mostrarAlerta("Error", "¡Usuario no encontrado!");
       this.botonModificar = false;
     }
   }
+    
 
   async modificar() {
     const loading = await this.mostrarCargando();

@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { AbstractControl, FormControl, FormGroup, Validators, ValidatorFn } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AlertController } from '@ionic/angular';
-import { UsuarioService } from 'src/app/services/usuario.service';
+import { FireUsuarioService } from 'src/app/services/fireusuario.service';
 
 @Component({
   selector: 'app-registro',
@@ -35,7 +35,7 @@ export class RegistroPage implements OnInit {
   fotoPerfil: string = 'assets/images/perfildefault.png';
 
 
-  constructor(private router: Router, private alertController: AlertController,private usuarioService: UsuarioService) { 
+  constructor(private router: Router, private alertController: AlertController,private fireusuarioService: FireUsuarioService) { 
     this.persona.get("rut")?.setValidators([Validators.required,Validators.pattern("[0-9]{7,8}-[0-9kK]{1}"),this.validarRut()]);
   }
 
@@ -64,7 +64,7 @@ export class RegistroPage implements OnInit {
     }
     this.persona.controls.tipo_usuario.setValue(this.persona.controls.tiene_auto.value === "si" ? "Conductor" : "Pasajero");
   
-    if (await this.usuarioService.createUsuario(this.persona.value)) {
+    if (await this.fireusuarioService.crearUsuario(this.persona.value)) {
       this.router.navigate(['/login']);
       this.persona.reset();
       await this.mostrarAlerta("Éxito", "¡Usuario creado con éxito!");

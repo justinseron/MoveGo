@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import {Router} from '@angular/router';
-import { UsuarioService } from 'src/app/services/usuario.service';
 import { ModalController } from '@ionic/angular';
 import { VerificarCodigoPage } from '../verificar-codigo/verificar-codigo.page';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
@@ -16,7 +15,7 @@ export class RecuperarPage implements OnInit {
   //ngModel
   email: string = "";
 
-  constructor(private auth: AngularFireAuth ,private modalController: ModalController,private usuarioService: UsuarioService, private router: Router,
+  constructor(private auth: AngularFireAuth ,private modalController: ModalController, private router: Router,
               private fireUsuarioService: FireUsuarioService, private fireAuth: AngularFireAuth) { }
 
   ngOnInit() {
@@ -48,7 +47,7 @@ export class RecuperarPage implements OnInit {
   }
   
   async recuperarContrasena(){
-    if(await this.usuarioService.recuperarUsuario(this.email)){
+    if(await this.fireUsuarioService.recuperarUsuario(this.email)){
       this.mostrarModalVerificacion()
       this.router.navigate(['/login']);
     }else{
