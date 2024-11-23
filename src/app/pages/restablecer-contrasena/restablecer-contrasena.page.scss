@@ -11,4 +11,8 @@
     left: 50%;
     transform: translate(-50%, -50%); 
     max-width: 200px;
+}
+ion-card {
+    background-color: #ffffff; /* Asegura que el fondo sea blanco */
+    box-shadow: none; /* Elimina sombras si las hay */
   }

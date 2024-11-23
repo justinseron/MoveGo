@@ -13,7 +13,8 @@ export class RestablecerContrasenaPage implements OnInit {
   confirmarContrasena: string = '';
   oobCode: string = ''; // Aquí almacenamos el código recibido en la URL
   isLoading: boolean = false;
-
+  mostrarNuevaContrasena: boolean = false;
+  mostrarConfirmarContrasena: boolean = false;
   constructor(
     private route: ActivatedRoute,
     private auth: AngularFireAuth,
@@ -30,6 +31,14 @@ export class RestablecerContrasenaPage implements OnInit {
         this.router.navigate(['/']);
       }
     });
+  }
+  toggleNuevaContrasena() {
+    this.mostrarNuevaContrasena = !this.mostrarNuevaContrasena;
+  }
+
+  // Alterna la visibilidad de la confirmación de contraseña
+  toggleConfirmarContrasena() {
+    this.mostrarConfirmarContrasena = !this.mostrarConfirmarContrasena;
   }
 
   async onSubmit() {

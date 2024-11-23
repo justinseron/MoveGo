@@ -1,9 +1,8 @@
-<!-- restablecer-contrasena.page.html -->
 <ion-content>
   <div id="logo">
     <img src="assets/images/logo.png">
   </div>
-  
+
   <ion-grid>
     <ion-row>
       <ion-col size="12">
@@ -12,20 +11,35 @@
             <ion-card-title>Ingrese su nueva contraseña</ion-card-title>
           </ion-card-header>
           <ion-card-content>
+            <!-- Campo de nueva contraseña -->
             <ion-item>
               <ion-label position="floating">Nueva Contraseña</ion-label>
               <ion-input
-                type="password"
+                [type]="mostrarNuevaContrasena ? 'text' : 'password'"
                 [(ngModel)]="nuevaContrasena"
               ></ion-input>
+              <ion-icon
+                slot="end"
+                [name]="mostrarNuevaContrasena ? 'eye-off' : 'eye'"
+                (click)="toggleNuevaContrasena()"
+              ></ion-icon>
             </ion-item>
+
+            <!-- Campo de confirmar contraseña -->
             <ion-item>
               <ion-label position="floating">Confirmar Contraseña</ion-label>
               <ion-input
-                type="password"
+                [type]="mostrarConfirmarContrasena ? 'text' : 'password'"
                 [(ngModel)]="confirmarContrasena"
               ></ion-input>
+              <ion-icon
+                slot="end"
+                [name]="mostrarConfirmarContrasena ? 'eye-off' : 'eye'"
+                (click)="toggleConfirmarContrasena()"
+              ></ion-icon>
             </ion-item>
+
+            <!-- Botón para restablecer contraseña -->
             <ion-button
               expand="block"
               color="primary"
