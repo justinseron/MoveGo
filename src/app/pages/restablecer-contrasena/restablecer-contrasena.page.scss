@@ -4,15 +4,55 @@
     align-items: center; 
     justify-content: center;
 }
-
-#logo{
-    position: relative;
-    top: 25%;
-    left: 50%;
-    transform: translate(-50%, -50%); 
-    max-width: 200px;
-}
-ion-card {
-    background-color: #ffffff; /* Asegura que el fondo sea blanco */
-    box-shadow: none; /* Elimina sombras si las hay */
+.eye-icon {
+    font-size: 24px; /* Asegura que los iconos sean suficientemente grandes */
+    color: #333; /* Color oscuro para los iconos */
+    cursor: pointer; /* Cambia el cursor al pasar sobre el icono */
+  }
+#logo {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+  }
+  
+  #logo img {
+    max-width: 100%;
+    height: auto;
+    max-height: 120px;
+  }
+  /* Estilo del card */
+.form-card {
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+  }
+  
+  /* Titulo del card */
+  .card-title {
+    font-weight: bold;
+    font-size: 1.4rem;
+    color: #333;
+    text-align: center;
+  }
+  
+  /* Estilo de los input */
+  .input-item {
+    --background: #ffffff;  /* Fondo blanco para el input */
+    --border-radius: 8px;
+    --padding-start: 12px;
+    --padding-end: 12px;
+    --box-shadow: none;
+  }
+  
+  ion-input {
+    --border-color: #ccc;  /* Color de borde gris claro */
+    --focus-border-color: #488aff;  /* Color de borde al enfocar */
+    --color: #000;  /* Color del texto negro */
+  }
+  
+  /* Estilo del botón */
+  .submit-button {
+    margin-top: 20px;
+    border-radius: 8px;
+    font-weight: bold;
+    text-transform: uppercase;
   }

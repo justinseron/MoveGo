@@ -1,41 +1,48 @@
 <ion-content>
-  <div id="logo">
-    <img src="assets/images/logo.png">
+  <div id="logo" class="logo-container">
+    <img src="assets/images/logo.png" alt="Logo">
   </div>
 
-  <ion-grid>
-    <ion-row>
-      <ion-col size="12">
-        <ion-card>
+  <ion-grid style="color: white;">
+    <ion-row class="ion-align-items-center ion-justify-content-center">
+      <ion-col size="12" size-md="8" size-lg="6">
+        <ion-card class="form-card">
           <ion-card-header>
-            <ion-card-title>Ingrese su nueva contraseña</ion-card-title>
+            <ion-card-title class="card-title">Ingrese su nueva contraseña</ion-card-title>
           </ion-card-header>
+          
           <ion-card-content>
             <!-- Campo de nueva contraseña -->
-            <ion-item>
+            <ion-item lines="full" class="input-item">
               <ion-label position="floating">Nueva Contraseña</ion-label>
               <ion-input
                 [type]="mostrarNuevaContrasena ? 'text' : 'password'"
                 [(ngModel)]="nuevaContrasena"
+                placeholder="Ingrese su nueva contraseña"
+                required
               ></ion-input>
               <ion-icon
                 slot="end"
                 [name]="mostrarNuevaContrasena ? 'eye-off' : 'eye'"
                 (click)="toggleNuevaContrasena()"
+                class="eye-icon"
               ></ion-icon>
             </ion-item>
 
             <!-- Campo de confirmar contraseña -->
-            <ion-item>
+            <ion-item lines="full" class="input-item">
               <ion-label position="floating">Confirmar Contraseña</ion-label>
               <ion-input
                 [type]="mostrarConfirmarContrasena ? 'text' : 'password'"
                 [(ngModel)]="confirmarContrasena"
+                placeholder="Confirme su contraseña"
+                required
               ></ion-input>
               <ion-icon
                 slot="end"
                 [name]="mostrarConfirmarContrasena ? 'eye-off' : 'eye'"
                 (click)="toggleConfirmarContrasena()"
+                class="eye-icon"
               ></ion-icon>
             </ion-item>
 
@@ -45,6 +52,7 @@
               color="primary"
               (click)="onSubmit()"
               [disabled]="isLoading"
+              class="submit-button"
             >
               {{ isLoading ? 'Restableciendo...' : 'Restablecer Contraseña' }}
             </ion-button>

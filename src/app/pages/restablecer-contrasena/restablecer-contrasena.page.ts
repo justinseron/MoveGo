@@ -15,6 +15,7 @@ export class RestablecerContrasenaPage implements OnInit {
   isLoading: boolean = false;
   mostrarNuevaContrasena: boolean = false;
   mostrarConfirmarContrasena: boolean = false;
+
   constructor(
     private route: ActivatedRoute,
     private auth: AngularFireAuth,
@@ -32,6 +33,7 @@ export class RestablecerContrasenaPage implements OnInit {
       }
     });
   }
+
   toggleNuevaContrasena() {
     this.mostrarNuevaContrasena = !this.mostrarNuevaContrasena;
   }
@@ -47,8 +49,10 @@ export class RestablecerContrasenaPage implements OnInit {
       return;
     }
 
-    if (!this.nuevaContrasena || this.nuevaContrasena.length < 6) {
-      this.presentToast('La contraseña debe tener al menos 6 caracteres.');
+    // Validación de la contraseña: al menos 8 caracteres, 1 mayúscula, 1 minúscula y 1 carácter especial
+    const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*(),.?":{}|<>])[A-Za-z\d!@#$%^&*(),.?":{}|<>]{8,}$/;
+    if (!regex.test(this.nuevaContrasena)) {
+      this.presentToast('La contraseña debe tener al menos 8 caracteres, incluir una mayúscula, una minúscula y un carácter especial.');
       return;
     }
 

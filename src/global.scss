@@ -91,9 +91,30 @@ ion-header {
     border-bottom-right-radius: 13px;
     border-top-right-radius: 13px;
   }
-  html {
-    color-scheme: light;
-  }
+  /* Establecer color de fondo blanco para toda la aplicación */
+body {
+  background-color: white;
+  color: black; /* Asegúrate de que el texto sea visible */
+}
+
+/* Asegurarte de que el contenido dentro de los componentes también tenga fondo blanco */
+ion-content {
+  background-color: white !important;
+  color: black; /* Texto en negro para visibilidad */
+}
+
+/* Opcional: Ajustar el color de texto y fondo de botones y otros componentes */
+ion-button, ion-input, ion-card {
+  background-color: white !important;
+  color: black !important;
+}
+
+/* Si se usa el modo oscuro, puedes desactivarlo o adaptarlo */
+body.ion-dark {
+  background-color: white !important;
+  color: black !important;
+}
+
   
 
 /*
