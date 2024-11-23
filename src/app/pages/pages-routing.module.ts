@@ -7,7 +7,8 @@ const routes: Routes = [
   {
     path: '',
     component: PagesPage
-  },  {
+  },
+  {
     path: 'perfil-viajes',
     loadChildren: () => import('./perfil-viajes/perfil-viajes.module').then( m => m.PerfilViajesPageModule)
   },
@@ -26,7 +27,11 @@ const routes: Routes = [
   {
     path: 'dias',
     loadChildren: () => import('./dias/dias.module').then( m => m.DiasPageModule)
-  }
+  },
+  {
+    path: 'restablecer-contrasena',
+    loadChildren: () => import('./restablecer-contrasena/restablecer-contrasena.module').then( m => m.RestablecerContrasenaPageModule)
+  },
 
 ];
 

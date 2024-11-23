@@ -62,6 +62,10 @@ const routes: Routes = [
     loadChildren: () => import('./pages/dias/dias.module').then( m => m.DiasPageModule)
   },
   {
+    path: 'restablecer-contrasena',
+    loadChildren: () => import('./pages/restablecer-contrasena/restablecer-contrasena.module').then( m => m.RestablecerContrasenaPageModule)
+  },
+  {
     path: '**',
     loadChildren: () => import('./pages/error404/error404.module').then(m => m.Error404PageModule)
   },
