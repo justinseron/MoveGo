@@ -88,7 +88,7 @@ export class FireUsuarioService {
     if (snapshot && !snapshot.empty) {
       return snapshot.docs[0].data();
     }
-    return null; // Retorna `null` si no se encontró el usuario
+    return null; // Retorna null si no se encontró el usuario
   }
 
   public updateUsuario(usuario: any): Promise<boolean> {
@@ -140,6 +140,7 @@ export class FireUsuarioService {
       return false;
     }
   }
+  
 
   public getUserRut(): string {
     return localStorage.getItem('userRut') || '';
@@ -235,4 +236,3 @@ export class FireUsuarioService {
   }
   
   }
-

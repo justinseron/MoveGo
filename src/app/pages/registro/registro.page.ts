@@ -3,7 +3,7 @@ import { AbstractControl, FormControl, FormGroup, Validators, ValidatorFn } from
 import { Router } from '@angular/router';
 import { AlertController } from '@ionic/angular';
 import { FireUsuarioService } from 'src/app/services/fireusuario.service';
-
+import { LoadingController } from '@ionic/angular';
 @Component({
   selector: 'app-registro',
   templateUrl: './registro.page.html',
@@ -35,7 +35,7 @@ export class RegistroPage implements OnInit {
   fotoPerfil: string = 'assets/images/perfildefault.png';
 
 
-  constructor(private router: Router, private alertController: AlertController,private fireusuarioService: FireUsuarioService) { 
+  constructor(private router: Router, private loadingController: LoadingController,private alertController: AlertController,private fireusuarioService: FireUsuarioService) { 
     this.persona.get("rut")?.setValidators([Validators.required,Validators.pattern("[0-9]{7,8}-[0-9kK]{1}"),this.validarRut()]);
   }
 
@@ -50,9 +50,19 @@ export class RegistroPage implements OnInit {
   
     await alert.present();
   }
+  async mostrarCargando() {
+    const loading = await this.loadingController.create({
+      message: 'Cargando...',
+      spinner: 'crescent',  // Puedes cambiar el tipo de spinner aquí
+      duration: 10000,      // Duración opcional, si quieres que se cierre después de cierto tiempo
+    });
+    await loading.present();
+    return loading;
+  }
   
   
   public async registrar() {
+    const loading = await this.mostrarCargando();
     if (!this.validarEdad18(this.persona.controls.fecha_nacimiento.value || "")) {
       await this.mostrarAlerta("Error", "¡Debe tener al menos 18 años para registrarse!");
       return;
@@ -66,6 +76,7 @@ export class RegistroPage implements OnInit {
   
     if (await this.fireusuarioService.crearUsuario(this.persona.value)) {
       this.router.navigate(['/login']);
+      loading.dismiss();
       this.persona.reset();
       await this.mostrarAlerta("Éxito", "¡Usuario creado con éxito!");
     }
