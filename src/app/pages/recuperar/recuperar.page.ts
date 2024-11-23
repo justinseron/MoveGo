@@ -1,9 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import {Router} from '@angular/router';
-import { ModalController } from '@ionic/angular';
-import { VerificarCodigoPage } from '../verificar-codigo/verificar-codigo.page';
+import { Router } from '@angular/router';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
-import { FireUsuarioService } from 'src/app/services/fireusuario.service';
+import { ToastController } from '@ionic/angular';  // Importamos para usar un toast de notificación
 
 @Component({
   selector: 'app-recuperar',
@@ -12,48 +10,54 @@ import { FireUsuarioService } from 'src/app/services/fireusuario.service';
 })
 export class RecuperarPage implements OnInit {
 
-  //ngModel
   email: string = "";
+  isLoading: boolean = false;  // Para manejar el estado de carga del botón
+  isValidEmail: boolean = true;  // Para manejar la validación del correo
 
-  constructor(private auth: AngularFireAuth ,private modalController: ModalController, private router: Router,
-              private fireUsuarioService: FireUsuarioService, private fireAuth: AngularFireAuth) { }
+  constructor(
+    private auth: AngularFireAuth,
+    private router: Router,
+    private toastController: ToastController  // Inyectamos el ToastController
+  ) {}
 
-  ngOnInit() {
-  }
+  ngOnInit() {}
 
-  async mostrarModalVerificacion(){
-    const modal = await this.modalController.create({
-      component: VerificarCodigoPage
-    });
-    return await modal.present();
-  }
-
-  
-  //esto se hace en el service, con un métod que se llame recuperar clave que reciba el correo:
-  //this.auth.sendPasswordResetEmail(this.email);
   async onRecuperarContrasena() {
-    if (this.email.trim() === '') {
-      alert('Por favor, ingrese un correo válido');
+    // Validar que el correo tenga el formato correcto antes de proceder
+    const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
+    if (!this.email || !emailPattern.test(this.email)) {
+      this.isValidEmail = false;
+      await this.presentToast('Por favor, ingrese un correo electrónico válido');
       return;
     }
+    this.isValidEmail = true;  // Si el correo es válido
 
     try {
-      await this.fireUsuarioService.enviarCorreoRecuperacion(this.email);
-      alert('Correo de recuperación enviado con éxito. Por favor, siga los pasos especificados');
+      this.isLoading = true;  // Mostrar el indicador de carga
+      await this.auth.sendPasswordResetEmail(this.email);  // Enviar correo de recuperación
+      await this.presentToast('Correo de recuperación enviado con éxito. Por favor, revise su bandeja de entrada.');
       this.router.navigate(['/login']);
-    } catch (error) {
-      alert('Error al enviar el correo. Inténtelo de nuevo.');
+    } catch (error: any) {
+      let errorMessage = 'Error al enviar el correo. Inténtelo de nuevo.';
+      // Manejo de errores más específico
+      if (error.code === 'auth/user-not-found') {
+        errorMessage = 'No se encontró una cuenta asociada a este correo.';
+      } else if (error.code === 'auth/invalid-email') {
+        errorMessage = 'El correo ingresado no es válido.';
+      }
+      await this.presentToast(errorMessage);
+    } finally {
+      this.isLoading = false;  // Ocultar el indicador de carga
     }
-  }
-  
-  async recuperarContrasena(){
-    if(await this.fireUsuarioService.recuperarUsuario(this.email)){
-      this.mostrarModalVerificacion()
-      this.router.navigate(['/login']);
-    }else{
-      alert("El Usuario No Existe")
-    }
-  
   }
 
+  // Método para mostrar un mensaje de Toast
+  async presentToast(message: string) {
+    const toast = await this.toastController.create({
+      message: message,
+      duration: 2000,  // Duración del mensaje
+      position: 'top'  // Ubicación del toast
+    });
+    toast.present();
+  }
 }

@@ -52,6 +52,7 @@ export class FireUsuarioService {
       throw error;
     }
   }
+// Este método puede ser innecesario si solo quieres enviar el correo de recuperación
 
   public setRutConductor(rut: string) {
     this.rutConductorLogueado = rut;
@@ -150,11 +151,16 @@ export class FireUsuarioService {
     return localStorage.getItem('userRut') || '';
   }
 
-  public recuperarUsuario(correo: string): Observable<any | undefined> {
-    return this.fireStore.collection('usuarios', ref => ref.where('correo', '==', correo)).valueChanges().pipe(
-      map(users => users.length > 0 ? users[0] : undefined)
-    );
+  async RecuperarUsuario(email: string): Promise<boolean> {
+    try {
+      const user = await this.fireAuth.fetchSignInMethodsForEmail(email);
+      return user.length > 0; // Si hay métodos de inicio de sesión para el correo, el usuario existe
+    } catch (error) {
+      console.error('Error al recuperar usuario:', error);
+      throw error;
+    }
   }
+  
   public async getNombrePorRut(rut: string): Promise<string | null> {
     const usuarioSnapshot = await this.fireStore.collection('usuarios').doc(rut).get().toPromise();
     return usuarioSnapshot?.exists ? (usuarioSnapshot.data() as { nombre?: string }).nombre || null : null;
@@ -208,17 +214,34 @@ export class FireUsuarioService {
   }
 
   public async login(correo: string, contrasena: string): Promise<boolean> {
-    const usuariosSnapshot = await this.fireStore.collection('usuarios', ref => ref.where('correo', '==', correo).where('password', '==', contrasena)).get().toPromise();
-    if (usuariosSnapshot && !usuariosSnapshot.empty) {
-      const usuario = usuariosSnapshot.docs[0].data() as any;
-      localStorage.setItem('userRut', usuario.rut || '');
-      localStorage.setItem('usuario', JSON.stringify(usuario));
-      localStorage.setItem('nombreConductor', usuario.nombre || '');
-      return true;
+    try {
+      // Usar Firebase Auth para iniciar sesión
+      await this.fireAuth.signInWithEmailAndPassword(correo, contrasena);
+      
+      // Obtener los datos del usuario de Firestore después de un inicio de sesión exitoso
+      const usuariosSnapshot = await this.fireStore.collection('usuarios', ref => ref.where('correo', '==', correo)).get().toPromise();
+      
+      if (usuariosSnapshot && !usuariosSnapshot.empty) {
+        const usuario = usuariosSnapshot.docs[0].data() as { rut: string; nombre: string };
+        const rut = usuario.rut || '';
+        const nombre = usuario.nombre || '';
+    
+        localStorage.setItem('userRut', rut);
+        localStorage.setItem('usuario', JSON.stringify(usuario));
+        localStorage.setItem('nombreConductor', nombre);
+        
+        return true;  // Inicio de sesión exitoso
+      }
+      
+      return false;  // Si no se encuentra el usuario en Firestore
+    } catch (error) {
+      console.error('Error en el login:', error);
+      return false;  // Error en el login
     }
-    return false;
   }
-
+  
+  
+  
   public async getConductores(): Promise<any[]> {
     const snapshot = await this.fireStore.collection('usuarios', ref => ref.where('tipo_usuario', '==', 'Conductor')).get().toPromise();
     if (snapshot) {

@@ -10,7 +10,7 @@
       <ion-card-content>
         <ion-input [(ngModel)]="email" label="Ingrese su Email" labelPlacement="stacked" fill="outline" placeholder="ejemplo@duocuc.cl"></ion-input>
         <br>
-        <ion-button (click)="onRecuperarContrasena()" size="block" color="secondary" shape="round">RECUPERAR</ion-button>
+        <ion-button (click)="onRecuperarContrasena()" [disabled]="isLoading" size="block" color="secondary" shape="round">RECUPERAR</ion-button><ion-spinner *ngIf="isLoading"></ion-spinner>
       </ion-card-content>
     </ion-card>
   </div>
