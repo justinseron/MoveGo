@@ -275,36 +275,34 @@ export class AdministradorPage implements OnInit {
   
 
   async presentConfirmAlert(header: string, message: string): Promise<boolean> {
-    const alert = await this.alertController.create({
-      header: header,
-      message: message,
-      buttons: [
-        {
-          text: 'Cancelar',
-          role: 'cancel', // Asignamos el role de 'cancel'
-          cssClass: 'secondary',
-          handler: () => {
-            console.log("Eliminación cancelada");
+    return new Promise<boolean>(async (resolve) => {
+      const alert = await this.alertController.create({
+        header: header,
+        message: message,
+        buttons: [
+          {
+            text: 'Cancelar',
+            role: 'cancel',
+            cssClass: 'secondary',
+            handler: () => {
+              console.log("Eliminación cancelada");
+              resolve(false); // Resolución negativa
+            },
           },
-        },
-        {
-          text: 'Eliminar',
-          role: 'Eliminar', // Asignamos el role de 'Eliminar'
-          handler: () => {
-            console.log("Eliminación confirmada");
+          {
+            text: 'Eliminar',
+            handler: () => {
+              console.log("Eliminación confirmada");
+              resolve(true); // Resolución positiva
+            },
           },
-        },
-      ],
+        ],
+      });
+  
+      await alert.present();
     });
-  
-    await alert.present();
-  
-    // Espera a que el usuario interactúe con la alerta
-    const result = await alert.onDidDismiss();
-    
-    // Verifica el role para saber si el usuario confirmó la eliminación
-    return result?.role === 'Eliminar';  // Verifica si el rol es 'Eliminar'
   }
+  
   
 
   

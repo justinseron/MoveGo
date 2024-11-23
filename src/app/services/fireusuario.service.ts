@@ -102,13 +102,41 @@ export class FireUsuarioService {
   
 
   public async deleteUsuario(rut: string): Promise<boolean> {
-    console.log("Eliminando usuario con rut:", rut);  // Verifica que el rut sea correcto
+    console.log("Eliminando usuario con rut:", rut); // Verifica que el rut sea correcto
     try {
+      // Obtener el correo vinculado al RUT desde Firestore
+      const usuarioDoc = await this.fireStore.collection('usuarios').doc(rut).get().toPromise();
+      if (!usuarioDoc?.exists) {
+        console.error("El usuario con el RUT proporcionado no existe.");
+        return false;
+      }
+  
+      const usuarioData = usuarioDoc.data() as any;
+      const correo = usuarioData.correo;
+  
+      // Eliminar el usuario de autenticación
+      if (correo) {
+        const usuarioActual = await this.fireAuth.currentUser;
+        if (usuarioActual?.email === correo) {
+          // Si el usuario logueado es el mismo, desloguearlo antes de eliminarlo
+          await this.fireAuth.signOut();
+        }
+  
+        // Buscar y eliminar al usuario autenticado
+        const credenciales = await this.fireAuth.signInWithEmailAndPassword(correo, usuarioData.password);
+        if (credenciales.user) {
+          await credenciales.user.delete();
+          console.log("Usuario de autenticación eliminado con éxito.");
+        }
+      }
+  
+      // Eliminar el usuario de Firestore
       await this.fireStore.collection('usuarios').doc(rut).delete();
-      console.log("Usuario eliminado con éxito");
+      console.log("Usuario eliminado con éxito de Firestore.");
+  
       return true;
     } catch (error) {
-      console.error("Error al eliminar usuario:", error);  // Verifica el error
+      console.error("Error al eliminar usuario:", error);
       return false;
     }
   }
