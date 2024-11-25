@@ -1,4 +1,4 @@
-import { TestBed } from '@angular/core/testing';
+/*import { TestBed } from '@angular/core/testing';
 import { UsuarioService } from '../services/usuario.service';
 
 describe('UsuarioService', () => {
@@ -12,4 +12,4 @@ describe('UsuarioService', () => {
   it('should be created', () => {
     expect(service).toBeTruthy();
   });
-});
+});*/

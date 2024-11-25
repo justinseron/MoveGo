@@ -33,6 +33,7 @@ export class RegistroPage implements OnInit {
   });
 
   fotoPerfil: string = 'assets/images/perfildefault.png';
+  correo: any;
 
 
   constructor(private router: Router, private loadingController: LoadingController,private alertController: AlertController,private fireusuarioService: FireUsuarioService) { 
