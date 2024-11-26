@@ -60,14 +60,28 @@ export class RestablecerContrasenaPage implements OnInit {
       this.isLoading = true;
       // Usamos el `oobCode` para actualizar la contraseña
       await this.auth.confirmPasswordReset(this.oobCode, this.nuevaContrasena);
-      this.presentToast('Contraseña restablecida con éxito. Inicie sesión.');
-      this.router.navigate(['/login']);
+
+      // Verificar el código y obtener el correo
+      const email = await this.auth.verifyPasswordResetCode(this.oobCode); // Verifica el código y obtiene el correo
+
+      if (email) {
+        // Iniciamos sesión automáticamente con el nuevo correo y contraseña
+        await this.auth.signInWithEmailAndPassword(email, this.nuevaContrasena);
+        this.presentToast('Contraseña restablecida con éxito. Inicie sesión.');
+        this.router.navigate(['/']);  // O redirige a la página que necesites
+      } else {
+        this.presentToast('No se pudo verificar el código de restablecimiento.');
+        this.router.navigate(['/login']);  // Redirige al login si hay algún problema
+      }
+
     } catch (error: any) {
       let errorMessage = 'Error al restablecer la contraseña.';
       if (error.code === 'auth/expired-action-code') {
         errorMessage = 'El enlace ha expirado. Solicite otro correo.';
       } else if (error.code === 'auth/invalid-action-code') {
         errorMessage = 'El enlace no es válido. Intente de nuevo.';
+      } else if (error.code === 'auth/user-disabled') {
+        errorMessage = 'El usuario ha sido deshabilitado.';
       }
       this.presentToast(errorMessage);
     } finally {

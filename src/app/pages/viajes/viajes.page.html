@@ -57,7 +57,7 @@
             </ion-card-header>
             <ion-card-content>
               <p>Asientos Disponibles: {{ viaje.asientos_disponibles }}</p>
-              <p>Precio: {{ (viaje.distancia_metros / 200 * 100) | currency:'CLP' }}</p>
+              <p>Precio: {{ (viaje.costo_viaje) | currency:'CLP' }}</p>
             </ion-card-content>
             <ion-button (click)="ver(viaje)" size="block" [disabled]="viaje.asientos_disponibles === 0">
               Ver Detalle
