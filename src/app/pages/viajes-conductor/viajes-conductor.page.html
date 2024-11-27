@@ -1,0 +1,130 @@
+<ion-content class="ion-padding" style="background-color: #f0f8ff;">
+  <div style="text-align: center; margin-bottom: 20px;">
+    <h2 style="color: #0056b3;">Formulario de Viaje</h2>
+    <p style="font-size: 16px; color: #555;">Por favor, complete todos los campos requeridos.</p>
+  </div>
+  <div id="map_html"></div>
+  <form [formGroup]="viaje" (ngSubmit)="onSubmit()">
+    <ion-list>
+      <!-- Nombre Conductor -->
+      <ion-item>
+        <ion-label position="stacked">Nombre Conductor</ion-label>
+        <ion-input type="text" formControlName="conductor" placeholder="Ej: ABC1234" readonly></ion-input>
+      </ion-item>
+      
+      <!-- Rut Conductor -->
+      <ion-item>
+        <ion-label position="stacked">Rut Conductor</ion-label>
+        <ion-input type="text" formControlName="rut" placeholder="Ej: ABC1234"readonly></ion-input>
+      </ion-item>
+      
+      <!-- Patente -->
+      <ion-item>
+        <ion-label position="stacked">Patente</ion-label>
+        <ion-input type="text" formControlName="patente" placeholder="Ej: ABC1234" readonly></ion-input>
+      </ion-item>
+
+      <!-- Color del Auto -->
+      <ion-item>
+        <ion-label position="stacked">Color del Auto</ion-label>
+        <ion-input type="text" formControlName="color_auto" placeholder="Ej: Rojo" readonly></ion-input>
+      </ion-item>
+
+      <!-- Asientos Disponibles -->
+      <ion-item>
+        <ion-label position="stacked">Asientos Disponibles</ion-label>
+        <ion-input type="number" formControlName="asientos_disponibles" placeholder="Ej: 4" readonly></ion-input>
+      </ion-item>
+
+      <!-- Nombre Destino -->
+      <ion-item>
+        <ion-label position="stacked">Nombre Destino</ion-label>
+        <ion-input type="text" [(ngModel)]="direccion" formControlName="nombre_destino" placeholder="Ej: Playa" readonly></ion-input>
+      </ion-item>
+
+      <!-- Latitud -->
+      <ion-item [ngStyle]="{ display: 'none' }">
+        <ion-label position="stacked">Latitud</ion-label>
+        <ion-input type="number" [(ngModel)]="latitud" formControlName="latitud" placeholder="Ej: -34.6097"></ion-input>
+      </ion-item>     
+
+      <!-- Longitud -->
+      <ion-item [ngStyle]="{ display: 'none' }">
+        <ion-label position="stacked">Longitud</ion-label>
+        <ion-input type="number" [(ngModel)]="longitud" formControlName="longitud" placeholder="Ej: -58.3816"></ion-input>
+      </ion-item>
+
+      <!-- Distancia -->
+      <ion-item>
+        <ion-label position="stacked">Distancia (metros)</ion-label>
+        <ion-input type="number" [(ngModel)]="distancia_metros" formControlName="distancia_metros" placeholder="Ej: 1500" readonly></ion-input>
+      </ion-item>
+
+      <!-- Costo del Viaje -->
+      <ion-item>
+        <ion-label position="stacked">Costo del Viaje</ion-label>
+        <ion-input type="number" formControlName="costo_viaje" placeholder="Ej: 10000"></ion-input>
+      </ion-item>
+
+      <!-- Método de Pago -->
+      <ion-item>
+        <ion-label position="stacked">Método de Pago</ion-label>
+        <ion-select formControlName="metodo_pago" (ionChange)="onPaymentMethodChange($event)">
+          <ion-select-option value="tarjeta">Tarjeta</ion-select-option>
+          <ion-select-option value="efectivo">Efectivo</ion-select-option>
+        </ion-select>
+      </ion-item>
+
+      <!-- Número de Tarjeta (solo si se selecciona 'tarjeta') -->
+      <ion-item *ngIf="isCardPayment()">
+        <ion-label position="stacked">Número de Tarjeta</ion-label>
+        <ion-input type="text" formControlName="numero_tarjeta" placeholder="Ej: 1234 5678 9101 1121"></ion-input>
+      </ion-item>
+
+      <!-- Duración del Viaje -->
+      <ion-item>
+        <ion-label position="stacked">Duración del Viaje</ion-label>
+        <ion-input type="text" [(ngModel)]="tiempo_segundos" formControlName="duracion_viaje" placeholder="Ej: 30 mins"></ion-input>
+      </ion-item>
+
+      <!-- Hora de Salida -->
+      <ion-item>
+        <ion-label position="stacked">Hora de Salida</ion-label>
+        <ion-input type="time" formControlName="hora_salida"></ion-input>
+      </ion-item>
+
+      <!-- Estado del Viaje -->
+      <ion-item>
+        <ion-label position="stacked">Estado del Viaje</ion-label>
+        <ion-select formControlName="estado_viaje">
+          <ion-select-option value="pendiente">Pendiente</ion-select-option>
+          <ion-select-option value="en_curso">En curso</ion-select-option>
+          <ion-select-option value="terminado">Terminado</ion-select-option>
+        </ion-select>
+      </ion-item>
+
+    </ion-list>
+
+    <ion-button expand="full" type="submit" [disabled]="viaje.invalid" style="background-color: #0056b3; color: white; margin-bottom: 10px;">Guardar Viaje</ion-button>
+    <ion-button (click)="modificar()" [disabled]="botonModificar" size="block">Modificar</ion-button>
+    <ion-button type="button" expand="full" color="secondary" (click)=limpiarCamposEspecificos()>Limpiar</ion-button>
+  </form>
+
+  <div *ngIf="viajess.length > 0; else noHayViajess">
+    <ion-list *ngFor="let viaje of viajess">  
+      <ion-item-sliding>
+        <ion-item-options side="start">
+          <ion-item-option (click)="buscar(viaje.id__viaje)" color="warning">Buscar</ion-item-option>
+        </ion-item-options>
+        <ion-item>{{viaje.nombre_destino | titlecase}}</ion-item>
+        <ion-item-options side="end">
+          <ion-item-option (click)="eliminar(viaje.id__viaje)" color="danger">Eliminar</ion-item-option>
+        </ion-item-options>
+      </ion-item-sliding>
+    </ion-list>
+  </div>
+
+  <ng-template #noHayViajess>
+    <img src="../../../assets/images/NO-HAY-DATOS.png" alt="No hay registros existentes">
+  </ng-template>
+</ion-content>

@@ -5,6 +5,8 @@ import * as L from 'leaflet';
 import { FireUsuarioService } from 'src/app/services/fireusuario.service';
 import { FireviajesService } from 'src/app/services/fireviajes.service';
 import { CurrencyService } from 'src/app/services/currency.service'; // Asegúrate de que esté importado
+import { ChangeDetectorRef } from '@angular/core';
+import { LoadingController } from '@ionic/angular';
 
 @Component({
   selector: 'app-detalles-viaje',
@@ -32,7 +34,9 @@ export class DetallesViajePage implements OnInit {
     private activatedRoute: ActivatedRoute,
     private fireViajeService: FireviajesService,
     private fireUsuarioService: FireUsuarioService,
-    private currencyService: CurrencyService // Inyectamos el servicio de conversión de divisas
+    private currencyService: CurrencyService,
+    private cdr: ChangeDetectorRef,
+    private loadingController: LoadingController,
   ) {}
 
   async ngOnInit() {
@@ -164,6 +168,7 @@ export class DetallesViajePage implements OnInit {
   }
 
   async confirmarTomaViaje() {
+    
     if (this.viaje) {
       if (this.viajeTomado) {
         const alert = await this.alertController.create({
@@ -182,7 +187,7 @@ export class DetallesViajePage implements OnInit {
                 const exitoCancelacion = await this.fireViajeService.cancelarViaje(this.viaje.id__viaje, this.usuarioRut);
                 if (exitoCancelacion) {
                   // Permitir al usuario tomar el nuevo viaje
-                  await this.tomarNuevoViaje(); 
+                  await this.tomarNuevoViaje();
                 } else {
                   this.mostrarAlerta('Error', 'No se pudo cancelar el viaje anterior.');
                 }
@@ -215,7 +220,8 @@ async tomarNuevoViaje() {
           const exito = await this.fireViajeService.tomarViaje(this.viaje.id__viaje, this.usuarioRut);
           if (exito) {
             this.viajeTomado = true;
-            this.router.navigate(['/home/viajes']); // Redirigir a "Mis viajes"
+            this.cdr.detectChanges();  // Fuerza la actualización de la vista
+            this.router.navigate(['/home/viajes']); // Redirige a "Mis viajes"
           } else {
             this.mostrarAlerta('Error', 'No se puede tomar el viaje. Puede que ya lo haya tomado o no hay asientos disponibles.');
           }
@@ -226,6 +232,7 @@ async tomarNuevoViaje() {
 
   await alert.present();
 }
+
 
 async cancelarViaje() {
   if (this.viajeTomado) {
@@ -267,7 +274,15 @@ async mostrarAlerta(header: string, message: string) {
   });
   await alert.present();
 }
-
+async mostrarCargando() {
+  const loading = await this.loadingController.create({
+    message: 'Cargando...',
+    spinner: 'crescent',  // Puedes cambiar el tipo de spinner aquí
+    duration: 10000,      // Duración opcional, si quieres que se cierre después de cierto tiempo
+  });
+  await loading.present();
+  return loading;
+}
 isButtonDisabled(): boolean {
   if (!this.viaje) return true; // Si no hay viaje, deshabilitar
   

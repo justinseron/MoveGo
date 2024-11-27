@@ -32,6 +32,7 @@ export class ViajesPage implements OnInit, AfterViewInit {
     await loading.present();
     return loading;
   }
+  
   async cargarViajes() {
     const todosLosViajes = await this.fireViajeService.getViajes(); // Obtener todos los viajes
     console.log("Todos los viajes desde el almacenamiento:", todosLosViajes); // Log para verificar
@@ -50,7 +51,6 @@ export class ViajesPage implements OnInit, AfterViewInit {
     console.log("Viajes Disponibles:", this.viajesDisponibles); // Log para verificar
     console.log("Mis Viajes:", this.misViajes); // Log para verificar
 }
-
 
   filtrarViajes() {
     if (this.isBasicoSelected) {
@@ -100,9 +100,12 @@ export class ViajesPage implements OnInit, AfterViewInit {
     // Puedes agregar más lógica si es necesario
   }
 
-  onSegmentChange(event: any) {
+  async onSegmentChange(event: any) {
+    const loading = await this.mostrarCargando();
     this.isBasicoSelected = event.detail.value === 'basico';
     this.filtrarViajes();
+    this.cargarViajes();
+    loading.dismiss();
   }
 
   onDestinoSelect(destino: string) {

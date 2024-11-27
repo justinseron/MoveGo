@@ -69,6 +69,7 @@
         });
         this.loadViajes();
         this.cargarConductores();
+        this.initMap();
       }
 
       async ngOnInit() {
@@ -162,6 +163,12 @@
         this.viaje.reset(); // Restablece todos los controles del formulario
         this.botonModificar = true; // Restablece el botón de modificar
         this.viaje.get('id__viaje')?.disable(); // Deshabilita el campo de ID
+        this.viaje.get('conductor')?.setValue(null);
+        const conductorSelect = document.querySelector('ion-select') as HTMLIonSelectElement | null;
+        if (conductorSelect) {
+          conductorSelect.value = null; // Limpiar el valor del ion-select
+        }
+        this.resetMap()
       }
       async onSubmit() {
         const loading = await this.mostrarCargando();
@@ -189,7 +196,7 @@
         if (viajeData) {
           this.viaje.patchValue({
             ...viajeData,
-            conductor: viajeData.conductor?.nombre
+            conductor: viajeData.conductor,
           });
           this.botonModificar = false;
       

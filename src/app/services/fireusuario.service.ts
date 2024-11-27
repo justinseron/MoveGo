@@ -3,18 +3,20 @@ import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-
+import { AlertController } from '@ionic/angular'; // Importar AlertController
 @Injectable({
   providedIn: 'root'
 })
 export class FireUsuarioService {
+  private conductorData: any;
   private usuariosSubject = new BehaviorSubject<any[]>([]);
   usuarios$ = this.usuariosSubject.asObservable();
   private rutConductorLogueado: string | null = null;
 
-  constructor(private fireStore: AngularFirestore, private fireAuth: AngularFireAuth) {
+  constructor(private fireStore: AngularFirestore, private fireAuth: AngularFireAuth,private alertController: AlertController) {
     this.cargarUsuarios(); // Cargar los usuarios al iniciar el servicio
     this.crearAdminPorDefecto();
+    
   }
 
   private async crearAdminPorDefecto() {
@@ -43,7 +45,12 @@ export class FireUsuarioService {
       console.log('El administrador ya existe');
     }
   }
-
+  setConductorData(conductor: any) {
+    this.conductorData = conductor;
+  }
+  getConductorDataa() {
+    return this.conductorData;
+  }
   async enviarCorreoRecuperacion(email: string): Promise<void> {
     try {
       await this.fireAuth.sendPasswordResetEmail(email);
@@ -63,18 +70,67 @@ export class FireUsuarioService {
       this.usuariosSubject.next(usuarios);
     });
   }
-
-  public async crearUsuario(usuario: any): Promise<boolean> {
-    const docRef = this.fireStore.collection('usuarios').doc(usuario.rut);
-    const docActual = await docRef.get().toPromise();
-    if (docActual?.exists) {
-      return false; // Usuario ya existe
-    }
-    const credencialesUsuario = await this.fireAuth.createUserWithEmailAndPassword(usuario.correo, usuario.password);
-    const uid = credencialesUsuario.user?.uid;
-    await docRef.set( {...usuario,uid} );
-    return true;
+  public getViajesPorConductor(): Observable<any[]> {
+    const rutConductor = this.getRUTLogueado(); // O usa rutConductorLogueado si prefieres esa propiedad
+  
+    return this.fireStore.collection('viajes', ref => ref.where('rut', '==', rutConductor))
+      .valueChanges();
   }
+  public async crearUsuario(usuario: any): Promise<boolean> {
+    try {
+      // Verificar si el correo ya está registrado en Firebase Authentication
+      const existingMethods = await this.fireAuth.fetchSignInMethodsForEmail(usuario.correo);
+      console.log('Métodos existentes para el correo:', existingMethods); // Agregado para depuración
+
+      if (existingMethods.length > 0) {
+        // Si el correo ya está registrado, mostrar una alerta
+        this.mostrarAlerta('Este correo ya está registrado. Por favor, usa otro correo.');
+        return false; // El correo ya está registrado, no crear el usuario
+      }
+
+      // Si no existe el correo, proceder con la creación del usuario
+      const docRef = this.fireStore.collection('usuarios').doc(usuario.rut);
+      const docActual = await docRef.get().toPromise();
+      if (docActual?.exists) {
+        console.log('El usuario ya existe en Firestore');
+        return false; // Usuario ya existe en Firestore
+      }
+
+      // Crear el usuario en Firebase Authentication
+      const credencialesUsuario = await this.fireAuth.createUserWithEmailAndPassword(usuario.correo, usuario.password);
+      const uid = credencialesUsuario.user?.uid;
+
+      // Guardar el usuario en Firestore
+      await docRef.set({ ...usuario, uid });
+
+      console.log('Usuario creado exitosamente:', usuario); // Agregado para depuración
+
+      return true; // Usuario creado exitosamente
+    } catch (error: unknown) { // Aquí se le indica a TypeScript que el tipo de error es unknown
+      if (error instanceof Error) { // Verificamos si 'error' es una instancia de 'Error'
+        console.error('Error al crear usuario:', error); // Esto mostrará el error completo en la consola
+        if (error.message.includes('auth/email-already-in-use')) {
+          this.mostrarAlerta('Este correo ya está registrado. Por favor, usa otro correo.');
+        } else {
+          this.mostrarAlerta(`Hubo un error al crear el usuario. Error: ${error.message}`);
+        }
+      } else {
+        console.error('Error desconocido:', error);
+        this.mostrarAlerta('Hubo un error desconocido al crear el usuario.');
+      }
+      return false; // Hubo un error en la creación del usuario
+    }
+  }
+  
+  private async mostrarAlerta(mensaje: string): Promise<void> {
+    const alert = await this.alertController.create({
+      header: 'Error',
+      message: mensaje,
+      buttons: ['OK']
+    });
+    await alert.present();
+  }
+
 
   public getUsuarios(): Observable<any[]> {
     return this.fireStore.collection('usuarios').valueChanges();
@@ -115,25 +171,18 @@ export class FireUsuarioService {
       const usuarioData = usuarioDoc.data() as any;
       const correo = usuarioData.correo;
   
-      // Eliminar el usuario de autenticación
+      // Eliminar el usuario de Firebase Authentication si está autenticado como el mismo
       if (correo) {
         const usuarioActual = await this.fireAuth.currentUser;
         if (usuarioActual?.email === correo) {
           // Si el usuario logueado es el mismo, desloguearlo antes de eliminarlo
           await this.fireAuth.signOut();
         }
-  
-        // Buscar y eliminar al usuario autenticado
-        const credenciales = await this.fireAuth.signInWithEmailAndPassword(correo, usuarioData.password);
-        if (credenciales.user) {
-          await credenciales.user.delete();
-          console.log("Usuario de autenticación eliminado con éxito.");
-        }
+        
+        // Eliminar el usuario de Firestore directamente sin necesidad de su contraseña
+        await this.fireStore.collection('usuarios').doc(rut).delete();
+        console.log("Usuario eliminado con éxito de Firestore.");
       }
-  
-      // Eliminar el usuario de Firestore
-      await this.fireStore.collection('usuarios').doc(rut).delete();
-      console.log("Usuario eliminado con éxito de Firestore.");
   
       return true;
     } catch (error) {
@@ -141,6 +190,7 @@ export class FireUsuarioService {
       return false;
     }
   }
+  
   
 
   public getUserRut(): string {

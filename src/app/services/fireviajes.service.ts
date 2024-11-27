@@ -3,6 +3,7 @@ import { AngularFirestore, AngularFirestoreDocument, DocumentSnapshot } from '@a
 import { BehaviorSubject, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { FireUsuarioService } from './fireusuario.service';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root'
@@ -11,7 +12,7 @@ export class FireviajesService {
   private viajesDisponibles: any[] = []; // Array de viajes disponibles
   private misViajes: any[] = []; // Array de "Mis viajes"
 
-  constructor(private fireStore: AngularFirestore, private fireUsuarioService : FireUsuarioService) {
+  constructor(private fireStore: AngularFirestore, private fireUsuarioService : FireUsuarioService, private router: Router ) {
     this.init();
   }
 
@@ -159,14 +160,30 @@ export class FireviajesService {
       }
   
       if (viajeTomado.asientos_disponibles > 0) {
-        viajeTomado.pasajeros.push(usuarioRut);  // Añadir al pasajero
-        viajeTomado.asientos_disponibles -= 1;
-  
-        // Lógica adicional para verificar si el pasajero tiene otro viaje en curso
+        // Verificar si el usuario tiene otro viaje en curso
         const tieneViaje = await this.tieneViajeVinculado(usuarioRut);
         if (tieneViaje) {
-          // Preguntar si el usuario desea cancelar el viaje anterior (lógica de la alerta de confirmación)
+          // Lógica para preguntar si el usuario desea cancelar el viaje anterior
+          const cancelar = await this.confirmarCancelacion(); // Método que retorna un booleano de confirmación
+          if (!cancelar) {
+            return false;  // Si el usuario no confirma la cancelación, no se puede tomar el nuevo viaje
+          }
+        
+          // Si el usuario decide cancelar, se busca el viaje anterior y se actualiza
+          const viajeAnterior = viajes.find(v => v.pasajeros.includes(usuarioRut) && v.estado_viaje === "pendiente");
+          if (viajeAnterior) {
+            viajeAnterior.estado_viaje = "pendiente"; // Cambiar el estado del viaje anterior a pendiente
+            viajeAnterior.pasajeros = viajeAnterior.pasajeros.filter((rut: string) => rut !== usuarioRut); // Eliminar al usuario de los pasajeros
+            viajeAnterior.asientos_disponibles += 1; // Incrementar los asientos disponibles
+        
+            // Actualiza el viaje anterior en Firestore
+            await this.fireStore.collection('viajes').doc(viajeAnterior.id__viaje).update(viajeAnterior);
+          }
         }
+
+        // Ahora se puede tomar el nuevo viaje
+        viajeTomado.pasajeros.push(usuarioRut);  // Añadir al pasajero
+        viajeTomado.asientos_disponibles -= 1;
   
         // Si ya no hay asientos disponibles, cambiar el estado del viaje
         if (viajeTomado.asientos_disponibles === 0) {
@@ -179,7 +196,18 @@ export class FireviajesService {
     }
     return false;  // Si no se pudo tomar el viaje, retorna false
   }
-  
+
+async confirmarCancelacion(): Promise<boolean> {
+    // Aquí puedes implementar la lógica para mostrar una alerta de confirmación
+    // Por ejemplo, una simple promesa que resuelva como true o false según la elección del usuario
+    // Para un entorno real, puedes utilizar un modal o alerta de Ionic
+    return new Promise((resolve) => {
+        const confirmacion = window.confirm("¿Quieres cancelar el viaje anterior para tomar este nuevo?");
+        resolve(confirmacion);
+    });
+}
+
+
   
 
   async cancelarViaje(idViaje: number, usuarioRut: string): Promise<boolean> {

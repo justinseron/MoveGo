@@ -2,8 +2,8 @@
   <h2 class="titulo-viajes">Viajes Terminados</h2>
 
   <!-- Si hay viajes, se muestra la lista -->
-  <ion-list *ngIf=" viajesDelConductor.length > 0; else No">
-    <ion-item *ngFor="let viaje of  viajesDelConductor" class="item-viaje" detail>
+  <ion-list *ngIf=" viajesTerminados.length > 0; else No">
+    <ion-item *ngFor="let viaje of  viajesTerminados" class="item-viaje" detail>
       <ion-label>
         <h3 class="destino">{{ viaje.nombre_destino }}</h3>
       </ion-label>

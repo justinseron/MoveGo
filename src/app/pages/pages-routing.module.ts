@@ -32,6 +32,11 @@ const routes: Routes = [
     path: 'restablecer-contrasena',
     loadChildren: () => import('./restablecer-contrasena/restablecer-contrasena.module').then( m => m.RestablecerContrasenaPageModule)
   },
+  {
+    path: 'viajes-conductor',
+    loadChildren: () => import('./viajes-conductor/viajes-conductor.module').then( m => m.ViajesConductorPageModule)
+  },
+
 
 ];
 

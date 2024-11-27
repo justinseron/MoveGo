@@ -47,6 +47,10 @@ const routes: Routes = [
         path: 'dias',
         loadChildren: () => import('../dias/dias.module').then( m => m.DiasPageModule)
       },
+      {
+        path: 'viajes-conductor',
+        loadChildren: () => import('../viajes-conductor/viajes-conductor.module').then( m => m.ViajesConductorPageModule)
+      },
       
     ]
   }

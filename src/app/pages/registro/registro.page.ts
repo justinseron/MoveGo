@@ -63,7 +63,6 @@ export class RegistroPage implements OnInit {
   
   
   public async registrar() {
-    const loading = await this.mostrarCargando();
     if (!this.validarEdad18(this.persona.controls.fecha_nacimiento.value || "")) {
       await this.mostrarAlerta("Error", "¡Debe tener al menos 18 años para registrarse!");
       return;
@@ -77,7 +76,6 @@ export class RegistroPage implements OnInit {
   
     if (await this.fireusuarioService.crearUsuario(this.persona.value)) {
       this.router.navigate(['/login']);
-      loading.dismiss();
       this.persona.reset();
       await this.mostrarAlerta("Éxito", "¡Usuario creado con éxito!");
     }

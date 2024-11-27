@@ -42,14 +42,17 @@
       </ion-card-content>
     </ion-card>
   </div>
-
   <ion-tabs class="-tabs">
     <ion-tab-bar slot="bottom" class="tab-bar">
       <ion-tab-button tab="mis-viajes" *ngIf="usuario.tipo_usuario === 'Conductor'">
         <ion-icon name="person-outline"></ion-icon>
         <span class="tab-label">Mis viajes</span>
       </ion-tab-button>
-      <ion-tab-button tab="administrar-viajes" *ngIf="usuario.tipo_usuario === 'Administrador' || usuario.tipo_usuario === 'Conductor'">
+      <ion-tab-button tab="administrar-viajes" *ngIf="usuario.tipo_usuario === 'Administrador'">
+        <ion-icon name="business-outline"></ion-icon>
+        <span class="tab-label">Administrar Viajes</span>
+      </ion-tab-button>
+      <ion-tab-button tab="viajes-conductor" *ngIf="usuario.tipo_usuario === 'Conductor'">
         <ion-icon name="business-outline"></ion-icon>
         <span class="tab-label">Administrar Viajes</span>
       </ion-tab-button>

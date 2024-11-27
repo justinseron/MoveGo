@@ -5,10 +5,10 @@
 
       <!-- Segmento para selección de tipo de viaje -->
       <ion-segment mode="ios" value="basico" (ionChange)="onSegmentChange($event)" color="primary">
-        <ion-segment-button value="basico">
+        <ion-segment-button value="basico"  routerLink="/home/viajes">
           <ion-label>Mis Viajes</ion-label>
         </ion-segment-button>
-        <ion-segment-button value="priority">
+        <ion-segment-button value="priority" routerLink="/home/viajes">
           <ion-label>Viajes Disponibles</ion-label>
         </ion-segment-button>
       </ion-segment>
