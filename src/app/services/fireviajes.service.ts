@@ -76,9 +76,11 @@ export class FireviajesService {
 
   async tieneViajeVinculado(rutPasajero: string): Promise<boolean> {
     const viajes = await this.getViajes();  // Obtener todos los viajes
-    return viajes.some(viaje => viaje.pasajeros.includes(rutPasajero));
-  }
-  
+
+    return viajes.some(viaje => 
+        viaje.pasajeros && Array.isArray(viaje.pasajeros) && viaje.pasajeros.includes(rutPasajero)
+    );
+}
 
   public async getViajesPorConductor(rutConductor: string): Promise<any[]> {
     const viajesSnapshot = await this.fireStore.collection('viajes', ref => ref.where('rut', '==', rutConductor)).get().toPromise();

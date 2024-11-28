@@ -10,7 +10,8 @@ import { UsuarioService } from 'src/app/services/usuario.service';
   styleUrls: ['./vista-admin.page.scss'],
 })
 export class VistaAdminPage implements OnInit {
-  viajesDelConductor: any[] = []; // Inicializa como un array vacío
+  viajesDelConductor: any[] = [];  // Inicialización segura
+ // Inicializa como un array vacío
   nombresPasajeros: { [rut: string]: string | null } = {}; 
 
   constructor(private fireViajeService : FireviajesService, private fireUsuarioService : FireUsuarioService) {
@@ -22,14 +23,19 @@ export class VistaAdminPage implements OnInit {
   }
   private async cargarNombresPasajeros() {
     for (const viaje of this.viajesDelConductor) {
-      for (const rut of viaje.pasajeros) {
+      // Asegura que 'pasajeros' sea un array, en caso de que sea null o undefined
+      const pasajeros = Array.isArray(viaje.pasajeros) ? viaje.pasajeros : [];
+      
+      for (const rut of pasajeros) {
         if (!this.nombresPasajeros[rut]) { // Evita duplicados
           this.nombresPasajeros[rut] = await this.fireUsuarioService.getNombrePorRut(rut);
         }
       }
     }
   }
+  
 }
+
 
 
 

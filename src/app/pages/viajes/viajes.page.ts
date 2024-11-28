@@ -39,14 +39,13 @@ export class ViajesPage implements OnInit, AfterViewInit {
 
     // Filtrar los viajes disponibles
     this.viajesDisponibles = todosLosViajes.filter(viaje => 
-        viaje.asientos_disponibles > 0 && // Solo viajes con asientos disponibles
-        !(viaje.pasajeros && viaje.pasajeros.includes(this.usuarioRut)) // Excluir viajes que ya tomó el usuario
-    );
-
-    // Filtrar los viajes que el usuario ya ha tomado
-    this.misViajes = todosLosViajes.filter(viaje => 
-        viaje.pasajeros.includes(this.usuarioRut) // Incluye viajes donde el usuario es pasajero
-    );
+      viaje.asientos_disponibles > 0 && // Solo viajes con asientos disponibles
+      (!viaje.pasajeros || !Array.isArray(viaje.pasajeros) || !viaje.pasajeros.includes(this.usuarioRut)) // Excluir viajes que ya tomó el usuario
+  );
+  
+  this.misViajes = todosLosViajes.filter(viaje => 
+      Array.isArray(viaje.pasajeros) && viaje.pasajeros.includes(this.usuarioRut) // Incluye viajes donde el usuario es pasajero
+  );
 
     console.log("Viajes Disponibles:", this.viajesDisponibles); // Log para verificar
     console.log("Mis Viajes:", this.misViajes); // Log para verificar
