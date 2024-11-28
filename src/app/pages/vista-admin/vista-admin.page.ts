@@ -13,7 +13,8 @@ export class VistaAdminPage implements OnInit {
   viajesDelConductor: any[] = []; // Inicializa como un array vacío
   nombresPasajeros: { [rut: string]: string | null } = {}; 
 
-  constructor(private fireViajeService : FireviajesService, private fireUsuarioService : FireUsuarioService) {}
+  constructor(private fireViajeService : FireviajesService, private fireUsuarioService : FireUsuarioService) {
+  }
 
   async ngOnInit() {
     this.viajesDelConductor = await this.fireViajeService.obtenerViajesPorConductor();
