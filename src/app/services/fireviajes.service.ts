@@ -146,50 +146,64 @@ export class FireviajesService {
     }
   }
   async tomarViaje(idViaje: number, usuarioRut: string): Promise<boolean> {
-    // Verifica si el usuario ya tiene un viaje activo (en curso o pendiente)
-    const tieneViajeEnCurso = await this.tieneViajeVinculado(usuarioRut);
+    const viajes = await this.getViajes();
+    const viajesUsuario = viajes.filter(viaje => Array.isArray(viaje.pasajeros) && viaje.pasajeros.includes(usuarioRut));
 
-    if (tieneViajeEnCurso) {
-        const viajeActivo = await this.getViajes().then(viajes => viajes.find(v => v.pasajeros.includes(usuarioRut)));
+    // Filtramos los viajes pendientes del usuario
+    const viajesPendientes = viajesUsuario.filter(v => v.estado_viaje === "pendiente");
 
-        if (viajeActivo) {
-            // Si el viaje activo está pendiente o en curso, pregunta por la cancelación
-            if (viajeActivo.estado_viaje === "pendiente" || viajeActivo.estado_viaje === "en curso") {
-                const confirmCancel = confirm("Ya tienes un viaje activo. ¿Deseas cancelarlo para tomar este nuevo viaje?");
-                if (!confirmCancel) {
-                    return false; // El usuario no desea cancelar el viaje
-                }
+    // Si el usuario tiene un viaje pendiente, necesita cancelarlo para tomar otro pendiente
+    if (viajesPendientes.length > 0) {
+        const confirmCancel = await this.confirmarCancelacion();  // Llamada a confirmarCancelacion
 
-                // Si el usuario decide cancelar, cancela el viaje activo
-                await this.cancelarViaje(parseInt(viajeActivo.id__viaje), usuarioRut);
+        if (!confirmCancel) {
+            return false; // El usuario no desea cancelar el viaje pendiente
+        }
+
+        // Cancelar los viajes pendientes del usuario
+        for (const viajePendiente of viajesPendientes) {
+            // Llamamos al método para cancelar el viaje pendiente
+            const cancelado = await this.cancelarViaje(viajePendiente.id__viaje, usuarioRut);
+            
+            if (!cancelado) {
+                console.error("Error al cancelar el viaje pendiente");
+                return false;
             }
-            // Si el viaje está terminado, no es necesario preguntar si desea cancelar el viaje anterior
-            else if (viajeActivo.estado_viaje === "terminado") {
-                console.log("El viaje anterior está terminado, puedes tomar un nuevo viaje.");
+
+            // Agregar el viaje cancelado de nuevo a "Viajes Disponibles"
+            if (viajePendiente.asientos_disponibles > 0 && !viajePendiente.pasajeros.includes(usuarioRut)) {
+                this.viajesDisponibles.push(viajePendiente);
             }
         }
     }
 
     // Procedemos con el viaje que el usuario desea tomar
-    const viajes = await this.getViajes();
     const viajeIndex = viajes.findIndex(viaje => viaje.id__viaje === idViaje.toString());
 
     if (viajeIndex !== -1) {
         const viajeTomado = viajes[viajeIndex];
-        viajeTomado.pasajeros = viajeTomado.pasajeros || []; // Asegúrate de que sea un arreglo
+        viajeTomado.pasajeros = viajeTomado.pasajeros || [];
 
         // Comprobar si el usuario ya ha tomado el viaje
         if (viajeTomado.pasajeros.includes(usuarioRut)) {
             return false; // El usuario ya tomó este viaje
         }
 
-        // Si el viaje tiene asientos disponibles
+        // Verificar si el viaje está pendiente y tiene asientos disponibles
+        if (viajeTomado.estado_viaje === "pendiente") {
+            if (viajeTomado.asientos_disponibles === 0) {
+                alert("Este viaje está pendiente y no tiene asientos disponibles.");
+                return false; // No se puede tomar el viaje porque está pendiente y no tiene asientos
+            }
+        }
+
+        // Si el viaje tiene asientos disponibles y no está pendiente, se puede tomar
         if (viajeTomado.asientos_disponibles > 0) {
             viajeTomado.pasajeros.push(usuarioRut); // Añadir al pasajero
             viajeTomado.asientos_disponibles -= 1; // Disminuir asientos disponibles
 
             // Cambiar el estado a "en curso" si no hay asientos disponibles
-            if (viajeTomado.asientos_disponibles === 0) {
+            if (viajeTomado.asientos_disponibles === 0 && viajeTomado.estado_viaje === "pendiente") {
                 viajeTomado.estado_viaje = "en curso"; // Cambiar estado a "en curso" cuando los asientos están completos
             }
 
@@ -206,7 +220,7 @@ export class FireviajesService {
 
             return true; // Retornar éxito
         } else {
-            alert("Este viaje no tiene asientos disponibles.");
+            alert("Este viaje está pendiente o no tiene asientos disponibles.");
         }
     }
 
@@ -214,15 +228,14 @@ export class FireviajesService {
 }
 
 
+
 async confirmarCancelacion(): Promise<boolean> {
-    // Aquí puedes implementar la lógica para mostrar una alerta de confirmación
-    // Por ejemplo, una simple promesa que resuelva como true o false según la elección del usuario
-    // Para un entorno real, puedes utilizar un modal o alerta de Ionic
-    return new Promise((resolve) => {
-        const confirmacion = window.confirm("¿Quieres cancelar el viaje anterior para tomar este nuevo?");
-        resolve(confirmacion);
-    });
+  return new Promise((resolve) => {
+      const confirmacion = window.confirm("¿Quieres cancelar el viaje anterior para tomar este nuevo?");
+      resolve(confirmacion);
+  });
 }
+
 
 
   
