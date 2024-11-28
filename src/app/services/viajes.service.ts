@@ -154,24 +154,34 @@ public async createViaje(viaje: any): Promise<boolean> {
   }
 
   async tomarViaje(idViaje: number, usuarioRut: string): Promise<boolean> {
-    // Verifica si el usuario ya tiene un viaje activo
+    // Verifica si el usuario ya tiene un viaje activo (en curso o pendiente)
     const tieneViajeEnCurso = await this.tieneViajeVinculado(usuarioRut);
-    
+
     if (tieneViajeEnCurso) {
-        const confirmCancel = confirm("Ya tienes un viaje activo. ¿Deseas cancelarlo para tomar este nuevo viaje?");
-        if (!confirmCancel) {
-            return false; // No se toma el nuevo viaje
-        }
-        
-        // Si el usuario decide cancelar, cancela el viaje activo
         const viajeActivo = await this.getViajes().then(viajes => viajes.find(v => v.pasajeros.includes(usuarioRut)));
+
         if (viajeActivo) {
-            await this.cancelarViaje(parseInt(viajeActivo.id__viaje), usuarioRut);
+            // Si el viaje activo está pendiente o en curso, pregunta por la cancelación
+            if (viajeActivo.estado_viaje === "pendiente" || viajeActivo.estado_viaje === "en curso") {
+                const confirmCancel = confirm("Ya tienes un viaje activo. ¿Deseas cancelarlo para tomar este nuevo viaje?");
+                if (!confirmCancel) {
+                    return false; // El usuario no desea cancelar el viaje
+                }
+
+                // Si el usuario decide cancelar, cancela el viaje activo
+                await this.cancelarViaje(parseInt(viajeActivo.id__viaje), usuarioRut);
+            }
+            // Si el viaje está terminado, no es necesario preguntar si desea cancelar el viaje anterior
+            else if (viajeActivo.estado_viaje === "terminado") {
+                console.log("El viaje anterior está terminado, puedes tomar un nuevo viaje.");
+            }
         }
     }
+
+    // Procedemos con el viaje que el usuario desea tomar
     const viajes = await this.getViajes();
     const viajeIndex = viajes.findIndex(viaje => viaje.id__viaje === idViaje.toString());
-  
+
     if (viajeIndex !== -1) {
         const viajeTomado = viajes[viajeIndex];
         viajeTomado.pasajeros = viajeTomado.pasajeros || []; // Asegúrate de que sea un arreglo
@@ -181,16 +191,16 @@ public async createViaje(viaje: any): Promise<boolean> {
             return false; // El usuario ya tomó este viaje
         }
 
-        // Si el viaje tiene asientos disponibles
-        if (viajeTomado.asientos_disponibles > 0) {
+        // Si el viaje tiene asientos disponibles y el estado no es "pendiente"
+        if (viajeTomado.asientos_disponibles > 0 && viajeTomado.estado_viaje !== "pendiente") {
             viajeTomado.pasajeros.push(usuarioRut); // Añadir al pasajero
             viajeTomado.asientos_disponibles -= 1; // Disminuir asientos disponibles
 
             // Cambiar el estado a "en curso" si no hay asientos disponibles
             if (viajeTomado.asientos_disponibles === 0) {
-                viajeTomado.estado_viaje = "pendiente"; // Cambiar estado si no hay asientos
-            } 
-          
+                viajeTomado.estado_viaje = "en curso"; // Cambiar estado a "en curso" cuando los asientos están completos
+            }
+
             // Actualizar la lista de viajes en el almacenamiento
             await this.updateViaje(viajeTomado.id__viaje, viajeTomado);
 
@@ -203,10 +213,19 @@ public async createViaje(viaje: any): Promise<boolean> {
             this.viajesDisponibles = this.viajesDisponibles.filter(v => v.id__viaje !== viajeTomado.id__viaje);
 
             return true; // Retornar éxito
+        } else {
+            alert("Este viaje está pendiente o no tiene asientos disponibles.");
         }
     }
+
     return false; // No se pudo tomar el viaje
 }
+
+
+
+
+
+
 
 
   

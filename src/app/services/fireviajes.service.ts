@@ -146,58 +146,73 @@ export class FireviajesService {
     }
   }
   async tomarViaje(idViaje: number, usuarioRut: string): Promise<boolean> {
-    const viajes: any[] = await this.getViajes();  // Obtener la lista de viajes
+    // Verifica si el usuario ya tiene un viaje activo (en curso o pendiente)
+    const tieneViajeEnCurso = await this.tieneViajeVinculado(usuarioRut);
+
+    if (tieneViajeEnCurso) {
+        const viajeActivo = await this.getViajes().then(viajes => viajes.find(v => v.pasajeros.includes(usuarioRut)));
+
+        if (viajeActivo) {
+            // Si el viaje activo está pendiente o en curso, pregunta por la cancelación
+            if (viajeActivo.estado_viaje === "pendiente" || viajeActivo.estado_viaje === "en curso") {
+                const confirmCancel = confirm("Ya tienes un viaje activo. ¿Deseas cancelarlo para tomar este nuevo viaje?");
+                if (!confirmCancel) {
+                    return false; // El usuario no desea cancelar el viaje
+                }
+
+                // Si el usuario decide cancelar, cancela el viaje activo
+                await this.cancelarViaje(parseInt(viajeActivo.id__viaje), usuarioRut);
+            }
+            // Si el viaje está terminado, no es necesario preguntar si desea cancelar el viaje anterior
+            else if (viajeActivo.estado_viaje === "terminado") {
+                console.log("El viaje anterior está terminado, puedes tomar un nuevo viaje.");
+            }
+        }
+    }
+
+    // Procedemos con el viaje que el usuario desea tomar
+    const viajes = await this.getViajes();
     const viajeIndex = viajes.findIndex(viaje => viaje.id__viaje === idViaje.toString());
-  
+
     if (viajeIndex !== -1) {
-      const viajeTomado = viajes[viajeIndex];
-  
-      // Verifica que la propiedad pasajeros sea un array antes de hacer push
-      if (!Array.isArray(viajeTomado.pasajeros)) {
-        viajeTomado.pasajeros = []; // Inicializa la propiedad como un array vacío si no lo es
-      }
-  
-      if (viajeTomado.pasajeros.includes(usuarioRut)) {
-        return false;  // El usuario ya tomó este viaje
-      }
-  
-      if (viajeTomado.asientos_disponibles > 0) {
-        // Verificar si el usuario tiene otro viaje en curso
-        const tieneViaje = await this.tieneViajeVinculado(usuarioRut);
-        if (tieneViaje) {
-          // Lógica para preguntar si el usuario desea cancelar el viaje anterior
-          const cancelar = await this.confirmarCancelacion(); // Método que retorna un booleano de confirmación
-          if (!cancelar) {
-            return false;  // Si el usuario no confirma la cancelación, no se puede tomar el nuevo viaje
-          }
-        
-          // Si el usuario decide cancelar, se busca el viaje anterior y se actualiza
-          const viajeAnterior = viajes.find(v => v.pasajeros.includes(usuarioRut) && v.estado_viaje === "pendiente");
-          if (viajeAnterior) {
-            viajeAnterior.estado_viaje = "pendiente"; // Cambiar el estado del viaje anterior a pendiente
-            viajeAnterior.pasajeros = viajeAnterior.pasajeros.filter((rut: string) => rut !== usuarioRut); // Eliminar al usuario de los pasajeros
-            viajeAnterior.asientos_disponibles += 1; // Incrementar los asientos disponibles
-        
-            // Actualiza el viaje anterior en Firestore
-            await this.fireStore.collection('viajes').doc(viajeAnterior.id__viaje).update(viajeAnterior);
-          }
+        const viajeTomado = viajes[viajeIndex];
+        viajeTomado.pasajeros = viajeTomado.pasajeros || []; // Asegúrate de que sea un arreglo
+
+        // Comprobar si el usuario ya ha tomado el viaje
+        if (viajeTomado.pasajeros.includes(usuarioRut)) {
+            return false; // El usuario ya tomó este viaje
         }
 
-        // Ahora se puede tomar el nuevo viaje
-        viajeTomado.pasajeros.push(usuarioRut);  // Añadir al pasajero
-        viajeTomado.asientos_disponibles -= 1;
-  
-        // Si ya no hay asientos disponibles, cambiar el estado del viaje
-        if (viajeTomado.asientos_disponibles === 0) {
-          viajeTomado.estado_viaje = "en_curso";
+        // Si el viaje tiene asientos disponibles
+        if (viajeTomado.asientos_disponibles > 0) {
+            viajeTomado.pasajeros.push(usuarioRut); // Añadir al pasajero
+            viajeTomado.asientos_disponibles -= 1; // Disminuir asientos disponibles
+
+            // Cambiar el estado a "en curso" si no hay asientos disponibles
+            if (viajeTomado.asientos_disponibles === 0) {
+                viajeTomado.estado_viaje = "en curso"; // Cambiar estado a "en curso" cuando los asientos están completos
+            }
+
+            // Actualizar la lista de viajes en el almacenamiento
+            await this.updateViaje(viajeTomado.id__viaje, viajeTomado);
+
+            // Mover el viaje a "Mis viajes" si no existe
+            if (!this.misViajes.find(v => v.id__viaje === viajeTomado.id__viaje)) {
+                this.misViajes.push(viajeTomado);
+            }
+
+            // Eliminar de "Viajes disponibles"
+            this.viajesDisponibles = this.viajesDisponibles.filter(v => v.id__viaje !== viajeTomado.id__viaje);
+
+            return true; // Retornar éxito
+        } else {
+            alert("Este viaje no tiene asientos disponibles.");
         }
-  
-        await this.fireStore.collection('viajes').doc(viajeTomado.id__viaje).update(viajeTomado);
-        return true;
-      }
     }
-    return false;  // Si no se pudo tomar el viaje, retorna false
-  }
+
+    return false; // No se pudo tomar el viaje
+}
+
 
 async confirmarCancelacion(): Promise<boolean> {
     // Aquí puedes implementar la lógica para mostrar una alerta de confirmación
