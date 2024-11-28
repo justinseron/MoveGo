@@ -34,10 +34,12 @@
             <ion-icon name="accessibility" slot="start"></ion-icon>
             <ion-label>Compartir Perfil</ion-label>
           </ion-item>
-          <ion-item (click)="irAViajesTerminados()">
-            <ion-icon name="time" slot="start"></ion-icon>
-            <ion-label>Viajes</ion-label>
-          </ion-item>
+          <div *ngIf="usuario.tipo_usuario === 'Conductor'">
+            <ion-item (click)="irAViajesTerminados()">
+              <ion-icon name="time" slot="start"></ion-icon>
+              <ion-label>Viajes</ion-label>
+            </ion-item>
+          </div>
           <ion-item (click)="goToDias()">
             <ion-icon name="calendar" slot="start"></ion-icon>
             <ion-label>Días Festivos</ion-label>

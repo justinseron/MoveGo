@@ -1,7 +1,7 @@
 <ion-content>
   
-  <ion-list *ngIf="viajesTerminados.length > 0; else noHayViajes">
-    <ion-item *ngFor="let viaje of viajesTerminados" class="item-viaje" detail>
+  <ion-list *ngIf=" misViajes.length > 0; else noHayViajes">
+    <ion-item *ngFor="let viaje of  misViajes" class="item-viaje" detail>
       <ion-label>
         <h3 class="destino">{{ viaje.nombre_destino }}</h3>
         <p class="conductor">Conductor: {{ viaje.conductor }}</p>

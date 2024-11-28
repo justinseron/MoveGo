@@ -10,12 +10,6 @@
         <ion-input [(ngModel)]="usuarioLogueado.nombre"></ion-input>
       </ion-item>
 
-      <!-- Correo -->
-      <ion-item>
-        <ion-label position="stacked">Correo:</ion-label>
-        <ion-input type="email" [(ngModel)]="usuarioLogueado.correo" (ngModelChange)="validarCorreo()" required></ion-input>
-      </ion-item>
-      <ion-note *ngIf="correoInvalido" color="danger">Solo correo institucional</ion-note>
       
       <!-- Fecha de nacimiento -->
       <ion-item>

@@ -35,7 +35,7 @@ export class FireviajesService {
         let nuevosViajes = [
           {
 
-            "conductor": "Juan Pérez",
+            "conductor": "Juan Morales",
             "rut": "11219292-1",
             "patente": "AABB32",
             "color_auto": "Rojo",
@@ -277,5 +277,27 @@ async confirmarCancelacion(): Promise<boolean> {
     return viajes.filter((viaje: any) => viaje.rut === rutConductor);
   }
 
+
+
+  public async getViajess(): Promise<any[]> {
+  const viajesRef = this.fireStore.collection('viajes');  // Reemplaza 'viajes' con el nombre real de tu colección
+  const snapshot = await viajesRef.get().toPromise();
+
+  // Verificamos si 'snapshot' y 'docs' están definidos antes de acceder a ellos
+  if (snapshot && snapshot.docs) {
+    return snapshot.docs.map(doc => doc.data());
+  } else {
+    console.error('No se pudo obtener los viajes o el snapshot es undefined.');
+    return [];  // Retorna un arreglo vacío en caso de error
+  }
+}
+  
+  // Método para obtener los viajes de un pasajero específico
+  async getViajesPorPasajero(rut: string) {
+    const viajes = await this.getViajes();  // Suponiendo que este es el método para obtener todos los viajes
+    console.log("Viajes obtenidos:", viajes);  // Verifica los viajes obtenidos
+  
+    return viajes.filter(viaje => viaje.pasajeros && viaje.pasajeros.includes(rut));  // Filtra solo los viajes que contienen al pasajero
+  }
 
 }
